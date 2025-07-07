@@ -6,7 +6,7 @@ TEST(SSDREADWRITE, WRITEPASS) {
 	int address = 0;
 	uint32_t value = 0xabc;
 
-	ssdwrite.write(address, value);
+	EXPECT_NO_THROW(ssdwrite.write(address, value));
 }
 
 TEST(SSDREADWRITE, WRITEFAILED_INVALIDADDRESS) {
@@ -14,7 +14,7 @@ TEST(SSDREADWRITE, WRITEFAILED_INVALIDADDRESS) {
 	int address = -1;
 	uint32_t value = 0xabc;
 
-	ssdwrite.write(address, value);
+	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
 }
 
 int main() {
