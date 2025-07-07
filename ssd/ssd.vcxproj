@@ -133,9 +133,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Ssd_Read.h" />
   </ItemGroup>
   <ItemGroup>
