@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <cstdlib>
 #include <string>
 #include <vector>
 using std::string;
@@ -8,7 +10,8 @@ class TestShell
 {
 public:
     TestShell() = default;
-    void runCommand(const string& command);
+    void runShell();
+    void printHelp();
 
 private:
     string read(const int LBA);
