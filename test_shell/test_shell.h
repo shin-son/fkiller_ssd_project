@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "ssd_interface.h"
+#include "constants.h"
 
 using std::string;
 using std::vector;
@@ -19,6 +20,7 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
+    void HandlePartialLbaWrite();
     void printHelp();
 
 private:
@@ -27,10 +29,16 @@ private:
     void exit();
     void help();
     void fullWrite(const std::string& data);
-    void fullRead();
+    vector<string> fullRead();
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data);
     void writeReadAging();
 
+    friend class TestShellTest_Write_Pass_Test;
+    friend class TestShellTest_Write_Fail_Test;
+    friend class TestShellTest_FullWrite_Pass_Test;
+    friend class TestShellTest_FullWrite_Fail_Test;
+
     SSDInterface* ssdAdapter;
+    unsigned int SSD_SIZE = 100;
 };
