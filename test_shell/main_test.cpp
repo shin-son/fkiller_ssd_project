@@ -9,6 +9,7 @@ using namespace testing;
 TEST(SampleTest, Addition) {
     EXPECT_EQ(2 + 2, 4);
 }
+
 TEST(TS, ReadPass) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
@@ -127,6 +128,63 @@ TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithShortCommand) {
 
     testShell.runCommand(cmdInput);
 }
+
+TEST(TestShellTest, WriteReadAging_Pass) {
+    MockSSDAdapter mockSSD;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSD);
+
+    std::string testData = "0xA1B2C3D4";
+
+    EXPECT_CALL(mockSSD, write(0, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, write(99, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, read(0))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+    EXPECT_CALL(mockSSD, read(99))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+
+    testing::internal::CaptureStdout();
+    testShell.writeReadAging();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Aging] PASS"), std::string::npos);
+}
+
+TEST(TestShellTest, WriteReadAging_Fail) {
+    MockSSDAdapter mockSSD;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSD);
+
+    std::string testData = "0xA1B2C3D4";
+    std::string wrongData = "0xA1B2C3DF";
+
+    EXPECT_CALL(mockSSD, write(0, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, write(99, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, read(0))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+    EXPECT_CALL(mockSSD, read(99))
+        .Times(200)
+        .WillOnce(Return(wrongData))
+        .WillRepeatedly(Return(testData));
+
+    testing::internal::CaptureStdout();
+    testShell.writeReadAging();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Aging] Mismatch at iteration 0"), std::string::npos);
+}
+
 
 TEST(TestShellTest, Write_Pass) {
     MockSSDAdapter mockSSD;

@@ -36,11 +36,16 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
-
-    if (("2_PartialLBAWrite" == command) || ("2_" == command)){
+    if (("2_PartialsLBAWrite" == command) || ("2_" == command)){
         HandlePartialLbaWrite();
+        return 3;
     }
-  
+
+    if (("3_WriteReadAging" == command) || ("3_" == command)) {
+        writeReadAging();
+        return 3;
+    }
+
     if (cmd == "write") {
         int lba;
         std::string data;
@@ -102,6 +107,31 @@ void TestShell::HandlePartialLbaWrite()
         {
             ssdAdapter->write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
         }
+    }
+}
+
+void TestShell::writeReadAging() {
+    bool allMatch = true;
+
+    for (int i = 0; i < 200; ++i) {
+        std::stringstream ss;
+        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
+        std::string randData = ss.str();
+
+        ssdAdapter->write(0, randData);
+        ssdAdapter->write(99, randData);
+
+        std::string result0 = ssdAdapter->read(0);
+        std::string result99 = ssdAdapter->read(99);
+
+        if (result0 != result99) {
+            std::cout << "[Aging] Mismatch at iteration " << i << std::endl;
+            allMatch = false;
+        }
+    }
+
+    if (allMatch) {
+        std::cout << "[Aging] PASS" << std::endl;
     }
 }
 
