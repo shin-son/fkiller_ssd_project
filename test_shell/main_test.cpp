@@ -34,10 +34,10 @@ TEST(TestShellTest, Write_Fail) {
     TestShell shell;
     shell.setSsdAdapter(&mockSSD);
 
-    EXPECT_CALL(mockSSD, write(5, "0xAAAABBBB"))
+    EXPECT_CALL(mockSSD, write(5, "0xAAAAABBBBB"))
         .WillOnce(Return("ERROR"));
 
-    std::string result = shell.write(5, "0xAAAABBBB");
+    std::string result = shell.write(5, "0xAAAAABBBBB");
     EXPECT_EQ(result, "[Write] ERROR");
 }
 
@@ -46,9 +46,11 @@ TEST(TestShellTest, FullWrite_Pass) {
     TestShell shell;
     shell.setSsdAdapter(&mockSSD);
 
-    EXPECT_CALL(mockSSD, write(_, _))
-        .Times(100)
+    for (int i = 0; i < 100; ++i) {
+        EXPECT_CALL(mockSSD, write(i, "0xAAAABBBB"))
+        .Times(1)
         .WillRepeatedly(Return(""));
+    }
 
     testing::internal::CaptureStdout();
     shell.fullWrite("0xAAAABBBB");
