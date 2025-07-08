@@ -12,6 +12,10 @@ class TestShell
 {
 public:
     TestShell() = default;
+    TestShell(SSDInterface* ssdInterface)
+        : ssdAdapter{ ssdInterface }
+    {
+    }
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     void printHelp();    
