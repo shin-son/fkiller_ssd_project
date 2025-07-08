@@ -41,10 +41,13 @@ int TestShell::runCommand(std::string& command)
 
         if (!(iss >> LBA)) {
             std::cout << "[Read] ERROR: Missing lba" << std::endl;
-            return 3;
+            return 1;
         }
 
-        std::cout << read(stoi(LBA)) << std::endl;
+        string result = read(stoi(LBA));
+        std::cout << "[Read] " << result << std::endl;
+
+        if (result == "ERROR") return 1;
         return 3;
     }
 
