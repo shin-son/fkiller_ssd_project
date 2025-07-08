@@ -65,6 +65,31 @@ int TestShell::runCommand(std::string& command)
         return 3;
     }
 
+    if (cmd == "read") {
+        int LBA;
+
+        if (!(iss >> LBA)) {
+            std::cout << "[Read] ERROR: Missing LBA" << std::endl;
+            return 1;
+        }
+
+        string result = read(LBA);
+        std::cout << result << std::endl;
+
+        if (result == "[Read] ERROR") return 1;
+        return 3;
+    }
+
+    if (cmd == "fullread") {
+        retFlag = 3;
+        vector<string> fullResult = fullRead();
+        for (string oneResult : fullResult) {
+            std::cout << oneResult << std::endl;
+            if (oneResult == "[Read] ERROR") retFlag = 1;
+        }
+        return retFlag;
+    }
+
     return retFlag;
 }
 
@@ -117,4 +142,20 @@ void TestShell::fullWrite(const string& data) {
         }
     }
     std::cout << "[fullWrite] Done" << std::endl;
+}
+
+string TestShell::read(const int LBA)
+{
+    string result = ssdAdapter->read(LBA);
+    if (result == "ERROR") return "[Read] ERROR";
+    return "[Read] LBA " + std::to_string(LBA)+" : " + result;
+}
+
+vector<string> TestShell::fullRead()
+{
+    vector<string> result;
+    for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
+        result.push_back(read(LBA));
+    }
+    return result;
 }
