@@ -31,6 +31,19 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
+    if (0 == command.find("2_")) {
+        string writeData = "0x12341234";
+
+        for (int count = 0; count < 30; count++)
+        {
+            ssdAdapter->write(4, writeData);
+            ssdAdapter->write(0, writeData);
+            ssdAdapter->write(3, writeData);
+            ssdAdapter->write(1, writeData);
+            ssdAdapter->write(2, writeData);
+        }
+    }
+
     return retFlag;
 }
 
