@@ -19,7 +19,7 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
-    void printHelp();    
+    void printHelp();
 
 private:
     string read(const int LBA);
