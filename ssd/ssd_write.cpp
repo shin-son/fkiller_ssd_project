@@ -1,7 +1,5 @@
 #include "ssd_write.h"
-#include <iostream>
 #include <fstream>
-#include <map>
 #include <vector>
 #include <iomanip>
 #include <sstream>
@@ -11,10 +9,8 @@
 void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 	std::string memoryFile = "ssd_nand.txt";
 
-	std::ifstream memoryfileread(memoryFile, std::ios::in | std::ios::out);
-	if (!memoryfileread.is_open()) {
-		return;
-	}
+	std::ifstream memoryfileread(memoryFile);
+	if (!memoryfileread) return;
 
 	std::vector<uint32_t> memory(100);
 	std::string line;
@@ -25,10 +21,8 @@ void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 	}
 	memoryfileread.close();
 
-	std::ofstream memoryfilewrite(memoryFile, std::ios::in | std::ios::out);
-	if (!memoryfilewrite.is_open()) {
-		return;
-	}
+	std::ofstream memoryfilewrite(memoryFile, std::ios::out | std::ios::trunc);
+	if (!memoryfilewrite) return;
 
 	memory[address] = std::stoul(value, nullptr, 16);
 	for (const auto& val : memory) {
@@ -37,19 +31,14 @@ void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 			<< std::hex << std::uppercase
 			<< val << "\n";
 	}
-
-	memoryfilewrite.close();
 }
 
 void SsdWrite::writeOutputFile(const std::string& result) {
 	std::string outputFile = "ssd_output.txt";
 	std::ofstream outputfile(outputFile, std::ios::out | std::ios::trunc);
-	if (!outputfile.is_open()) {
-		return;
+	if (outputfile) {
+		outputfile << result;
 	}
-
-	outputfile << result;
-	outputfile.close();
 }
 
 void SsdWrite::write(const std::string& address, const std::string& value) {
