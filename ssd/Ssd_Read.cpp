@@ -12,19 +12,18 @@ bool SsdRead::readSsdNandFile() {
 	return true;
 }
 
+string SsdRead::getSsdNandDataAt(int index) {
+	preConditionCheck(index);
+	string result = ssdNandData[index];
+	return result;
+}
+
 bool SsdRead::writeSsdNandDataToFile(string targetString) {
 
 	if (!openWriteFileStream()) return false;
 	saveSsdResultData(targetString);
 	closeWriteFileStream();
 	return true;
-}
-
-string SsdRead::getSsdNandDataAt(int index) {
-	preConditionCheck(index);
-	string result = ssdNandData[index];
-	writeSsdNandDataToFile(result);
-	return result;
 }
 
 int SsdRead::getSsdNandDataSize() {

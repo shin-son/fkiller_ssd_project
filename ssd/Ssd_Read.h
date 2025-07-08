@@ -11,8 +11,9 @@ public:
 	}
 
 	bool readSsdNandFile();
-	bool writeSsdNandDataToFile(std::string targetString);
 	std::string getSsdNandDataAt(int index);
+
+	bool writeSsdNandDataToFile(std::string targetString);
 	int getSsdNandDataSize();
 	bool isSsdOutputFileCorrect(std::string targetString);
 

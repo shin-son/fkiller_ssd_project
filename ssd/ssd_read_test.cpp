@@ -53,6 +53,7 @@ TEST_F(SsdReadTestFixture, OutOfRangeReadData) {
 TEST_F(SsdReadTestFixture, ReadDataWriteToOutputFile) {
 
 	string expectedString = ssdRead.getSsdNandDataAt(2);
+	ssdRead.writeSsdNandDataToFile(expectedString);
 
 	EXPECT_TRUE(ssdRead.isSsdOutputFileCorrect(expectedString));
 }
