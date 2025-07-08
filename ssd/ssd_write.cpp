@@ -13,7 +13,6 @@ void SsdWrite::writeTheValueToMemory(int address, uint32_t value) {
 
 	std::ifstream memoryfileread(memoryFile, std::ios::in | std::ios::out);
 	if (!memoryfileread.is_open()) {
-		throw std::ios_base::failure("failed to open : " + memoryFile);
 		return;
 	}
 
@@ -28,7 +27,6 @@ void SsdWrite::writeTheValueToMemory(int address, uint32_t value) {
 
 	std::ofstream memoryfilewrite(memoryFile, std::ios::in | std::ios::out);
 	if (!memoryfilewrite.is_open()) {
-		throw std::ios_base::failure("failed to open : " + memoryFile);
 		return;
 	}
 
@@ -47,7 +45,7 @@ void SsdWrite::writeOutputFile(const std::string& result) {
 	std::string outputFile = "ssd_output.txt";
 	std::ofstream outputfile(outputFile, std::ios::out | std::ios::trunc);
 	if (!outputfile.is_open()) {
-		throw std::ios_base::failure("failed to open : " + outputFile);
+		return;
 	}
 
 	outputfile << result;
