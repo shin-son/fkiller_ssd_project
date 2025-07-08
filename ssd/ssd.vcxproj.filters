@@ -39,12 +39,27 @@
     <ClCompile Include="ssd_write_test.cpp">
       <Filter>테스트 파일</Filter>
     </ClCompile>
+    <ClCompile Include="commnad_process.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="commnad_process_test.cpp">
+      <Filter>테스트 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pattern_checker.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssd_Read.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ssd_write.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="command_process.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pattern_checker.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
