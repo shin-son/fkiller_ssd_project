@@ -4,62 +4,95 @@
 
 using std::string;
 
-bool Ssd_Read::readSsdNandFile() {
+bool SsdRead::readSsdNandFile() {
 
-	std::ifstream file(SSD_READ_FILE);
-	if (!file.is_open()) {
-		return false;
-	}
-
-	string line;
-	while (std::getline(file, line)) {
-		ssdNandData.push_back(line);
-	}
-	file.close();
+	if (!openReadFileStream(ssdReadFileName)) return false;
+	loadSsdNandData();
+	closeReadFileStream();
 	return true;
 }
 
-bool Ssd_Read::writeSsdNandDataToFile(string targetString) {
-	std::ofstream file(SSD_WRITE_FILE);
-	if (!file.is_open()) {
-		return false;
-	}
-
-	file << targetString << std::endl;
-
-	file.close();
-	return true;
-}
-
-int Ssd_Read::getSsdNandDataSize() { 
-	return ssdNandData.size(); 
-}
-
-string Ssd_Read::getSsdNandDataAt(int index) {
-	if (index < 0 || index >= ssdNandData.size()) {
-		writeSsdNandDataToFile("ERROR");
-		throw std::out_of_range("Index out of range");
-	}
+string SsdRead::getSsdNandDataAt(int index) {
+	preConditionCheck(index);
 	string result = ssdNandData[index];
-	writeSsdNandDataToFile(result);
 	return result;
 }
 
-bool Ssd_Read::isSsdOutputFileCorrect(string targetString) {
+bool SsdRead::writeSsdNandDataToFile(const string &targetString) {
 
-	std::ifstream file(SSD_WRITE_FILE);
-	if (!file.is_open()) {
-		return false;
-	}
+	if (!openWriteFileStream()) return false;
+	saveSsdResultData(targetString);
+	closeWriteFileStream();
+	return true;
+}
 
-	string line;
-	std::getline(file, line);
+int SsdRead::getSsdNandDataSize() {
+	return ssdNandData.size();
+}
 
-	file.close();
+bool SsdRead::isSsdOutputFileCorrect(const string& targetString) {
 
-	if (line != targetString) return false;
+	if (!openReadFileStream(ssdWriteFileName)) return false;
+
+	string writeString;
+	std::getline(readFileStream, writeString);
+
+	closeReadFileStream();
+
+	if (writeString != targetString) return false;
 
 	return true;
+}
+
+void SsdRead::loadSsdNandData()
+{
+	string line;
+	while (std::getline(readFileStream, line)) {
+		ssdNandData.push_back(line);
+	}
+}
+
+void SsdRead::saveSsdResultData(const string& targetString)
+{
+	writeFileStream << targetString << std::endl;
+}
+
+void SsdRead::preConditionCheck(int index)
+{
+	if (index < 0 || index >= ssdNandData.size()) {
+		writeSsdNandDataToFile(ERROR_STRING);
+		throw std::out_of_range("Index out of range");
+	}
+}
+
+bool SsdRead::openReadFileStream(string fileName)
+{
+	readFileStream.open(fileName);
+	if (!readFileStream.is_open()) {
+		return false;
+	}
+	return true;
+}
+
+void SsdRead::closeReadFileStream() {
+	if (readFileStream.is_open()) {
+		readFileStream.close();
+	}
+}
+
+bool SsdRead::openWriteFileStream()
+{
+	writeFileStream.open(ssdWriteFileName);
+	if (!writeFileStream.is_open()) {
+		return false;
+	}
+	return true;
+}
+
+void SsdRead::closeWriteFileStream() {
+	if (writeFileStream.is_open()) {
+		writeFileStream.close();
+	}
 }
 
 

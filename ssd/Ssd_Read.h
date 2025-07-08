@@ -1,25 +1,40 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <fstream>
 
-class Ssd_Read
+class SsdRead
 {
 public:
-	Ssd_Read(std::string readFileName = "ssd_nand.txt", std::string writeFileName = "ssd_output.txt")
-		: SSD_READ_FILE(readFileName), SSD_WRITE_FILE(writeFileName) {}
-	
+	SsdRead(std::string readFileName = "ssd_nand.txt", std::string writeFileName = "ssd_output.txt")
+		: ssdReadFileName(readFileName), ssdWriteFileName(writeFileName) {
+	}
+
 	bool readSsdNandFile();
-	bool writeSsdNandDataToFile(std::string targetString);
-
-	int getSsdNandDataSize();
-
 	std::string getSsdNandDataAt(int index);
 
-	bool isSsdOutputFileCorrect(std::string targetString);
+	bool writeSsdNandDataToFile(const std::string &targetString);
+	int getSsdNandDataSize();
+	bool isSsdOutputFileCorrect(const std::string &targetString);
 
 private:
-	std::string SSD_READ_FILE;
-	std::string SSD_WRITE_FILE;
+
+	void loadSsdNandData();
+	void saveSsdResultData(const std::string &targetString);
+	void preConditionCheck(int index);
+
+	bool openReadFileStream(std::string fileName);
+	void closeReadFileStream();
+	bool openWriteFileStream();
+	void closeWriteFileStream();
+
+	std::string ssdReadFileName;
+	std::string ssdWriteFileName;
 	std::vector<std::string> ssdNandData;
+
+	std::ifstream readFileStream;
+	std::ofstream writeFileStream;
+
+	const std::string ERROR_STRING = "ERROR";
 };
 
