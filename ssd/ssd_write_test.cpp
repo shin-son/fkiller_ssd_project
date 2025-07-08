@@ -40,7 +40,7 @@ TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_1) {
 	std::string address = "34";
 	std::string value = "124";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, WRITEFAILED_INVALID_ADDRESS) {
@@ -64,7 +64,7 @@ TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_2) {
 	std::string address = "34";
 	std::string value = "test";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_3) {
@@ -72,5 +72,5 @@ TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_3) {
 	std::string address = "34";
 	std::string value = "";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }

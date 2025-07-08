@@ -46,16 +46,10 @@ void SsdWrite::write(const std::string& address, const std::string& value) {
 	std::string outputResult = "";
 	int addressToInt;
 
-	if (isValidAddress(addressToInt, address) == false) {
+	if (!isValidAddress(addressToInt, address) || !isValidMemoryValue(value)) {
 		outputResult = "ERROR";
 		writeOutputFile(outputResult);
 		throw std::invalid_argument("INVALID Address");
-	}
-
-	if (isValidMemoryValue(value) == false) {
-		outputResult = "ERROR";
-		writeOutputFile(outputResult);
-		throw std::out_of_range("INVALID Memory Value");
 	}
 
 	writeOutputFile(outputResult);
