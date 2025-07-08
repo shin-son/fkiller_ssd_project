@@ -31,7 +31,7 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
-    if (0 == command.find("2_")) {
+    if (("2_PartialLBAWrite" == command) || ("2_" == command)){
         HandlePartialLbaWrite();
     }
 
@@ -41,7 +41,7 @@ int TestShell::runCommand(std::string& command)
 void TestShell::HandlePartialLbaWrite()
 {
     vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
-    for (int count = 0; count < WRITE_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+    for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
     {
         for (int lba : lbaSequence)
         {

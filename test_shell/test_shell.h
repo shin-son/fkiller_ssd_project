@@ -23,8 +23,6 @@ public:
     void HandlePartialLbaWrite();
     void printHelp();
 
-    static const int WRITE_COUT_FOR_PARTIAL_LBA_WRITE = 30;
-
 private:
     string read(const int LBA);
     string write(const int LBA, const string& data);
