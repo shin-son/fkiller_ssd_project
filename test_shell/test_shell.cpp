@@ -80,13 +80,8 @@ int TestShell::runCommand(std::string& command)
     }
 
     if (cmd == "fullread") {
-        retFlag = 3;
-        vector<string> fullResult = fullRead();
-        for (string oneResult : fullResult) {
-            std::cout << oneResult << std::endl;
-            if (oneResult == "[Read] ERROR") retFlag = 1;
-        }
-        return retFlag;
+        fullRead();
+        return 3;
     }
 
     return retFlag;
@@ -146,17 +141,15 @@ void TestShell::fullWrite(const string& data) {
 string TestShell::read(const int LBA)
 {
     string result = ssdAdapter->read(LBA);
-    if (result == "ERROR") return "[Read] ERROR";
-    result = "[Read] LBA " + std::to_string(LBA)+" : " + result;
+    if (result == "ERROR") result = "[Read] ERROR";
+    else result = "[Read] LBA " + std::to_string(LBA)+" : " + result;
     std::cout << result << std::endl;
     return result;
 }
 
-vector<string> TestShell::fullRead()
+void TestShell::fullRead()
 {
-    vector<string> result;
     for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
-        result.push_back(read(LBA));
+        read(LBA);
     }
-    return result;
 }
