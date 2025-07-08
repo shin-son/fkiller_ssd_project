@@ -317,6 +317,7 @@ TEST(TestShellTest, PartialLBAWrite_VerifyFail) {
     std::string output = testing::internal::GetCapturedStdout();
 
     EXPECT_NE(output.find("Fail"), std::string::npos);
+}
 
 TEST(TestShellTest, FullWriteAndReadCompare_Pass) {
     MockSSDAdapter mockSSDAdapter;

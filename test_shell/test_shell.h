@@ -29,7 +29,6 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
-    void printHelp();
 
 private:
     void printHelp();
