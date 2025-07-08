@@ -38,5 +38,5 @@ private:
     friend class TestShellTest_FullWrite_Fail_Test;
 
     SSDInterface* ssdAdapter;
-    unsigned int ssdSize = 100;
+    unsigned int SSD_SIZE = 100;
 };
