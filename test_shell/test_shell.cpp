@@ -1,5 +1,10 @@
 #include "test_shell.h"
 
+void TestShell::setSsdAdapter(SSDInterface* adapter)
+{
+    ssdAdapter = adapter;
+}
+
 void TestShell::runShell() {
     std::string command;
     while (true) {
