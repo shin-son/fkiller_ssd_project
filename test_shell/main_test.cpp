@@ -161,7 +161,11 @@ TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithFullCommnad) {
     EXPECT_CALL(mockSSDAdapter, read(_))
         .WillRepeatedly(Return(string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE)));
 
+    testing::internal::CaptureStdout();
     testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(string(TEST_SCRIPT_2_SUCCESS_MSG), output);
 }
 
 TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithShortCommand) {
@@ -191,7 +195,11 @@ TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithShortCommand) {
     EXPECT_CALL(mockSSDAdapter, read(_))
         .WillRepeatedly(Return(string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE)));
 
+    testing::internal::CaptureStdout();
     testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(string(TEST_SCRIPT_2_SUCCESS_MSG), output);
 }
 
 TEST(TestShellTest, partialLBAWrite_WriteFail) {
@@ -211,7 +219,12 @@ TEST(TestShellTest, partialLBAWrite_WriteFail) {
     EXPECT_CALL(mockSSDAdapter, write(2, writeData))
         .WillRepeatedly(Return("Error"));
 
-    EXPECT_EQ(testShell.runCommand(cmdInput), 2);
+    //EXPECT_EQ(testShell.runCommand(cmdInput), 2);
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(string(TEST_SCRIPT_2_WRITE_FAIL_MSG), output);
 }
 
 TEST(TestShellTest, partialLBAWrite_VerifySuccess) {
@@ -234,7 +247,11 @@ TEST(TestShellTest, partialLBAWrite_VerifySuccess) {
     EXPECT_CALL(mockSSDAdapter, read(_))
         .WillRepeatedly(Return(string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE)));
 
-    EXPECT_EQ(testShell.runCommand(cmdInput), 3);
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(string(TEST_SCRIPT_2_SUCCESS_MSG), output);
 }
 
 TEST(TestShellTest, partialLBAWrite_VerifyFail) {
@@ -259,7 +276,12 @@ TEST(TestShellTest, partialLBAWrite_VerifyFail) {
         .WillOnce(Return(string("0x0000")))
         .WillRepeatedly(Return(string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE)));
 
-    EXPECT_EQ(testShell.runCommand(cmdInput), 2);
+    //EXPECT_EQ(testShell.runCommand(cmdInput), 2);
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(string(TEST_SCRIPT_2_VERIFY_FAIL_MSG), output);
 }
 
 #endif

@@ -20,7 +20,6 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
-    string HandlePartialLbaWrite();
     void printHelp();
 
 private:
@@ -31,8 +30,11 @@ private:
     void fullWrite(const std::string& data);
     vector<string> fullRead();
     void fullWriteAndReadCompare();
-    void partialLBAWrite(const string& data);
+    void partialLBAWrite();
     void writeReadAging();
+
+    //string writeForPartialLBAWrite();
+    //string verifyForPartialLBAWrite();
 
     friend class TestShellTest_Write_Pass_Test;
     friend class TestShellTest_Write_Fail_Test;

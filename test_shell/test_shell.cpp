@@ -39,10 +39,10 @@ int TestShell::runCommand(std::string& command)
     if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
             || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
     {
-        if ("" == HandlePartialLbaWrite()) { retFlag = 3; }
-        else { retFlag = 2; }
-        
-        return retFlag;
+        //if ("" == partialLBAWrite()) { retFlag = 3; }
+        //else { retFlag = 2; }
+        partialLBAWrite();
+        return 3;
     }
   
     if (cmd == "write") {
@@ -95,49 +95,6 @@ int TestShell::runCommand(std::string& command)
     }
 
     return retFlag;
-}
-
-string TestShell::HandlePartialLbaWrite()
-{
-    string ret = "";
-    vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
-
-    for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
-    {
-        for (int lba : lbaSequence)
-        {
-            if ("[Write] Done" == write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE))
-            {
-                continue;
-            }
-            else
-            {
-                std::cout << "[TestSecript2 - PartialLBAWrite] Write Fail" << std::endl;
-                ret = "[TestSecript2] Error";
-                return ret;
-            }
-        }
-    }
-
-    for (int lba : lbaSequence)
-    {
-        string exptected = "[Read] LBA " + std::to_string(lba) + " : " + string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
-        string actual = read(lba);
-
-        if (exptected == actual)
-        {
-            continue;
-        }
-        else
-        {
-            std::cout << "[TestSecript2 - PartialLBAWrite] Verify Fail" << std::endl;
-            ret = "[TestSecript2] Error";
-            return ret;
-        }
-    }
-
-    std::cout << "[TestSecript2 - PartialLBAWrite] Done" << std::endl;
-    return ret;
 }
 
 void TestShell::printHelp()
@@ -193,4 +150,45 @@ vector<string> TestShell::fullRead()
         result.push_back(read(LBA));
     }
     return result;
+}
+
+void TestShell::partialLBAWrite()
+{
+    //string ret = "";
+    vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
+
+    //ret = writeForPartialLBAWrite();
+    for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+    {
+        for (int lba : lbaSequence)
+        {
+            if ("[Write] Done" == write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE))
+            {
+                continue;
+            }
+            else
+            {
+                std::cout << TEST_SCRIPT_2_WRITE_FAIL_MSG;
+                return;
+            }
+        }
+    }
+
+    for (int lba : lbaSequence)
+    {
+        string exptected = "[Read] LBA " + std::to_string(lba) + " : " + string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
+        string actual = read(lba);
+
+        if (exptected == actual)
+        {
+            continue;
+        }
+        else
+        {
+            std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG;
+            return;
+        }
+    }
+
+    std::cout << TEST_SCRIPT_2_SUCCESS_MSG;
 }
