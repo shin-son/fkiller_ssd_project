@@ -58,6 +58,14 @@ void TestShell::printHelp()
         "\t usage - READ <LBA>(ex.read 0)" << std::endl;
     std::cout << " WRITE - write value to LBA(Logical Block Addressing) \n" <<
         "\t usage - WRITE <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
+    std::cout << " Test script - 2 (repeats following steps 30 times) \n" <<
+        "\t  step1) write the data to lba 4\n" <<
+        "\t  step2) write the data to lba 0\n" <<
+        "\t  step3) write the data to lba 3\n" <<
+        "\t  step4) write the data to lba 1\n" <<
+        "\t  step5) write the data to lba 2\n" <<
+        "\t  step6) Check if dat of all LBA 0 to 4 are the same\n" <<
+        "\t usage - 2_PartialLBAWrite(or 2_)" << std::endl;
     std::cout << "---------------------------------------"
         << "---------------------------------" << std::endl;
 }
