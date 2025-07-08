@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SsdFacade.h" />
+    <ClInclude Include="ssd_constants.h" />
     <ClInclude Include="ssd_Read.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>

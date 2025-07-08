@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "SsdFacade.h"
 #include <string>
+#include "ssd_constants.h"
 
 int main(int argc, char** argv) {
 
@@ -12,12 +13,12 @@ int main(int argc, char** argv) {
 #else
 
 	//parameter rule check
-
+	//TBD
 
 	// parameter change type
-	int type = 0; // 0 : W, 1 : R, ... // static const type
+	int type = READ_OPERATION;
 	int index = 2;
-	std::string target = "Hello, SSD!";
+	std::string target = "0xabcdabcd";
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
 
