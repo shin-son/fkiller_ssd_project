@@ -16,9 +16,4 @@ TEST(TS, ReadPass) {
     EXPECT_CALL(mockSSDAdapter, read(10))
         .WillRepeatedly(Return("0xAAAABBBB"));
 }
-
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
 #endif
