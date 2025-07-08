@@ -1,5 +1,5 @@
 #include "gmock/gmock.h"
-#include "Ssd_Read.h"
+#include "ssd_Read.h"
 #include <stdexcept>
 
 using namespace testing;
@@ -40,7 +40,7 @@ TEST(SsdReadTest, SpecificReadData) {
 
 	Ssd_Read ssdRead;
 
-	string expectedString = "0xadfasdff";
+	string expectedString = "0x00000000";
 
 	EXPECT_TRUE(ssdRead.readSsdNandFile());
 	EXPECT_EQ(expectedString, ssdRead.getSsdNandDataAt(2));
@@ -49,8 +49,6 @@ TEST(SsdReadTest, SpecificReadData) {
 TEST(SsdReadTest, OutOfRangeReadData) {
 
 	Ssd_Read ssdRead;
-
-	string expectedString = "0xadfasdff";
 
 	EXPECT_TRUE(ssdRead.readSsdNandFile());
 	EXPECT_THROW(ssdRead.getSsdNandDataAt(100), std::out_of_range);

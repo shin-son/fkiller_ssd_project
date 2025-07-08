@@ -18,24 +18,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Ssd_Read.cpp">
+    <ClCompile Include="ssd_Read.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ssd_read_test.cpp">
       <Filter>테스트 파일</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ssd_Read.h">
+    <ClInclude Include="ssd_Read.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
