@@ -20,7 +20,7 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
-    void HandlePartialLbaWrite();
+    string HandlePartialLbaWrite();
     void printHelp();
 
 private:

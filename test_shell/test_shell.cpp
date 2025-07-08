@@ -36,9 +36,13 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
-
-    if (("2_PartialLBAWrite" == command) || ("2_" == command)){
-        HandlePartialLbaWrite();
+    if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
+            || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
+    {
+        if ("" == HandlePartialLbaWrite()) { retFlag = 3; }
+        else { retFlag = 2; }
+        
+        return retFlag;
     }
   
     if (cmd == "write") {
@@ -93,16 +97,47 @@ int TestShell::runCommand(std::string& command)
     return retFlag;
 }
 
-void TestShell::HandlePartialLbaWrite()
+string TestShell::HandlePartialLbaWrite()
 {
+    string ret = "";
     vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
+
     for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
     {
         for (int lba : lbaSequence)
         {
-            ssdAdapter->write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
+            if ("[Write] Done" == write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE))
+            {
+                continue;
+            }
+            else
+            {
+                std::cout << "[TestSecript2 - PartialLBAWrite] Write Fail" << std::endl;
+                ret = "[TestSecript2] Error";
+                return ret;
+            }
         }
     }
+
+    for (int lba : lbaSequence)
+    {
+        string exptected = "[Read] LBA " + std::to_string(lba) + " : " + string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
+        string actual = read(lba);
+
+        if (exptected == actual)
+        {
+            continue;
+        }
+        else
+        {
+            std::cout << "[TestSecript2 - PartialLBAWrite] Verify Fail" << std::endl;
+            ret = "[TestSecript2] Error";
+            return ret;
+        }
+    }
+
+    std::cout << "[TestSecript2 - PartialLBAWrite] Done" << std::endl;
+    return ret;
 }
 
 void TestShell::printHelp()
