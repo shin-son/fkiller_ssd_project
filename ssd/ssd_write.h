@@ -9,4 +9,6 @@ public:
 private:
 	void writeOutputFile(const std::string& result);
 	void writeTheValueToMemory(int address, const std::string& value);
+	bool isValidMemoryValue(const std::string& value);
+	bool isValidAddress(int& addressToInt, const std::string& address);
 };

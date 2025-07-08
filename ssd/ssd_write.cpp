@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cstdint>
+#include <regex>
 
 void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 	std::string memoryFile = "ssd_nand.txt";
@@ -54,15 +55,44 @@ void SsdWrite::writeOutputFile(const std::string& result) {
 void SsdWrite::write(const std::string& address, const std::string& value) {
 	std::stringstream memoryStream;
 	std::string outputResult = "";
-	int addressToInt = std::stoi(address);
+	int addressToInt;
 
-	if (addressToInt < 0 || addressToInt > 99) {
+	if (isValidAddress(addressToInt, address) == false) {
 		outputResult = "ERROR";
 		writeOutputFile(outputResult);
-		throw std::out_of_range("INVALID ADDRESS");
+		throw std::invalid_argument("INVALID Address");
 	}
-	else {
+
+	if (isValidMemoryValue(value) == false) {
+		outputResult = "ERROR";
 		writeOutputFile(outputResult);
-		writeTheValueToMemory(addressToInt, value);
+		throw std::out_of_range("INVALID Memory Value");
 	}
+
+	writeOutputFile(outputResult);
+	writeTheValueToMemory(addressToInt, value);
+}
+
+bool SsdWrite::isValidAddress(int& addressToInt, const std::string& address)
+{
+	if (std::regex_match(address, std::regex("[0-9]+")) == false) return false;
+
+	addressToInt = std::stoi(address);
+
+	if (addressToInt < 0 || addressToInt > 99)
+		return false;
+
+	return true;
+}
+
+bool SsdWrite::isValidMemoryValue(const std::string& value) {
+	if (value.length() == 0 ||
+		value.length() > 10 ||
+		value.substr(0, 2) != "0x")
+		return false;
+
+	if (!std::regex_match(value, std::regex("0x[0-9A-Fa-f]{1,8}")))
+		return false;
+
+	return true;
 }
