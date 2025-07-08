@@ -1,9 +1,13 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include "mock_ssd_adapter.h"
+#include "test_shell.h"
 
 #ifdef _DEBUG
 #include <gmock/gmock.h>
+
+using namespace testing;
 
 TEST(SampleTest, Addition) {
     EXPECT_EQ(2 + 2, 4);
@@ -16,18 +20,9 @@ int main(int argc, char** argv) {
 
 #else
 int main() {
-    std::string command;
-    while (true) {
-        std::cout << " SHELL : ";
-        std::getline(std::cin, command);
+    TestShell testShell;
+    testShell.runShell();
 
-        if (command == "done") {
-            std::cout << "PROGRAM DONE" << std::endl;
-            break;
-        }
-        int result = system(command.c_str());
-        std::cout << "SHELL COMMAND : " << result << std::endl;
-    }
     return 0;
 }
 #endif
