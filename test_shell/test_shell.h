@@ -29,7 +29,7 @@ private:
     void exit();
     void help();
     void fullWrite(const std::string& data);
-    vector<string> fullRead();
+    void fullRead();
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data);
     void writeReadAging();
@@ -38,6 +38,11 @@ private:
     friend class TestShellTest_Write_Fail_Test;
     friend class TestShellTest_FullWrite_Pass_Test;
     friend class TestShellTest_FullWrite_Fail_Test;
+
+    friend class TestShellTest_ReadPass_Test;
+    friend class TestShellTest_ReadFailWrongLBA_Test;
+    friend class TestShellTest_FullReadPass_Test;
+    friend class TestShellTest_FullReadFail_Test;
 
     SSDInterface* ssdAdapter;
     unsigned int SSD_SIZE = 100;

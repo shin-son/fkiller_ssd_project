@@ -9,7 +9,8 @@ using namespace testing;
 TEST(SampleTest, Addition) {
     EXPECT_EQ(2 + 2, 4);
 }
-TEST(TS, ReadPass) {
+
+TEST(TestShellTest, ReadPass) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -18,23 +19,10 @@ TEST(TS, ReadPass) {
         .Times(1)
         .WillRepeatedly(Return("0xAAAABBBB"));
 
-    string command = "read 10";
-    EXPECT_EQ(3, testShell.runCommand(command));
+    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.read(10));
 }
 
-TEST(TS, ReadFailNoLBA) {
-    MockSSDAdapter mockSSDAdapter;
-    TestShell testShell;
-    testShell.setSsdAdapter(&mockSSDAdapter);
-
-    EXPECT_CALL(mockSSDAdapter, read(10))
-        .Times(0);
-
-    string command = "read";
-    EXPECT_EQ(1, testShell.runCommand(command));
-}
-
-TEST(TS, ReadFailWrongLBA) {
+TEST(TestShellTest, ReadFailWrongLBA) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -43,11 +31,11 @@ TEST(TS, ReadFailWrongLBA) {
         .Times(1)
         .WillOnce(Return("ERROR"));
 
-    string command = "read 100";
-    EXPECT_EQ(1, testShell.runCommand(command));
+    EXPECT_EQ("[Read] ERROR", testShell.read(100));
 }
 
-TEST(TS, FullReadPASS) {
+TEST(TestShellTest, FullReadPass) {
+    testing::internal::CaptureStdout();
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -56,11 +44,19 @@ TEST(TS, FullReadPASS) {
         .Times(100)
         .WillRepeatedly(Return("0x00ABCDEF"));
 
-    string command = "fullread";
-    EXPECT_EQ(3, testShell.runCommand(command));
+    string expected;
+    for (int LBA = 0; LBA < 100; LBA++) {
+        expected += "[Read] LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
+    }
+
+    testShell.fullRead();
+    string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(expected, output);
 }
 
-TEST(TS, FullReadFAIL) {
+TEST(TestShellTest, FullReadFail) {
+    testing::internal::CaptureStdout();
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -70,8 +66,15 @@ TEST(TS, FullReadFAIL) {
         .WillOnce(Return("0x00ABCDEF"))
         .WillRepeatedly(Return("ERROR"));
 
-    string command = "fullread";
-    EXPECT_EQ(1, testShell.runCommand(command));
+    string expected = "[Read] LBA 0 : 0x00ABCDEF\n";
+    for (int LBA = 1; LBA < 100; LBA++) {
+        expected += "[Read] ERROR\n";
+    }
+
+    testShell.fullRead();
+    string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(expected, output);
 }
 
 TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithFullCommnad) {
