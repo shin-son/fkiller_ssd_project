@@ -1,21 +1,37 @@
 #include "test_shell.h"
 
+void TestShell::setSsdAdapter(SSDInterface* adapter)
+{
+    ssdAdapter = adapter;
+}
+
 void TestShell::runShell() {
     std::string command;
     while (true) {
         std::cout << " SHELL> ";
         std::getline(std::cin, command);
 
-        if (command == "exit") {
-            std::cout << "PROGRAM EXIT" << std::endl;
-            break;
-        }
-
-        if (command == "help") {
-            printHelp();
-            continue;
-        }
+        int retFlag = runCommand(command);
+        if (retFlag == 2) break;
+        if (retFlag == 3) continue;
     }
+}
+
+int TestShell::runCommand(std::string& command)
+{
+    int retFlag = 1;
+
+    if (command == "exit") {
+        std::cout << "PROGRAM EXIT" << std::endl;
+        { retFlag = 2; return retFlag; };
+    }
+
+    if (command == "help") {
+        printHelp();
+        { retFlag = 3; return retFlag; };
+    }
+
+    return retFlag;
 }
 
 void TestShell::printHelp()
