@@ -34,7 +34,5 @@ private:
 
 	std::ifstream readFileStream;
 	std::ofstream writeFileStream;
-
-	const std::string ERROR_STRING = "ERROR";
 };
 
