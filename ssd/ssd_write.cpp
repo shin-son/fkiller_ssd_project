@@ -73,26 +73,16 @@ void SsdWrite::write(const std::string& address, const std::string& value) {
 	writeTheValueToMemory(addressToInt, value);
 }
 
-bool SsdWrite::isValidAddress(int& addressToInt, const std::string& address)
-{
-	if (std::regex_match(address, std::regex("[0-9]+")) == false) return false;
+bool SsdWrite::isValidAddress(int& addressToInt, const std::string& address) {
+	static const std::regex numericPattern("^[0-9]+$");
+	if (std::regex_match(address, numericPattern) == false) return false;
 
 	addressToInt = std::stoi(address);
 
-	if (addressToInt < 0 || addressToInt > 99)
-		return false;
-
-	return true;
+	return (addressToInt >= 0 && addressToInt < 100);
 }
 
 bool SsdWrite::isValidMemoryValue(const std::string& value) {
-	if (value.length() == 0 ||
-		value.length() > 10 ||
-		value.substr(0, 2) != "0x")
-		return false;
-
-	if (!std::regex_match(value, std::regex("0x[0-9A-Fa-f]{1,8}")))
-		return false;
-
-	return true;
+	static const std::regex hexPattern("^0x[0-9A-Fa-f]{1,8}$");
+	return std::regex_match(value, hexPattern);
 }
