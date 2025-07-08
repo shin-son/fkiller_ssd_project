@@ -36,8 +36,11 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
+    if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
+        fullWriteAndReadCompare();
+    }
 
-    if (("2_PartialLBAWrite" == command) || ("2_" == command)){
+    if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
         HandlePartialLbaWrite();
     }
   
@@ -104,9 +107,12 @@ void TestShell::printHelp()
     std::cout << "--------------------------------- HELP "
         << "---------------------------------" << std::endl;
     std::cout << " READ - read one LBA (Logical Block Addressing) \n" <<
-        "\t usage - READ <LBA>(ex.read 0)" << std::endl;
+        "\t usage - read <LBA>(ex.read 0)" << std::endl;
     std::cout << " WRITE - write value to LBA(Logical Block Addressing) \n" <<
-        "\t usage - WRITE <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
+        "\t usage - write <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
+    std::cout << " Test script - 1 FullWriteAndReadCompare \n" <<
+        "\t write and read Test all indices in 5-unit\n" <<
+        "\t usage - 1_FullWriteAndReadCompare(or 1_)" << std::endl;
     std::cout << " Test script - 2 (repeats following steps 30 times) \n" <<
         "\t  step1) write the data to lba 4\n" <<
         "\t  step2) write the data to lba 0\n" <<
@@ -152,4 +158,44 @@ void TestShell::fullRead()
     for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
         read(LBA);
     }
+}
+
+void TestShell::fullWriteAndReadCompare()
+{
+    int j = 1;
+    bool failFlag = false;
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 5; j++) {
+            auto ret = ssdAdapter->write(5 * i + j, intToHexString(i));
+            if (ret != "") {
+                failFlag = true;
+                break;
+            }
+        }
+        // TODO: fix to if (isFail()) break;
+        if (failFlag == true) break;
+
+        for (int j = 0; j < 5; j++) {
+            if (intToHexString(i) != ssdAdapter->read(5 * i + j)) {
+                failFlag = true;
+                break;
+            }
+        }
+        if (failFlag == true) break;
+    }
+    if (failFlag == true) {
+        std::cout << "FAIL" << std::endl;
+    }
+    else {
+        std::cout << "PASS" << std::endl;
+    }
+}
+
+string TestShell::intToHexString(int value) {
+    std::stringstream ss;
+    ss << "0x"
+        << std::setfill('0') << std::setw(8)
+        << std::hex << std::uppercase
+        << value;
+    return ss.str();
 }

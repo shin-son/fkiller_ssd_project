@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include "constants.h"
 #include "mock_ssd_adapter.h"
-#include "test_shell.h""
+#include "test_shell.h"
 
 using namespace testing;
 
@@ -191,4 +191,50 @@ TEST(TestShellTest, FullWrite_Fail) {
     EXPECT_NE(output.find("[fullWrite] Failed at LBA 3"), std::string::npos);
 }
 
+TEST(TestShellTest, FullWriteAndReadCompare_Pass) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSDAdapter);
+
+    for (int i = 0; i < 20; i++) {
+        auto t = testShell.intToHexString(i);
+        for (int j = 0; j < 5; j++) {
+            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+                .WillOnce(Return(""));
+        }
+        for (int j = 0; j < 5; j++) {
+            EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
+                .WillOnce(Return(t));
+        }
+    }
+    testing::internal::CaptureStdout();
+    testShell.fullWriteAndReadCompare();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("PASS"), std::string::npos);
+}
+
+TEST(TestShellTest, FullWriteAndReadCompare_Fail) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSDAdapter);
+
+    for (int i = 0; i < 10; i++) {
+        auto t = testShell.intToHexString(i);
+        for (int j = 0; j < 5; j++) {
+            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+                .WillOnce(Return(""));
+        }
+        for (int j = 0; j < 5; j++) {
+            EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
+                .WillOnce(Return(t));
+        }
+    }
+    EXPECT_CALL(mockSSDAdapter, write(50, testShell.intToHexString(10))).Times(1)
+        .WillOnce(Return("ERROR"));
+
+    testing::internal::CaptureStdout();
+    testShell.fullWriteAndReadCompare();
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_NE(output.find("FAIL"), std::string::npos);
+}
 #endif
