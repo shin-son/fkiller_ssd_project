@@ -1,6 +1,7 @@
 #include "ssd_Read.h"
 #include <fstream>
 #include <string>
+#include "ssd_constants.h"
 
 using std::string;
 

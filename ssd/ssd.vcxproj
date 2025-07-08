@@ -127,6 +127,7 @@
     <ClCompile Include="commnad_process_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pattern_checker.cpp" />
+    <ClCompile Include="SsdFacade.cpp" />
     <ClCompile Include="ssd_write.cpp" />
     <ClCompile Include="ssd_Read.cpp" />
     <ClCompile Include="ssd_read_test.cpp">
@@ -145,6 +146,8 @@
   <ItemGroup>
     <ClInclude Include="command_process.h" />
     <ClInclude Include="pattern_checker.h" />
+    <ClInclude Include="SsdFacade.h" />
+    <ClInclude Include="ssd_constants.h" />
     <ClInclude Include="ssd_Read.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>
