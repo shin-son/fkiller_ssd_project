@@ -132,6 +132,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="ssd_write_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssd_Read.h" />
