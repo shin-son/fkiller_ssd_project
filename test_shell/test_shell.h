@@ -32,5 +32,10 @@ private:
     void partialLBAWrite(const string& data);
     void writeReadAging();
 
+    friend class TestShellTest_Write_Pass_Test;
+    friend class TestShellTest_Write_Fail_Test;
+    friend class TestShellTest_FullWrite_Pass_Test;
+    friend class TestShellTest_FullWrite_Fail_Test;
+
     SSDInterface* ssdAdapter;
 };
