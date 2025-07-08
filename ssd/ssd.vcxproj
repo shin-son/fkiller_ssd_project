@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SsdFacade.cpp" />
     <ClCompile Include="ssd_write.cpp" />
     <ClCompile Include="ssd_Read.cpp" />
     <ClCompile Include="ssd_read_test.cpp">
@@ -140,6 +141,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SsdFacade.h" />
     <ClInclude Include="ssd_Read.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>
