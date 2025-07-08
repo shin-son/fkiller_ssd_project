@@ -5,9 +5,8 @@
 class SsdWrite
 {
 public:
-	void write(int address, uint32_t value);
+	void write(const std::string& address, const std::string& value);
 private:
 	void writeOutputFile(const std::string& result);
-	void writeTheValueToMemory(int address, uint32_t value);
+	void writeTheValueToMemory(int address, const std::string& value);
 };
-

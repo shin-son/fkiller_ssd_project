@@ -7,8 +7,7 @@
 #include <sstream>
 #include <cstdint>
 
-
-void SsdWrite::writeTheValueToMemory(int address, uint32_t value) {
+void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 	std::string memoryFile = "ssd_nand.txt";
 
 	std::ifstream memoryfileread(memoryFile, std::ios::in | std::ios::out);
@@ -30,7 +29,7 @@ void SsdWrite::writeTheValueToMemory(int address, uint32_t value) {
 		return;
 	}
 
-	memory[address] = value;
+	memory[address] = std::stoul(value, nullptr, 16);
 	for (const auto& val : memory) {
 		memoryfilewrite << "0x"
 			<< std::setw(8) << std::setfill('0')
@@ -52,17 +51,18 @@ void SsdWrite::writeOutputFile(const std::string& result) {
 	outputfile.close();
 }
 
-void SsdWrite::write(int address, uint32_t value) {
+void SsdWrite::write(const std::string& address, const std::string& value) {
 	std::stringstream memoryStream;
 	std::string outputResult = "";
+	int addressToInt = std::stoi(address);
 
-	if (address < 0 || address > 99) {
+	if (addressToInt < 0 || addressToInt > 99) {
 		outputResult = "ERROR";
 		writeOutputFile(outputResult);
 		throw std::out_of_range("INVALID ADDRESS");
 	}
 	else {
 		writeOutputFile(outputResult);
-		writeTheValueToMemory(address, value);
+		writeTheValueToMemory(addressToInt, value);
 	}
 }
