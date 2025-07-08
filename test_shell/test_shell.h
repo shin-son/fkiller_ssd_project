@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 #include "ssd_interface.h"
 #include "constants.h"
 
@@ -21,9 +23,9 @@ public:
     void runShell();
     int runCommand(std::string& command);
     void HandlePartialLbaWrite();
-    void printHelp();
 
 private:
+    void printHelp();
     string read(const int LBA);
     string write(const int LBA, const string& data);
     void exit();
@@ -33,11 +35,14 @@ private:
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data);
     void writeReadAging();
+    string intToHexString(int value);
 
     friend class TestShellTest_Write_Pass_Test;
     friend class TestShellTest_Write_Fail_Test;
     friend class TestShellTest_FullWrite_Pass_Test;
     friend class TestShellTest_FullWrite_Fail_Test;
+    friend class TestShellTest_FullWriteAndReadCompare_Pass_Test;
+    friend class TestShellTest_FullWriteAndReadCompare_Fail_Test;
 
     friend class TestShellTest_ReadPass_Test;
     friend class TestShellTest_ReadFailWrongLBA_Test;
