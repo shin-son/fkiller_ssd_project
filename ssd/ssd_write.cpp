@@ -2,14 +2,13 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-#include <string>
 #include <vector>
 #include <iomanip>
 #include <sstream>
 #include <cstdint>
 
 
-void writeTheValueToMemory(int address, uint32_t value) {
+void SsdWrite::writeTheValueToMemory(int address, uint32_t value) {
 	std::string memoryFile = "ssd_nand.txt";
 
 	std::ifstream memoryfileread(memoryFile, std::ios::in | std::ios::out);
@@ -44,23 +43,28 @@ void writeTheValueToMemory(int address, uint32_t value) {
 	memoryfilewrite.close();
 }
 
-void SsdWrite::write(int address, uint32_t value) {
+void SsdWrite::writeOutputFile(const std::string& result) {
 	std::string outputFile = "ssd_output.txt";
-	std::stringstream memoryStream;
-	std::string outputResult = "";
-
 	std::ofstream outputfile(outputFile, std::ios::out | std::ios::trunc);
 	if (!outputfile.is_open()) {
 		throw std::ios_base::failure("failed to open : " + outputFile);
 	}
+
+	outputfile << result;
+	outputfile.close();
+}
+
+void SsdWrite::write(int address, uint32_t value) {
+	std::stringstream memoryStream;
+	std::string outputResult = "";
+
 	if (address < 0 || address > 99) {
 		outputResult = "ERROR";
+		writeOutputFile(outputResult);
 		throw std::out_of_range("INVALID ADDRESS");
 	}
 	else {
+		writeOutputFile(outputResult);
 		writeTheValueToMemory(address, value);
 	}
-	outputfile << outputResult;
-
-	outputfile.close();
 }
