@@ -40,7 +40,7 @@ int TestShell::runCommand(std::string& command)
         string LBA;
 
         if (!(iss >> LBA)) {
-            std::cout << "[Read] ERROR: Missing lba" << std::endl;
+            std::cout << "[Read] ERROR: Missing LBA" << std::endl;
             return 1;
         }
 
@@ -79,7 +79,7 @@ string TestShell::read(const int LBA)
 {
     string result = ssdAdapter->read(LBA);
     if (result == "ERROR") return "[Read] ERROR";
-    return "[Read] LAB " + std::to_string(LBA)+" : " + result;
+    return "[Read] LBA " + std::to_string(LBA)+" : " + result;
 }
 
 vector<string> TestShell::fullRead()
