@@ -7,15 +7,15 @@
 #include <iomanip>
 #include <sstream>
 #include <cstdint>
+#include "error_code.h"
 
 
-void writeTheValueToMemory(int address, uint32_t value) {
+int writeTheValueToMemory(int address, uint32_t value) {
 	std::string memoryFile = "ssd_nand.txt";
 
 	std::ifstream memoryfileread(memoryFile, std::ios::in | std::ios::out);
 	if (!memoryfileread.is_open()) {
-		throw std::ios_base::failure("failed to open : " + memoryFile);
-		return;
+		return FAILOPENFAIL;
 	}
 
 	std::vector<uint32_t> memory(100);
@@ -29,8 +29,7 @@ void writeTheValueToMemory(int address, uint32_t value) {
 
 	std::ofstream memoryfilewrite(memoryFile, std::ios::in | std::ios::out);
 	if (!memoryfilewrite.is_open()) {
-		throw std::ios_base::failure("failed to open : " + memoryFile);
-		return;
+		return FAILOPENFAIL;
 	}
 
 	memory[address] = value;
@@ -42,20 +41,23 @@ void writeTheValueToMemory(int address, uint32_t value) {
 	}
 
 	memoryfilewrite.close();
+
+	return SUCCESS;
 }
 
-void SsdWrite::write(int address, uint32_t value) {
+int SsdWrite::write(int address, uint32_t value) {
 	std::string outputFile = "ssd_output.txt";
 	std::stringstream memoryStream;
 	std::string outputResult = "";
+	int result = 0;
 
 	std::ofstream outputfile(outputFile, std::ios::out | std::ios::trunc);
 	if (!outputfile.is_open()) {
-		throw std::ios_base::failure("failed to open : " + outputFile);
+		return FAILOPENFAIL;
 	}
 	if (address < 0 || address > 99) {
 		outputResult = "ERROR";
-		throw std::out_of_range("INVALID ADDRESS");
+		result = INVALIDADDRESS;
 	}
 	else {
 		writeTheValueToMemory(address, value);
@@ -63,4 +65,5 @@ void SsdWrite::write(int address, uint32_t value) {
 	outputfile << outputResult;
 
 	outputfile.close();
+	return result;
 }

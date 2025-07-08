@@ -4,6 +4,6 @@
 class SsdWrite
 {
 public:
-	void write(int address, uint32_t value);
+	int write(const int address, const uint32_t value);
 };
 

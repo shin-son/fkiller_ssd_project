@@ -1,12 +1,13 @@
 #include "gmock/gmock.h"
 #include "ssd_write.h"
+#include "error_code.h"
 
 TEST(SSDREADWRITE, WRITEPASS) {
 	SsdWrite ssdwrite;
 	int address = 0;
 	uint32_t value = 0xabc;
 
-	EXPECT_NO_THROW(ssdwrite.write(address, value));
+	EXPECT_EQ(ssdwrite.write(address, value), SUCCESS);
 }
 
 TEST(SSDREADWRITE, WRITEFAILED_INVALIDADDRESS) {
@@ -14,7 +15,7 @@ TEST(SSDREADWRITE, WRITEFAILED_INVALIDADDRESS) {
 	int address = -1;
 	uint32_t value = 0xabc;
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
+	EXPECT_EQ(ssdwrite.write(address, value), INVALIDADDRESS);
 }
 
 int main() {

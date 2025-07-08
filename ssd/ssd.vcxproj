@@ -132,6 +132,7 @@
     <Text Include="ssd_output.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="error_code.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
