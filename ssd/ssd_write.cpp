@@ -1,25 +1,28 @@
 #include "ssd_write.h"
 #include <fstream>
-#include <vector>
 #include <iomanip>
 #include <sstream>
 #include <cstdint>
 #include <regex>
 
+bool SsdWrite::readTheNandMemory(const std::string& memoryFile) {
+	std::ifstream memoryfileread(memoryFile);
+	if (!memoryfileread) return false;
+
+	std::string line;
+	while (std::getline(memoryfileread, line)) {
+		memory.push_back(std::stoul(line, nullptr, 16));
+	}
+	memoryfileread.close();
+	return true;
+}
+
 void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 	std::string memoryFile = "ssd_nand.txt";
 
-	std::ifstream memoryfileread(memoryFile);
-	if (!memoryfileread) return;
-
-	std::vector<uint32_t> memory(100);
-	std::string line;
-	int addr = 0;
-	while (std::getline(memoryfileread, line) && addr < 100) {
-		memory[addr] = std::stoul(line, nullptr, 16);
-		++addr;
+	if (!readTheNandMemory(memoryFile)) {
+		throw std::ios_base::failure("");
 	}
-	memoryfileread.close();
 
 	std::ofstream memoryfilewrite(memoryFile, std::ios::out | std::ios::trunc);
 	if (!memoryfilewrite) return;

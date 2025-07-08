@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include <vector>
 
 class SsdWrite
 {
@@ -11,4 +12,6 @@ private:
 	void writeTheValueToMemory(int address, const std::string& value);
 	bool isValidMemoryValue(const std::string& value);
 	bool isValidAddress(int& addressToInt, const std::string& address);
+	bool readTheNandMemory(const std::string& memoryFile);
+	std::vector<uint32_t> memory;
 };
