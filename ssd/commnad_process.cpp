@@ -5,38 +5,41 @@
 
 int CommandProcessor::process(int argc, char* argv[]) {
 	if (argc < 2) {
-		std::cerr << "Usage: ssd.exe [w/r] [args...]\n";
-		return 1;
+		std::cout << "Usage: ssd.exe [w/r] [args...]\n";
+		return -1;
 	}
 
 	std::string cmd = argv[1];
 	std::vector<std::string> args(argv + 2, argv + argc);
 
+	return dispatchCommand(cmd, args);
+}
+int CommandProcessor::dispatchCommand(const std::string& cmd, const std::vector<std::string>& args) {
 	if (isWriteCommand(cmd)) {
-		if (isWriteValidArgument(args)) {
-			executeWrite(args);
-		}
-		else {
-			SsdWrite ssdWrite;
-			ssdWrite.writeOutputFile("ERROR");
-			return -2;
-		}
+		return handleWrite(args);
 	}
-	else if (isReadCommand(cmd)) {
-		if (isReadValidArgument(args)) {
-			executeRead(args);
-		}
-		else {
-			SsdWrite ssdWrite;
-			ssdWrite.writeOutputFile("ERROR");
-			return -2;
-		}
+	if (isReadCommand(cmd)) {
+		return handleRead(args);
 	}
-	else {
-		std::cout << "Unknown command: " << cmd << "\n";
-		return 1;
+}
+
+int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
+	if (!isWriteValidArgument(args)) {
+		printErrorAndWriteToOutput();
+		return -2;
 	}
 
+	executeWrite(args);
+	return 0;
+}
+
+int CommandProcessor::handleRead(const std::vector<std::string>& args) {
+	if (!isReadValidArgument(args)) {
+		printErrorAndWriteToOutput();
+		return -2;
+	}
+
+	executeRead(args);
 	return 0;
 }
 
@@ -44,29 +47,14 @@ bool CommandProcessor::isWriteCommand(const std::string& cmd) {
 	return cmd == "w" || cmd == "W";
 }
 
-bool CommandProcessor::isWriteValidArgument(std::vector<std::string>& args) {
-	if (args.size() != 2) {
-		std::cout << "Usage: ssd.exe w <address> <value>\n";
-		return false;
-	}
-
-	std::cout << args[0] << std::endl;
-	std::cout << args[1] << std::endl;
-	if (!patterChecker.isValidAddress(args[0]))  return false;
-	if (!patterChecker.isValidMemoryValue(args[1]))  return false;
-
-	return true;
+bool CommandProcessor::isWriteValidArgument(const std::vector<std::string>& args) {
+	if (args.size() != 2) return false;
+	return patterChecker.isValidAddress(args[0]) && patterChecker.isValidMemoryValue(args[1]);
 }
 
-bool CommandProcessor::isReadValidArgument(std::vector<std::string>& args) {
-	if (args.size() != 1) {
-		std::cout << "Usage: ssd.exe r <address>\n";
-		return false;
-	}
-
-	std::cout << args[0] << std::endl;
-	if (!patterChecker.isValidAddress(args[0]))  return false;
-	return true;
+bool CommandProcessor::isReadValidArgument(const std::vector<std::string>& args) {
+	if (args.size() != 1) return false;
+	return patterChecker.isValidAddress(args[0]);
 }
 
 bool CommandProcessor::isReadCommand(const std::string& cmd) {
@@ -81,4 +69,9 @@ void CommandProcessor::executeWrite(const std::vector<std::string>& args) {
 void CommandProcessor::executeRead(const std::vector<std::string>& args) {
 
 
+}
+
+void CommandProcessor::printErrorAndWriteToOutput() {
+	SsdWrite writer;
+	writer.writeOutputFile("ERROR");
 }
