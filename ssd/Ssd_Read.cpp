@@ -18,7 +18,7 @@ string SsdRead::getSsdNandDataAt(int index) {
 	return result;
 }
 
-bool SsdRead::writeSsdNandDataToFile(string targetString) {
+bool SsdRead::writeSsdNandDataToFile(const string &targetString) {
 
 	if (!openWriteFileStream()) return false;
 	saveSsdResultData(targetString);
@@ -30,7 +30,7 @@ int SsdRead::getSsdNandDataSize() {
 	return ssdNandData.size();
 }
 
-bool SsdRead::isSsdOutputFileCorrect(string targetString) {
+bool SsdRead::isSsdOutputFileCorrect(const string& targetString) {
 
 	if (!openReadFileStream(ssdWriteFileName)) return false;
 
@@ -52,7 +52,7 @@ void SsdRead::loadSsdNandData()
 	}
 }
 
-void SsdRead::saveSsdResultData(std::string& targetString)
+void SsdRead::saveSsdResultData(const string& targetString)
 {
 	writeFileStream << targetString << std::endl;
 }

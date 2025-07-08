@@ -13,14 +13,14 @@ public:
 	bool readSsdNandFile();
 	std::string getSsdNandDataAt(int index);
 
-	bool writeSsdNandDataToFile(std::string targetString);
+	bool writeSsdNandDataToFile(const std::string &targetString);
 	int getSsdNandDataSize();
-	bool isSsdOutputFileCorrect(std::string targetString);
+	bool isSsdOutputFileCorrect(const std::string &targetString);
 
 private:
 
 	void loadSsdNandData();
-	void saveSsdResultData(std::string& targetString);
+	void saveSsdResultData(const std::string &targetString);
 	void preConditionCheck(int index);
 
 	bool openReadFileStream(std::string fileName);
