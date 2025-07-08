@@ -34,6 +34,7 @@ void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
 			<< std::hex << std::uppercase
 			<< val << "\n";
 	}
+	memoryfileWrite.close();
 }
 
 void SsdWrite::writeOutputFile(const std::string& result) {
