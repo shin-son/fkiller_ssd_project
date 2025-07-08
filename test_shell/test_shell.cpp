@@ -45,9 +45,18 @@ int TestShell::runCommand(std::string& command)
         }
 
         string result = read(stoi(LBA));
-        std::cout << "[Read] " << result << std::endl;
+        std::cout << result << std::endl;
 
-        if (result == "ERROR") return 1;
+        if (result == "[Read] ERROR") return 1;
+        return 3;
+    }
+
+    if (cmd == "fullread") {
+        vector<string> result = fullRead();
+        for (string one_result : result) {
+            std::cout << one_result << std::endl;
+            if (one_result == "[Read] ERROR") return 1;
+        }
         return 3;
     }
 
@@ -68,5 +77,16 @@ void TestShell::printHelp()
 
 string TestShell::read(const int LBA)
 {
-    return ssdAdapter->read(LBA);
+    string result = ssdAdapter->read(LBA);
+    if (result == "ERROR") return "[Read] ERROR";
+    return "[Read] LAB " + std::to_string(LBA)+" : " + result;
+}
+
+vector<string> TestShell::fullRead()
+{
+    vector<string> result;
+    for (int i = 0; i < 100; i++) {
+        result.push_back(read(i));
+    }
+    return result;
 }

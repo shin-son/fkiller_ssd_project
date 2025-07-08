@@ -46,4 +46,31 @@ TEST(TS, ReadFailWrongLBA) {
     string command = "read 100";
     EXPECT_EQ(1, testShell.runCommand(command));
 }
+
+TEST(TS, FullReadPASS) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSDAdapter);
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .Times(100)
+        .WillRepeatedly(Return("0x00ABCDEF"));
+
+    string command = "fullread";
+    EXPECT_EQ(3, testShell.runCommand(command));
+}
+
+TEST(TS, FullReadFAIL) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSDAdapter);
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .Times(100)
+        .WillOnce(Return("0x00ABCDEF"))
+        .WillRepeatedly(Return("ERROR"));
+
+    string command = "fullread";
+    EXPECT_EQ(1, testShell.runCommand(command));
+}
 #endif

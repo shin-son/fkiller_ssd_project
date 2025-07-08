@@ -27,7 +27,7 @@ private:
     void exit();
     void help();
     void fullWrite(const std::string& data);
-    void fullRead();
+    vector<string> fullRead();
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data);
     void writeReadAging();
