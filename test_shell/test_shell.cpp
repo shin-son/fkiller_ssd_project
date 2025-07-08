@@ -32,19 +32,22 @@ int TestShell::runCommand(std::string& command)
     }
 
     if (0 == command.find("2_")) {
-        string writeData = "0x12341234";
-
-        for (int count = 0; count < 30; count++)
-        {
-            ssdAdapter->write(4, writeData);
-            ssdAdapter->write(0, writeData);
-            ssdAdapter->write(3, writeData);
-            ssdAdapter->write(1, writeData);
-            ssdAdapter->write(2, writeData);
-        }
+        HandlePartialLbaWrite();
     }
 
     return retFlag;
+}
+
+void TestShell::HandlePartialLbaWrite()
+{
+    vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
+    for (int count = 0; count < WRITE_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+    {
+        for (int lba : lbaSequence)
+        {
+            ssdAdapter->write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
+        }
+    }
 }
 
 void TestShell::printHelp()

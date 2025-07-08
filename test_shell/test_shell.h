@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "ssd_interface.h"
+#include "constants.h"
 
 using std::string;
 using std::vector;
@@ -19,7 +20,10 @@ public:
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
     int runCommand(std::string& command);
+    void HandlePartialLbaWrite();
     void printHelp();
+
+    static const int WRITE_COUT_FOR_PARTIAL_LBA_WRITE = 30;
 
 private:
     string read(const int LBA);

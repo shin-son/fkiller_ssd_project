@@ -19,24 +19,24 @@ TEST(TS, ReadPass) {
 TEST(SampleTest, partialLBAWrite_CountWriteTimesWithFullCommnad) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell(&mockSSDAdapter);
-    string input = "2_PartialLBAWrite";
-    string writeData = "0x12341234";
+    string cmdInput = "2_";
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
 
     EXPECT_CALL(mockSSDAdapter, write(_, writeData))
         .Times(150);
 
-    testShell.runCommand(input);
+    testShell.runCommand(cmdInput);
 }
 
 TEST(SampleTest, partialLBAWrite_CountWriteTimesWittShortCommand) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell(&mockSSDAdapter);
-    string input = "2_";
-    string writeData = "0x12341234";
+    string cmdInput = "2_";
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
 
     EXPECT_CALL(mockSSDAdapter, write(_, writeData))
         .Times(150);
 
-    testShell.runCommand(input);
+    testShell.runCommand(cmdInput);
 }
 #endif
