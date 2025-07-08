@@ -39,7 +39,7 @@ int TestShell::runCommand(std::string& command)
     if (cmd == "write") {
         int lba;
         std::string data;
-
+        std::string extra;
         if (!(iss >> lba)) {
             std::cout << "[Write] ERROR: Missing lba" << std::endl;
             return 3;
@@ -47,6 +47,11 @@ int TestShell::runCommand(std::string& command)
 
         if (!(iss >> data)) {
             std::cout << "[Write] ERROR: Missing data" << std::endl;
+            return 3;
+        }
+
+        if (iss >> extra) {
+            std::cout << "[Write] ERROR: Too many arguments" << std::endl;
             return 3;
         }
 
@@ -72,12 +77,6 @@ void TestShell::printHelp()
 
 string TestShell::write(const int LBA, const string& data) {
     if (!ssdAdapter) return "[Write] ERROR";
-
-    if (LBA < 0 || LBA > 100) return "[Write] ERROR";
-
-    if (data.length() > 10 || data.substr(0, 2) != "0x") return "[Write] ERROR";
-
-    if (!std::regex_match(data, std::regex("0x[0-9A-Fa-f]{8}"))) return "[Write] ERROR";
 
     std::string result = ssdAdapter->write(LBA, data);
     if (result == "") return "[Write] Done";
