@@ -30,6 +30,9 @@
     <ClCompile Include="test_shell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="main_test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">
