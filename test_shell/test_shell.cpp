@@ -36,6 +36,10 @@ int TestShell::runCommand(std::string& command)
         { retFlag = 3; return retFlag; };
     }
 
+    if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
+        fullWriteAndReadCompare();
+    }
+
     if (cmd == "write") {
         int lba;
         std::string data;
@@ -69,20 +73,14 @@ int TestShell::runCommand(std::string& command)
         }
 
         string result = read(LBA);
-        std::cout << result << std::endl;
 
         if (result == "[Read] ERROR") return 1;
         return 3;
     }
 
     if (cmd == "fullread") {
-        retFlag = 3;
-        vector<string> fullResult = fullRead();
-        for (string oneResult : fullResult) {
-            std::cout << oneResult << std::endl;
-            if (oneResult == "[Read] ERROR") retFlag = 1;
-        }
-        return retFlag;
+        fullRead();
+        return 3;
     }
 
     if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
@@ -100,9 +98,12 @@ void TestShell::printHelp()
     std::cout << "--------------------------------- HELP "
         << "---------------------------------" << std::endl;
     std::cout << " READ - read one LBA (Logical Block Addressing) \n" <<
-        "\t usage - READ <LBA>(ex.read 0)" << std::endl;
+        "\t usage - read <LBA>(ex.read 0)" << std::endl;
     std::cout << " WRITE - write value to LBA(Logical Block Addressing) \n" <<
-        "\t usage - WRITE <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
+        "\t usage - write <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
+    std::cout << " Test script - 1 FullWriteAndReadCompare \n" <<
+        "\t write and read Test all indices in 5-unit\n" <<
+        "\t usage - 1_FullWriteAndReadCompare(or 1_)" << std::endl;
     std::cout << " Test script - 2 (repeats following steps 30 times) \n" <<
         "\t  step1) write the data to lba 4\n" <<
         "\t  step2) write the data to lba 0\n" <<
@@ -137,17 +138,57 @@ void TestShell::fullWrite(const string& data) {
 string TestShell::read(const int LBA)
 {
     string result = ssdAdapter->read(LBA);
-    if (result == "ERROR") return "[Read] ERROR";
-    return "[Read] LBA " + std::to_string(LBA)+" : " + result;
+    if (result == "ERROR") result = "[Read] ERROR";
+    else result = "[Read] LBA " + std::to_string(LBA)+" : " + result;
+    std::cout << result << std::endl;
+    return result;
 }
 
-vector<string> TestShell::fullRead()
+void TestShell::fullRead()
 {
-    vector<string> result;
     for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
-        result.push_back(read(LBA));
+        read(LBA);
     }
-    return result;
+}
+
+void TestShell::fullWriteAndReadCompare()
+{
+    int j = 1;
+    bool failFlag = false;
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 5; j++) {
+            auto ret = ssdAdapter->write(5 * i + j, intToHexString(i));
+            if (ret != "") {
+                failFlag = true;
+                break;
+            }
+        }
+        // TODO: fix to if (isFail()) break;
+        if (failFlag == true) break;
+
+        for (int j = 0; j < 5; j++) {
+            if (intToHexString(i) != ssdAdapter->read(5 * i + j)) {
+                failFlag = true;
+                break;
+            }
+        }
+        if (failFlag == true) break;
+    }
+    if (failFlag == true) {
+        std::cout << "FAIL" << std::endl;
+    }
+    else {
+        std::cout << "PASS" << std::endl;
+    }
+}
+
+string TestShell::intToHexString(int value) {
+    std::stringstream ss;
+    ss << "0x"
+        << std::setfill('0') << std::setw(8)
+        << std::hex << std::uppercase
+        << value;
+    return ss.str();
 }
 
 void TestShell::partialLBAWrite(const string& data)

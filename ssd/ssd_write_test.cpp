@@ -3,7 +3,7 @@
 
 using namespace testing;
 
-TEST(SSDREADWRITE, WRITEPASS) {
+TEST(SSDREADWRITE, WRITEPASS_1) {
 	SsdWrite ssdwrite;
 	std::string address = "0";
 	std::string value = "0xabc";
@@ -11,15 +11,47 @@ TEST(SSDREADWRITE, WRITEPASS) {
 	EXPECT_NO_THROW(ssdwrite.write(address, value));
 }
 
-TEST(SSDREADWRITE, WRITEFAILED_INVALID_ADDRESS) {
+TEST(SSDREADWRITE, WRITEPASS_2) {
+	SsdWrite ssdwrite;
+	std::string address = "1";
+	std::string value = "0xc";
+
+	EXPECT_NO_THROW(ssdwrite.write(address, value));
+}
+
+TEST(SSDREADWRITE, WRITEPASS_3) {
+	SsdWrite ssdwrite;
+	std::string address = "2";
+	std::string value = "0xa123bc";
+
+	EXPECT_NO_THROW(ssdwrite.write(address, value));
+}
+
+TEST(SSDREADWRITE, WRITEPASS_4) {
+	SsdWrite ssdwrite;
+	std::string address = "3";
+	std::string value = "0xaabbccdd";
+
+	EXPECT_NO_THROW(ssdwrite.write(address, value));
+}
+
+TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_1) {
+	SsdWrite ssdwrite;
+	std::string address = "34";
+	std::string value = "124";
+
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+}
+
+TEST(SSDREADWRITE, INVALID_ADDRESS_1) {
 	SsdWrite ssdwrite;
 	std::string address = "-1";
 	std::string value = "0xabc";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::out_of_range);
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
-TEST(SSDREADWRITE, WRITEFAILED_INVALID_ARGUMENT_ADDRESS) {
+TEST(SSDREADWRITE, INVALID_ADDRESS_2) {
 	SsdWrite ssdwrite;
 	std::string address = "- 1 2";
 	std::string value = "0xabc";
@@ -27,10 +59,18 @@ TEST(SSDREADWRITE, WRITEFAILED_INVALID_ARGUMENT_ADDRESS) {
 	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
-TEST(SSDREADWRITE, INVALID_MEMORY_VALUE) {
+TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_2) {
 	SsdWrite ssdwrite;
 	std::string address = "34";
 	std::string value = "test";
+
+	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+}
+
+TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_3) {
+	SsdWrite ssdwrite;
+	std::string address = "34";
+	std::string value = "";
 
 	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
