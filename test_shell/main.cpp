@@ -5,7 +5,7 @@
 #include "test_shell.h"
 
 #ifdef _DEBUG
-#include <gmock/gmock.h>
+#include "gmock/gmock.h"
 
 using namespace testing;
 

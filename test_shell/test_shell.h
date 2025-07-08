@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include "ssd_interface.h"
+
 using std::string;
 using std::vector;
 
@@ -10,8 +12,9 @@ class TestShell
 {
 public:
     TestShell() = default;
+    void setSsdAdapter(SSDInterface* adapter);
     void runShell();
-    void printHelp();
+    void printHelp();    
 
 private:
     string read(const int LBA);
@@ -23,4 +26,6 @@ private:
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data);
     void writeReadAging();
+
+    SSDInterface* ssdAdapter;
 };
