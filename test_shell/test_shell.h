@@ -39,6 +39,11 @@ private:
     friend class TestShellTest_FullWrite_Pass_Test;
     friend class TestShellTest_FullWrite_Fail_Test;
 
+    friend class TestShellTest_ReadPass_Test;
+    friend class TestShellTest_ReadFailWrongLBA_Test;
+    friend class TestShellTest_FullReadPass_Test;
+    friend class TestShellTest_FullReadFail_Test;
+
     SSDInterface* ssdAdapter;
     unsigned int SSD_SIZE = 100;
 };

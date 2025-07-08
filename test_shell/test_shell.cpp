@@ -74,7 +74,6 @@ int TestShell::runCommand(std::string& command)
         }
 
         string result = read(LBA);
-        std::cout << result << std::endl;
 
         if (result == "[Read] ERROR") return 1;
         return 3;
@@ -148,7 +147,9 @@ string TestShell::read(const int LBA)
 {
     string result = ssdAdapter->read(LBA);
     if (result == "ERROR") return "[Read] ERROR";
-    return "[Read] LBA " + std::to_string(LBA)+" : " + result;
+    result = "[Read] LBA " + std::to_string(LBA)+" : " + result;
+    std::cout << result << std::endl;
+    return result;
 }
 
 vector<string> TestShell::fullRead()

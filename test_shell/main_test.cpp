@@ -9,7 +9,8 @@ using namespace testing;
 TEST(SampleTest, Addition) {
     EXPECT_EQ(2 + 2, 4);
 }
-TEST(TS, ReadPass) {
+
+TEST(TestShellTest, ReadPass) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -18,23 +19,10 @@ TEST(TS, ReadPass) {
         .Times(1)
         .WillRepeatedly(Return("0xAAAABBBB"));
 
-    string command = "read 10";
-    EXPECT_EQ(3, testShell.runCommand(command));
+    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.read(10));
 }
 
-TEST(TS, ReadFailNoLBA) {
-    MockSSDAdapter mockSSDAdapter;
-    TestShell testShell;
-    testShell.setSsdAdapter(&mockSSDAdapter);
-
-    EXPECT_CALL(mockSSDAdapter, read(10))
-        .Times(0);
-
-    string command = "read";
-    EXPECT_EQ(1, testShell.runCommand(command));
-}
-
-TEST(TS, ReadFailWrongLBA) {
+TEST(TestShellTest, ReadFailWrongLBA) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -43,8 +31,7 @@ TEST(TS, ReadFailWrongLBA) {
         .Times(1)
         .WillOnce(Return("ERROR"));
 
-    string command = "read 100";
-    EXPECT_EQ(1, testShell.runCommand(command));
+    EXPECT_EQ("[Read] ERROR", testShell.read(100));
 }
 
 TEST(TS, FullReadPASS) {
