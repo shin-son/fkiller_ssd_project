@@ -43,7 +43,7 @@ TEST(SSDREADWRITE, INVALID_MEMORY_VALUE_1) {
 	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
-TEST(SSDREADWRITE, WRITEFAILED_INVALID_ADDRESS) {
+TEST(SSDREADWRITE, INVALID_ADDRESS_1) {
 	SsdWrite ssdwrite;
 	std::string address = "-1";
 	std::string value = "0xabc";
@@ -51,7 +51,7 @@ TEST(SSDREADWRITE, WRITEFAILED_INVALID_ADDRESS) {
 	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
 }
 
-TEST(SSDREADWRITE, WRITEFAILED_INVALID_ARGUMENT_ADDRESS) {
+TEST(SSDREADWRITE, INVALID_ADDRESS_2) {
 	SsdWrite ssdwrite;
 	std::string address = "- 1 2";
 	std::string value = "0xabc";
