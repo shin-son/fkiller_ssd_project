@@ -123,7 +123,7 @@ void TestShell::writeReadAging() {
         std::string result99 = ssdAdapter->read(99);
 
         if (result0 != result99) {
-            std::cout << "[Aging] Mismatch at iteration " << i << std::endl;
+            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0  << " LBA[99] : " << result99 << std::endl;
             allMatch = false;
         }
     }

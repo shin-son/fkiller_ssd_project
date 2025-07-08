@@ -185,7 +185,7 @@ TEST(TestShellTest, WriteReadAging_Fail) {
     testShell.writeReadAging();
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Aging] Mismatch at iteration 0"), std::string::npos);
+    EXPECT_NE(output.find("[Aging] ERROR mismatch value LBA[0] : 0xA1B2C3D4 LBA[99] : 0xA1B2C3DF"), std::string::npos);
 }
 
 
