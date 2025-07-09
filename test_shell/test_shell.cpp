@@ -106,31 +106,6 @@ int TestShell::runCommand(std::string& command)
     return retFlag;
 }
 
-void TestShell::writeReadAging() {
-    bool allMatch = true;
-
-    for (int i = 0; i < 200; ++i) {
-        std::stringstream ss;
-        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
-        std::string randData = ss.str();
-
-        ssdAdapter->write(0, randData);
-        ssdAdapter->write(99, randData);
-
-        std::string result0 = ssdAdapter->read(0);
-        std::string result99 = ssdAdapter->read(99);
-
-        if (result0 != result99) {
-            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0  << " LBA[99] : " << result99 << std::endl;
-            allMatch = false;
-        }
-    }
-
-    if (allMatch) {
-        std::cout << "[Aging] PASS" << std::endl;
-    }
-}
-
 void TestShell::printHelp()
 {
     std::cout << "--------------------------------- HELP "
@@ -150,7 +125,7 @@ void TestShell::printHelp()
         "\t  step5) write the data to lba 2\n" <<
         "\t  step6) Check if data of all LBA 0 to 4 are the same\n" <<
         "\t usage - 2_PartialLBAWrite(or 2_)" << std::endl;
-    std::cout << " Test script - 3 (repeats following steps 100 times) \n" <<
+    std::cout << " Test script - 3 (repeats following steps 200 times) \n" <<
         "\t  step1) write the data to lba 0\n" <<
         "\t  step2) write the data to lba 99\n" <<
         "\t  step3) read the data to lba 0\n" <<
@@ -276,4 +251,29 @@ bool TestShell::verifyTheSequence(
         }
     }
     return true;
+}
+
+void TestShell::writeReadAging() {
+    bool allMatch = true;
+
+    for (int i = 0; i < 200; ++i) {
+        std::stringstream ss;
+        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
+        std::string randData = ss.str();
+
+        ssdAdapter->write(0, randData);
+        ssdAdapter->write(99, randData);
+
+        std::string result0 = ssdAdapter->read(0);
+        std::string result99 = ssdAdapter->read(99);
+
+        if (result0 != result99) {
+            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
+            allMatch = false;
+        }
+    }
+
+    if (allMatch) {
+        std::cout << "[Aging] PASS" << std::endl;
+    }
 }
