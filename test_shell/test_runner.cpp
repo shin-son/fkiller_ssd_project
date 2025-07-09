@@ -25,7 +25,31 @@ bool TestRunner::cannotOpenScript(std::ifstream& script, const std::string& scri
     return false;
 }
 
-void TestRunner::runScript(std::ifstream& script, const std::string& scriptPath) {
+int TestRunner::getResultFromCommand(std::string& command) {
+    std::atomic<bool> done{ false };
+    std::thread dotter([&]() {
+        while (!done) {
+            std::cerr << '.' << std::flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        });
+
+    std::ostringstream hiddenBuf;
+    auto* oldCout = std::cout.rdbuf(hiddenBuf.rdbuf());
+    auto* oldCerr = std::cerr.rdbuf(hiddenBuf.rdbuf());
+
+    int getResult = testShell.runCommand(command);
+
+    done = true;
+    dotter.join();
+
+    std::cout.rdbuf(oldCout);
+    std::cerr.rdbuf(oldCerr);
+
+    return getResult;
+}
+
+void TestRunner::runScript(std::ifstream& script) {
     std::string cmd;
     while (std::getline(script, cmd)) {
         if (cmd.empty())
@@ -33,27 +57,7 @@ void TestRunner::runScript(std::ifstream& script, const std::string& scriptPath)
 
         std::cerr << cmd << " RUN" << std::flush;
 
-        std::atomic<bool> done{ false };
-        std::thread dotter([&]() {
-            while (!done) {
-                std::cerr << '.' << std::flush;
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-            });
-
-        std::ostringstream hiddenBuf;
-        auto* oldCout = std::cout.rdbuf(hiddenBuf.rdbuf());
-        auto* oldCerr = std::cerr.rdbuf(hiddenBuf.rdbuf());
-
-        int flag = testShell.runCommand(cmd);
-
-        done = true;
-        dotter.join();
-
-        std::cout.rdbuf(oldCout);
-        std::cerr.rdbuf(oldCerr);
-
-        if (flag == 3) std::cerr << " PASS!\n";
+        if (getResultFromCommand(cmd) == NEXT_EXIT) std::cerr << " PASS!\n";
         else {
             std::cerr << " FAIL!\n";
             return;
@@ -69,6 +73,6 @@ void TestRunner::verifyAndRunScript(const std::string& scriptPath) {
     if (cannotOpenScript(script, scriptPath))
         return;
 
-    runScript(script, scriptPath);
+    runScript(script);
     return;
 }
