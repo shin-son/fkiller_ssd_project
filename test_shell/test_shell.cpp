@@ -8,6 +8,7 @@ void TestShell::setSsdAdapter(SSDInterface* adapter)
 }
 
 void TestShell::runShell() {
+    logger.print(CLASS_NAME, __func__, "called");
     std::string command;
     while (true) {
         std::cout << " SHELL> ";
@@ -20,6 +21,7 @@ void TestShell::runShell() {
 
 int TestShell::runCommand(const std::string& command)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     int retFlag = NEXT_KEEP_GOING;
     std::istringstream iss(command);
     std::string cmd;
@@ -125,6 +127,7 @@ int TestShell::runCommand(const std::string& command)
 
 void TestShell::printHelp()
 {
+    logger.print(CLASS_NAME, __func__, "called");
     std::cout << "--------------------------------- HELP "
         << "---------------------------------" << std::endl;
     std::cout << " READ - read one LBA (Logical Block Addressing) \n" <<
@@ -154,9 +157,11 @@ void TestShell::printHelp()
 }
 
 void TestShell::fullWrite(const string& data) {
+    logger.print(CLASS_NAME, __func__, "called");
     for (int i = 0; i < 100; ++i) {
         std::string result = write(i, data);
         if (result == "[Write] ERROR") {
+            logger.print(CLASS_NAME, __func__, "Failed at LBA " + std::to_string(i));
             std::cout << "[fullWrite] Failed at LBA " << i << std::endl;
             return;
         }
@@ -164,9 +169,9 @@ void TestShell::fullWrite(const string& data) {
     std::cout << "[fullWrite] Done" << std::endl;
 }
 
-
 void TestShell::fullRead()
 {
+    logger.print(CLASS_NAME, __func__, "called");
     for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
         read(LBA);
     }
@@ -174,12 +179,14 @@ void TestShell::fullRead()
 
 void TestShell::fullWriteAndReadCompare()
 {
+    logger.print(CLASS_NAME, __func__, "called");
     int j = 1;
     bool failFlag = false;
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 5; j++) {
             auto ret = ssdAdapter->write(5 * i + j, intToHexString(i));
             if (ret != "") {
+                logger.print(CLASS_NAME, __func__, "FAIL: ssdAdapter->write " + std::to_string(i) + " " + std::to_string(j));
                 failFlag = true;
                 break;
             }
@@ -189,6 +196,7 @@ void TestShell::fullWriteAndReadCompare()
 
         for (int j = 0; j < 5; j++) {
             if (intToHexString(i) != ssdAdapter->read(5 * i + j)) {
+                logger.print(CLASS_NAME, __func__, "FAIL: ssdAdapter->read " + std::to_string(i) + " " + std::to_string(j));
                 failFlag = true;
                 break;
             }
@@ -205,6 +213,7 @@ void TestShell::fullWriteAndReadCompare()
 
 void TestShell::partialLBAWrite(const string& data)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
     
     for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
@@ -214,10 +223,12 @@ void TestShell::partialLBAWrite(const string& data)
 
     if (false == verifyTheSequence(data, lbaSequence)) return;
 
+    logger.print(CLASS_NAME, __func__, TEST_SCRIPT_2_SUCCESS_MSG);
     std::cout << TEST_SCRIPT_2_SUCCESS_MSG << std::endl;
 }
 
 void TestShell::writeReadAging() {
+    logger.print(CLASS_NAME, __func__, "called");
     bool allMatch = true;
 
     for (int i = 0; i < 200; ++i) {
@@ -232,17 +243,21 @@ void TestShell::writeReadAging() {
         std::string result99 = ssdAdapter->read(99);
 
         if (result0 != result99) {
+            string errorMessage = "[Aging] ERROR mismatch value LBA[0] : " + result0 + " LBA[99] : " + result99;
+            logger.print(CLASS_NAME, __func__, errorMessage);
             std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
             allMatch = false;
         }
     }
 
     if (allMatch) {
+        logger.print(CLASS_NAME, __func__, "[Aging] PASS");
         std::cout << "[Aging] PASS" << std::endl;
     }
 }
 
 string TestShell::write(const int LBA, const string& data) {
+    logger.print(CLASS_NAME, __func__, "LBA(" + std::to_string(LBA) + ") data(" + data + ")");
     if (!ssdAdapter) return "[Write] ERROR";
 
     std::string result = ssdAdapter->write(LBA, data);
@@ -252,6 +267,7 @@ string TestShell::write(const int LBA, const string& data) {
 
 string TestShell::read(const int LBA)
 {
+    logger.print(CLASS_NAME, __func__, "LBA(" + std::to_string(LBA) + ")");
     string result = ssdAdapter->read(LBA);
     if (result == "ERROR") result = "[Read] ERROR";
     else result = "[Read] LBA " + std::to_string(LBA) + " : " + result;
@@ -261,6 +277,7 @@ string TestShell::read(const int LBA)
 
 string TestShell::erase(const int LBA, const int size)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     string result = ssdAdapter->erase(LBA, size);
     if (result == "ERROR") result = "[Erase] ERROR";
     else result = "[Erase] Done";
@@ -269,6 +286,7 @@ string TestShell::erase(const int LBA, const int size)
 }
 
 string TestShell::intToHexString(int value) {
+    logger.print(CLASS_NAME, __func__, "value: " + std::to_string(value));
     std::stringstream ss;
     ss << "0x"
         << std::setfill('0') << std::setw(8)
@@ -279,6 +297,7 @@ string TestShell::intToHexString(int value) {
 
 bool TestShell::writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     for (int lba : lbaSequence)
     {
         if (RETURN_WRITE_DONE != write(lba, data))
@@ -293,11 +312,13 @@ bool TestShell::writeTheSequence(const std::vector<int>& lbaSequence, const std:
 bool TestShell::verifyTheSequence(
     const std::string& data, const vector<int>& lbaSequence)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     for (int lba : lbaSequence)
     {
         string exptected = "[Read] LBA " + std::to_string(lba) + " : " + data;
         if (exptected != read(lba))
         {
+            logger.print(CLASS_NAME, __func__, TEST_SCRIPT_2_VERIFY_FAIL_MSG);
             std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG << std::endl;
             return false;
         }
@@ -307,6 +328,7 @@ bool TestShell::verifyTheSequence(
 
 void TestShell::eraseWithSize(std::istringstream& iss)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     int startLBA = 0;
     int size = 0;
 
@@ -315,12 +337,14 @@ void TestShell::eraseWithSize(std::istringstream& iss)
     int endLBA = startLBA + size - 1;
     if (false == isVaiidEraseRange(startLBA, endLBA))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase] Error: invalid Range(startLBA, size)");
         std::cout << "[Erase] Error: invalid Range(startLBA, size)\n";
         return;
     }
 
     if (false == eraseRange(startLBA, endLBA))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase] Error: Erase Operation Fail");
         std::cout << "[Erase] Error: Erase Operation Fail\n";
         return;
     }
@@ -329,14 +353,17 @@ void TestShell::eraseWithSize(std::istringstream& iss)
 
 bool TestShell::getEraseParameter(int& startLBA, int& size, std::istringstream& iss)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     if (!(iss >> startLBA))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase] Error: missing startLBA");
         std::cout << "[Erase] Error: missing startLBA\n";
         return false;
     }
 
     if (!(iss >> size))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase] Error: missing size");
         std::cout << "[Erase] Error: missing size\n";
         return false;
     }
@@ -346,6 +373,7 @@ bool TestShell::getEraseParameter(int& startLBA, int& size, std::istringstream& 
 
 bool TestShell::isVaiidEraseRange(const int startLBA, const int endLBA)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     if (startLBA < 0)  return false;
     else if (endLBA >= SSD_SIZE) return false;
     else if (startLBA >= endLBA) return false;
@@ -355,6 +383,7 @@ bool TestShell::isVaiidEraseRange(const int startLBA, const int endLBA)
 
 bool TestShell::eraseRange(int startLBA, int endLBA)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     int retSuccess = true;
     string eraseResult = "";
     int eraseCount = (endLBA - startLBA + 1) / ERASE_UNIT_LBA_COUNT;

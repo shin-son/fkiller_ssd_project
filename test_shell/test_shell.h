@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "ssd_interface.h"
 #include "constants.h"
+#include "logger.h"
 
 using std::string;
 using std::vector;
@@ -67,5 +68,7 @@ public:
     friend class TestShellFixture_EraseWithStartEnd_Test;
 
     SSDInterface* ssdAdapter;
+    Logger logger;
     unsigned int SSD_SIZE = 100;
+    const string CLASS_NAME = "TestShell";
 };
