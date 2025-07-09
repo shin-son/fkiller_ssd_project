@@ -124,9 +124,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SsdFacade.cpp" />
+    <ClCompile Include="ssd_erase.cpp" />
+    <ClCompile Include="ssd_facade.cpp" />
     <ClCompile Include="ssd_write.cpp" />
-    <ClCompile Include="ssd_Read.cpp" />
+    <ClCompile Include="ssd_read.cpp" />
     <ClCompile Include="ssd_read_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -141,9 +142,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SsdFacade.h" />
+    <ClInclude Include="ssd_erase.h" />
+    <ClInclude Include="ssd_facade.h" />
     <ClInclude Include="ssd_constants.h" />
-    <ClInclude Include="ssd_Read.h" />
+    <ClInclude Include="ssd_read.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>
   <ItemGroup>

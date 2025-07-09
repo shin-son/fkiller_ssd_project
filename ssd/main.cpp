@@ -1,5 +1,5 @@
 #include "gmock/gmock.h"
-#include "SsdFacade.h"
+#include "ssd_facade.h"
 #include <string>
 #include "ssd_constants.h"
 
@@ -22,10 +22,10 @@ int main(int argc, char** argv) {
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
 
-	if (type == 0) { // Write operation
+	if (type == WRITE_OPERATION) { // Write operation
 		ssdFacade.writeSsdIndex(index, target);
 	} 
-	else if (type == 1) { // Read operation
+	else if (type == READ_OPERATION) { // Read operation
 		ssdFacade.readSsdIndex(index);
 	} 
 	else {

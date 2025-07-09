@@ -24,7 +24,7 @@
     <ClCompile Include="ssd_write.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ssd_Read.cpp">
+    <ClCompile Include="ssd_read.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ssd_read_test.cpp">
@@ -39,21 +39,27 @@
     <ClCompile Include="ssd_write_test.cpp">
       <Filter>테스트 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SsdFacade.cpp">
+    <ClCompile Include="ssd_facade.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ssd_erase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ssd_Read.h">
+    <ClInclude Include="ssd_read.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ssd_write.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SsdFacade.h">
+    <ClInclude Include="ssd_facade.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ssd_constants.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ssd_erase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
