@@ -30,6 +30,6 @@ private:
     void ifTooManyLogFileCompress();
 
     const string LOG_FILE = "latest.log";
-    const unsigned int SIZE_1KB = 10;
+    const unsigned int SIZE_1KB = 1024;
     const unsigned int MAX_LOG_SIZE = 10 * SIZE_1KB;
 };
