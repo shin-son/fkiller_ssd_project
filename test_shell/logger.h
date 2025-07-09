@@ -6,6 +6,7 @@
 #include <filesystem>
 
 using std::string;
+namespace fs = std::filesystem;
 
 struct TimeData {
     string year;
@@ -23,12 +24,15 @@ public:
 
 private:
     string makeOneLineLog(const string& caller, const string& logMessage);
-    void checkLogFIleSize();
+    void checkLogFileSize();
     TimeData getTime();
     string makeLogTimeFormat(const TimeData& time);
     string makeLogFileFormat(const TimeData& time);
     string make2DigitString(const int number);
-    void ifTooManyLogFileCompress();
+    void compressIfTooManyLogFile();
+
+    std::vector<std::filesystem::directory_entry> findLogFiles();
+    fs::directory_entry getOldestLogFile(std::vector<fs::directory_entry>& logFiles);
 
     const string LOG_FILE = "latest.log";
     const unsigned int SIZE_1KB = 1024;

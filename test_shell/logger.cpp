@@ -12,7 +12,7 @@ void Logger::print(const string& className, const string& funcName, const string
         std::cout << "Rename failed: Log File\n";
     }
 
-    checkLogFIleSize();
+    checkLogFileSize();
 }
 
 void Logger::print(const string& caller, const string& logMessage) {
@@ -26,7 +26,7 @@ void Logger::print(const string& caller, const string& logMessage) {
         std::cout << "Rename failed: Log File\n";
     }
 
-    checkLogFIleSize();
+    checkLogFileSize();
 }
 
 inline string Logger::makeOneLineLog(const string& caller, const string& logMessage)
@@ -34,13 +34,13 @@ inline string Logger::makeOneLineLog(const string& caller, const string& logMess
     return makeLogTimeFormat(getTime()) + " " + caller + "\t: " + logMessage + "\n";
 }
 
-void Logger::checkLogFIleSize()
+void Logger::checkLogFileSize()
 {
     try {
-        auto fileSize = std::filesystem::file_size(LOG_FILE);
+        auto fileSize = fs::file_size(LOG_FILE);
         if (fileSize > MAX_LOG_SIZE) {
-            std::filesystem::rename(LOG_FILE, makeLogFileFormat(getTime()));
-            ifTooManyLogFileCompress();
+            fs::rename(LOG_FILE, makeLogFileFormat(getTime()));
+            compressIfTooManyLogFile();
         }
     }
     catch (const std::exception& e) {
@@ -80,30 +80,42 @@ string Logger::make2DigitString(const int number) {
     return std::to_string(number);
 }
 
-void Logger::ifTooManyLogFileCompress() {
-    std::vector<std::filesystem::directory_entry> logFiles;
+void Logger::compressIfTooManyLogFile() {
 
-    for (const auto& entry : std::filesystem::directory_iterator("./")) {
-        if (entry.path().extension() == ".log") {
-            logFiles.push_back(entry);
-        }
-    }
+    std::vector<fs::directory_entry> logFiles = findLogFiles();
 
     if (logFiles.size() > 1) {
-        std::sort(logFiles.begin(), logFiles.end(),
-            [](const std::filesystem::path& a, const std::filesystem::path& b) {
-            return a.filename().string() < b.filename().string();
-            });
+        fs::directory_entry oldestLogFile = getOldestLogFile(logFiles);
 
-        std::filesystem::path oldPath = logFiles[0].path();
-        std::filesystem::path newPath = oldPath;
+        fs::path oldPath = oldestLogFile.path();
+        fs::path newPath = oldPath;
         newPath.replace_filename(oldPath.stem().string() + ".zip");
 
         try {
-            std::filesystem::rename(oldPath, newPath);
+            fs::rename(oldPath, newPath);
         }
         catch (const std::exception& e) {
             std::cerr << "Compress failed: " << e.what() << "\n";
         }
     }
+}
+
+std::vector<fs::directory_entry> Logger::findLogFiles()
+{
+    std::vector<fs::directory_entry> logFiles;
+    for (const auto& entry : fs::directory_iterator("./")) {
+        if (entry.path().extension() == ".log") {
+            logFiles.push_back(entry);
+        }
+    }
+    return logFiles;
+}
+
+fs::directory_entry Logger::getOldestLogFile(std::vector<fs::directory_entry>& logFiles) {
+    std::sort(logFiles.begin(), logFiles.end(),
+        [](const fs::path& a, const fs::path& b) {
+            return a.filename().string() < b.filename().string();
+        });
+
+    return logFiles[0];
 }
