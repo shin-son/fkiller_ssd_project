@@ -627,4 +627,59 @@ TEST_F(TestShellFixture, EraseRange_EraseFailCase) {
 
     EXPECT_NE(output.find("[Erase_Range] Error"), std::string::npos);
 }
+
+TEST_F(TestShellFixture, EraseAndWriteAging_Pass) {
+
+    EXPECT_CALL(mockSSDAdapter, write(_, _))
+        .Times(30 * 2 * 49)
+        .WillRepeatedly(Return(""));
+
+    EXPECT_CALL(mockSSDAdapter, erase(_, _))
+        .Times(1 + 30 * 49)
+        .WillRepeatedly(Return(""));
+
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find("Fail"), std::string::npos);
+}
+
+TEST_F(TestShellFixture, EraseAndWriteAging_WriteFail) {
+
+    EXPECT_CALL(mockSSDAdapter, write(_, _))
+        .WillOnce(Return(""))
+        .WillOnce(Return(""))
+        .WillOnce(Return(""))
+        .WillOnce(Return("ERROR"))
+        .WillRepeatedly(Return(""));
+
+    EXPECT_CALL(mockSSDAdapter, erase(_, _))
+        .WillRepeatedly(Return(""));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("Fail"), std::string::npos);
+}
+
+TEST_F(TestShellFixture, EraseAndWriteAging_EraseFail) {
+
+    EXPECT_CALL(mockSSDAdapter, write(_, _))
+        .WillRepeatedly(Return(""));
+
+    EXPECT_CALL(mockSSDAdapter, erase(_, _))
+        .WillOnce(Return(""))
+        .WillOnce(Return(""))
+        .WillOnce(Return(""))
+        .WillRepeatedly(Return("ERROR"));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("Fail"), std::string::npos);
+}
 #endif
