@@ -46,11 +46,10 @@ void SsdWrite::writeOutputFile(const std::string& result) {
 	outputFile.close();
 }
 
-void SsdWrite::write(const std::string& address, const std::string& value) {
+void SsdWrite::write(int address, const std::string& value) {
 	std::stringstream memoryStream;
 	std::string outputResult = "";
-	int addressToInt = std::stoi(address);
 
 	writeOutputFile(outputResult);
-	writeTheValueToMemory(addressToInt, value);
+	writeTheValueToMemory(address, value);
 }

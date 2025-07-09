@@ -9,7 +9,6 @@ int CommandProcessor::process(int argc, char* argv[]) {
 		std::cout << "Usage: ssd.exe [w/r] [args...]\n";
 		return -1;
 	}
-
 	std::string cmd = argv[1];
 	std::vector<std::string> args(argv + 2, argv + argc);
 
@@ -30,7 +29,8 @@ int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
 		return INVALID_ARGUMENT;
 	}
 
-	executeWrite(args);
+	address = std::stoi(args[0]);
+	memoryValue = args[1];
 	return SUCCESS;
 }
 
@@ -39,8 +39,7 @@ int CommandProcessor::handleRead(const std::vector<std::string>& args) {
 		printErrorAndWriteToOutput();
 		return INVALID_ARGUMENT;
 	}
-
-	executeRead(args);
+	address = std::stoi(args[0]);
 	return SUCCESS;
 }
 
@@ -60,16 +59,6 @@ bool CommandProcessor::isReadValidArgument(const std::vector<std::string>& args)
 
 bool CommandProcessor::isReadCommand(const std::string& cmd) {
 	return cmd == "r" || cmd == "R";
-}
-
-void CommandProcessor::executeWrite(const std::vector<std::string>& args) {
-	SsdWrite writer;
-	writer.write(args[0], args[1]);
-}
-
-void CommandProcessor::executeRead(const std::vector<std::string>& args) {
-
-
 }
 
 void CommandProcessor::printErrorAndWriteToOutput() {
