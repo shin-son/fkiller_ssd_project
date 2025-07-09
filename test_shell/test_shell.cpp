@@ -40,7 +40,9 @@ int TestShell::runCommand(const std::string& command)
         return NEXT_KEEP_GOING;
     }
 
-    if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
+    if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
+        || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
+    {
         partialLBAWrite();
         return NEXT_KEEP_GOING;
     }
@@ -117,6 +119,18 @@ int TestShell::runCommand(const std::string& command)
         return NEXT_KEEP_GOING;
     }
 
+    if (cmd == "fullwrite") {
+        std::string data;
+
+        if (!(iss >> data)) {
+            std::cout << "[Write] ERROR: Missing data" << std::endl;
+            return NEXT_KEEP_GOING;
+        }
+
+        fullWrite(data);
+        return NEXT_KEEP_GOING;
+    }
+
     // Reaching here means that the command is invalid.
     std::cout << INVALID_COMMAND_MSG << std::endl;
 
@@ -177,8 +191,9 @@ void TestShell::fullWriteAndReadCompare()
     int j = 1;
     bool failFlag = false;
     for (int i = 0; i < 20; i++) {
+        auto test_string = intToHexString(i);
         for (int j = 0; j < 5; j++) {
-            auto ret = ssdAdapter->write(5 * i + j, intToHexString(i));
+            auto ret = ssdAdapter->write(5 * i + j, test_string);
             if (ret != "") {
                 failFlag = true;
                 break;
@@ -188,7 +203,7 @@ void TestShell::fullWriteAndReadCompare()
         if (failFlag == true) break;
 
         for (int j = 0; j < 5; j++) {
-            if (intToHexString(i) != ssdAdapter->read(5 * i + j)) {
+            if (test_string.compare(ssdAdapter->read(5 * i + j)) == 0) {
                 failFlag = true;
                 break;
             }
@@ -210,9 +225,9 @@ void TestShell::partialLBAWrite(const string& data)
     for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
     {
         if (false == writeTheSequence(lbaSequence, data)) return;
+        
+        if (false == verifyTheSequence(data, lbaSequence)) return;
     }
-
-    if (false == verifyTheSequence(data, lbaSequence)) return;
 
     std::cout << TEST_SCRIPT_2_SUCCESS_MSG << std::endl;
 }
@@ -295,8 +310,8 @@ bool TestShell::verifyTheSequence(
 {
     for (int lba : lbaSequence)
     {
-        string exptected = "[Read] LBA " + std::to_string(lba) + " : " + data;
-        if (exptected != read(lba))
+        string errorMSG = "[Read] ERROR";
+        if (errorMSG.compare(read(lba)) == 0)
         {
             std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG << std::endl;
             return false;

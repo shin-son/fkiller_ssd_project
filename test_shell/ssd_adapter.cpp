@@ -1,21 +1,21 @@
 #include "ssd_adapter.h"
 
 string SSDAdapter::read(const int LBA) {
-    std::string command = SSD_EXECUTE_FILE_PATH + " read " + std::to_string(LBA);
+    std::string command = SSD_EXECUTE_FILE_PATH + " r " + std::to_string(LBA);
     string result;
         try {
         executeSystemCall(command);
         result = readOutputFile();
     }
     catch (std::exception& e) {
-        std::cout << "[SSD_ADAPTER] Read error" << e.what() << std::endl;
+        std::cout << "[SSD_ADAPTER] Read error - " << e.what() << std::endl;
         result = ERROR_CODE;
     }
     return result;
 }
 
 string SSDAdapter::write(const int LBA, const string& data) {
-    std::string command = SSD_EXECUTE_FILE_PATH + " write " + std::to_string(LBA) + " " + data;
+    std::string command = SSD_EXECUTE_FILE_PATH + " w " + std::to_string(LBA) + " " + data;
     string result;
     try {
         executeSystemCall(command);
