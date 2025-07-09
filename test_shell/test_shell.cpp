@@ -14,40 +14,40 @@ void TestShell::runShell() {
         std::getline(std::cin, command);
 
         int retFlag = runCommand(command);
-        if (retFlag == 2) break;
-        if (retFlag == 3) continue;
+        if (retFlag == NEXT_EXIT) break;
     }
 }
 
 int TestShell::runCommand(std::string& command)
 {
-    int retFlag = 1;
+    int retFlag = NEXT_KEEP_GOING;
     std::istringstream iss(command);
     std::string cmd;
     iss >> cmd;
 
     if (cmd == "exit") {
         std::cout << "PROGRAM EXIT" << std::endl;
-        { retFlag = 2; return retFlag; };
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "help") {
         printHelp();
-        { retFlag = 3; return retFlag; };
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
         fullWriteAndReadCompare();
+        return NEXT_KEEP_GOING;
     }
 
     if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
         partialLBAWrite();
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (("3_WriteReadAging" == command) || ("3_" == command)) {
         writeReadAging();
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "write") {
@@ -56,22 +56,22 @@ int TestShell::runCommand(std::string& command)
         std::string extra;
         if (!(iss >> lba)) {
             std::cout << "[Write] ERROR: Missing lba" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         if (!(iss >> data)) {
             std::cout << "[Write] ERROR: Missing data" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         if (iss >> extra) {
             std::cout << "[Write] ERROR: Too many arguments" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         std::string result = write(lba, data);
         std::cout << result << std::endl;
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "read") {
@@ -79,18 +79,18 @@ int TestShell::runCommand(std::string& command)
 
         if (!(iss >> LBA)) {
             std::cout << "[Read] ERROR: Missing LBA" << std::endl;
-            return 1;
+            return NEXT_KEEP_GOING;
         }
 
         string result = read(LBA);
 
         if (result == "[Read] ERROR") return 1;
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "fullread") {
         fullRead();
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
