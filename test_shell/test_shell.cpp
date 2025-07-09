@@ -364,6 +364,7 @@ void TestShell::eraseWithSize(std::istringstream& iss)
 
 void TestShell::eraseWithEndLBA(std::istringstream& iss)
 {
+    logger.print(CLASS_NAME, __func__, "called");
     int startLBA = 0;
     int endLBA = 0;
 
@@ -371,12 +372,14 @@ void TestShell::eraseWithEndLBA(std::istringstream& iss)
 
     if (false == isVaiidEraseRange(startLBA, endLBA))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase_Range] Error: invalid Range(startLBA, endLBA)");
         std::cout << "[Erase_Range] Error: invalid Range(startLBA, endLBA)\n";
         return;
     }
 
     if (false == eraseRange(startLBA, endLBA))
     {
+        logger.print(CLASS_NAME, __func__, "[Erase_Range] Error: Erase Operation Fail");
         std::cout << "[Erase_Range] Error: Erase Operation Fail\n";
         return;
     }
