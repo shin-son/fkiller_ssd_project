@@ -27,7 +27,7 @@ int TestShell::runCommand(std::string& command)
 
     if (cmd == "exit") {
         std::cout << "PROGRAM EXIT" << std::endl;
-        return NEXT_KEEP_GOING;
+        return NEXT_EXIT;
     }
 
     if (cmd == "help") {
