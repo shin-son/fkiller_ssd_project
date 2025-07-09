@@ -2,6 +2,7 @@
 #include "SsdFacade.h"
 #include <string>
 #include "ssd_constants.h"
+#include "command_process.h"
 
 int main(int argc, char** argv) {
 
@@ -11,27 +12,24 @@ int main(int argc, char** argv) {
 	return RUN_ALL_TESTS();
 
 #else
+	CommandProcessor cmdProcess;
+	if (cmdProcess.process(argc, argv) == SUCCESS) {
+		int type = cmdProcess.getOperator();
+		int index = cmdProcess.getAddress();
+		std::string target = cmdProcess.getInputValue();
 
-	//parameter rule check
-	//TBD
+		SsdFacade& ssdFacade = SsdFacade::getInstance();
 
-	// parameter change type
-	int type = READ_OPERATION;
-	int index = 2;
-	std::string target = "0xabcdabcd";
-
-	SsdFacade& ssdFacade = SsdFacade::getInstance();
-
-	if (type == 0) { // Write operation
-		ssdFacade.writeSsdIndex(index, target);
-	} 
-	else if (type == 1) { // Read operation
-		ssdFacade.readSsdIndex(index);
-	} 
-	else {
-		// Handle other types or errors
+		if (type == WRITE_OPERATION) { // Write operation
+			ssdFacade.writeSsdIndex(index, target);
+		}
+		else if (type == READ_OPERATION) { // Read operation
+			ssdFacade.readSsdIndex(index);
+		}
+		else {
+			// Handle other types or errors
+		}
 	}
-
 	return 0;
 
 #endif

@@ -28,9 +28,10 @@ int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
 		printErrorAndWriteToOutput();
 		return INVALID_ARGUMENT;
 	}
+	this->ssdOperator = WRITE_OPERATION;
+	this->address = std::stoi(args[0]);
+	this->memoryValue = args[1];
 
-	address = std::stoi(args[0]);
-	memoryValue = args[1];
 	return SUCCESS;
 }
 
@@ -39,7 +40,9 @@ int CommandProcessor::handleRead(const std::vector<std::string>& args) {
 		printErrorAndWriteToOutput();
 		return INVALID_ARGUMENT;
 	}
-	address = std::stoi(args[0]);
+
+	this->ssdOperator = READ_OPERATION;
+	this->address = std::stoi(args[0]);
 	return SUCCESS;
 }
 
@@ -64,4 +67,16 @@ bool CommandProcessor::isReadCommand(const std::string& cmd) {
 void CommandProcessor::printErrorAndWriteToOutput() {
 	SsdWrite writer;
 	writer.writeOutputFile(ERROR_STRING);
+}
+
+int CommandProcessor::getOperator() {
+	return this->ssdOperator;
+}
+
+int CommandProcessor::getAddress() {
+	return this->address;
+}
+
+std::string CommandProcessor::getInputValue() {
+	return this->memoryValue;
 }

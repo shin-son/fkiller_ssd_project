@@ -7,8 +7,9 @@ class CommandProcessor {
 public:
     PatternChecker patterChecker;
     int process(int argc, char* argv[]);
-    std::string memoryValue;
-    int address;
+    int getOperator();
+    std::string getInputValue();
+    int getAddress();
 private:
     bool isWriteCommand(const std::string& cmd);
     bool isReadCommand(const std::string& cmd);
@@ -18,4 +19,7 @@ private:
     int handleWrite(const std::vector<std::string>& args);
     int handleRead(const std::vector<std::string>& args);
     void printErrorAndWriteToOutput();
+    int ssdOperator;
+    std::string memoryValue;
+    int address;
 };

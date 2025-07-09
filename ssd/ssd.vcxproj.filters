@@ -46,6 +46,8 @@
       <Filter>테스트 파일</Filter>
     </ClCompile>
     <ClCompile Include="pattern_checker.cpp">
+		<Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="SsdFacade.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -61,6 +63,8 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="pattern_checker.h">
+		<Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="SsdFacade.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
