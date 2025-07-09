@@ -45,6 +45,7 @@ public:
     bool writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data);
     bool verifyTheSequence(const std::string& data, const vector<int>& lbaSequence);
     void eraseWithSize(std::istringstream& iss);
+    void eraseWithEndLBA(std::istringstream& iss);
     bool getEraseParameter(int& startLBA, int& size, std::istringstream& iss);
     bool isVaiidEraseRange(const int startLBA, const int endLBA);
     bool eraseRange(int startLBA, int endLBA);
