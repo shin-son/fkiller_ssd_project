@@ -45,18 +45,20 @@ private:
     void writeReadAging();
     string intToHexString(int value);
 
-    friend class TestShellTest_Write_Pass_Test;
-    friend class TestShellTest_Write_Fail_Test;
-    friend class TestShellTest_FullWrite_Pass_Test;
-    friend class TestShellTest_FullWrite_Fail_Test;
-    friend class TestShellTest_PartialLBAWrite_WithData_Pass_Test;
-    friend class TestShellTest_PartialLBAWrite_Write_Fail_Test;
-    friend class TestShellTest_FullWriteAndReadCompare_Pass_Test;
-    friend class TestShellTest_FullWriteAndReadCompare_Fail_Test;
-    friend class TestShellTest_ReadPass_Test;
-    friend class TestShellTest_ReadFailWrongLBA_Test;
-    friend class TestShellTest_FullReadPass_Test;
-    friend class TestShellTest_FullReadFail_Test;
+    friend class TestShellFixture_ReadPass_Test;
+    friend class TestShellFixture_ReadFailWrongLBA_Test;
+    friend class TestShellFixture_FullReadPass_Test;
+    friend class TestShellFixture_FullReadFail_Test;
+    friend class TestShellFixture_WritePass_Test;
+    friend class TestShellFixture_WriteFail_Test;
+    friend class TestShellFixture_FullWritePass_Test;
+    friend class TestShellFixture_FullWriteFail_Test;
+    friend class TestShellFixture_FullWriteAndReadComparePass_Test;
+    friend class TestShellFixture_FullWriteAndReadCompareFail_Test;
+    friend class TestShellFixture_PartialLBAWriteWithDataPass_Test;
+    friend class TestShellFixture_PartialLBAWriteWriteFail_Test;
+    friend class TestShellFixture_WriteReadAgingPass_Test;
+    friend class TestShellFixture_WriteReadAgingFail_Test;
 
     SSDInterface* ssdAdapter;
     unsigned int SSD_SIZE = 100;
