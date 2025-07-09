@@ -8,6 +8,17 @@
 
 #include <filesystem>
 
+void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
+	auto cmds = mgr.flushBuffer();
+	for (auto& c : cmds) {
+		CommandProcessor flushProc;
+		if (flushProc.flushProcess(c) == SUCCESS) {
+			facade.run(flushProc);
+		}
+	}
+	mgr.resetAllBuffer();
+}
+
 int main(int argc, char** argv) {
 
 #if _DEBUG
@@ -27,27 +38,29 @@ int main(int argc, char** argv) {
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
 	const std::string testDir = std::filesystem::current_path().string() + "/test_buffer_write";
 	BufferManager mgr(testDir);
-	if (type == WRITE_OPERATION) { // Write operation
+
+	switch (type) {
+	case WRITE_OPERATION:
 		if (!mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue())) {
-			auto cmds = mgr.flushBuffer();
-			for (auto& c : cmds) {
-				CommandProcessor flushProc;
-				if (flushProc.flushProcess(c) == SUCCESS) {
-					ssdFacade.run(flushProc);
-				}
-			}
-			mgr.resetAllBuffer();
+			flushAndReset(mgr, ssdFacade);
 			mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue());
 		}
-	}
-	else if (type == READ_OPERATION) { // Read operation
+		break;
+
+	case ERASE_OPERATION:
+		if (!mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize())) {
+			flushAndReset(mgr, ssdFacade);
+			mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize());
+		}
+		break;
+
+	case READ_OPERATION:
 		ssdFacade.readSsdIndex(cmdProcess);
-	}
-	else if (type == ERASE_OPERATION) { // Erase operation
-		ssdFacade.eraseSsdIndexToSize(cmdProcess);
-	}
-	else {
-		// Handle other types or errors
+		break;
+
+	default:
+		std::cerr << "[ERROR] Unknown command type\n";
+		break;
 	}
 
 	return 0;
