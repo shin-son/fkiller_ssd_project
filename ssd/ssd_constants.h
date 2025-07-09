@@ -10,3 +10,5 @@ static const int INVALID_COMMAND = -1;
 static const int INVALID_ARGUMENT = -2;
 
 const std::string ERROR_STRING = "ERROR";
+const std::string EMPTY_STRING = "";
+const std::string INIT_STRING = "0x00000000";

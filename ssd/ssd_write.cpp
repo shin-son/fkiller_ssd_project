@@ -1,55 +1,31 @@
 #include "ssd_write.h"
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <cstdint>
-#include <regex>
+#include <string>
+#include "ssd_constants.h"
 
-bool SsdWrite::readTheNandMemory(const std::string& memoryFileName) {
-	std::ifstream memoryfileRead(memoryFileName);
-	if (!memoryfileRead) return false;
+using std::string;
 
-	std::string line;
-	while (std::getline(memoryfileRead, line)) {
-		memory.push_back(std::stoul(line, nullptr, 16));
-	}
-	memoryfileRead.close();
-	return true;
+void SsdWrite::loadSsdNandFile() {
+	if (!ssdFileIoRead.openReadFileStream()) return;
+	ssdNandData = ssdFileIoRead.loadSsdNandData();
+	ssdFileIoRead.closeReadFileStream();
 }
 
-void SsdWrite::writeTheValueToMemory(int address, const std::string& value) {
-	std::string memoryFileName = "ssd_nand.txt";
+void SsdWrite::writeSsdNandData(int index, const string& value) {
 
-	if (!readTheNandMemory(memoryFileName)) {
-		throw std::ios_base::failure("");
-	}
-
-	std::ofstream memoryfileWrite(memoryFileName, std::ios::out | std::ios::trunc);
-	if (!memoryfileWrite) return;
-
-	memory[address] = std::stoul(value, nullptr, 16);
-	for (const auto& val : memory) {
-		memoryfileWrite << "0x"
-			<< std::setw(8) << std::setfill('0')
-			<< std::hex << std::uppercase
-			<< val << "\n";
-	}
-	memoryfileWrite.close();
+	writeOutputFile(EMPTY_STRING);
+	ssdNandData[index] = value;
 }
 
-void SsdWrite::writeOutputFile(const std::string& result) {
-	std::string outputFileName = "ssd_output.txt";
-	std::ofstream outputFile(outputFileName, std::ios::out | std::ios::trunc);
-	if (outputFile) {
-		outputFile << result;
-	}
-	outputFile.close();
+void SsdWrite::saveSsdNandFile() {
+	if (!ssdFileIoRead.openWriteFileStream()) return;
+	ssdFileIoRead.saveSsdNandData(ssdNandData);
+	ssdFileIoRead.closeWriteFileStream();
 }
 
-void SsdWrite::write(int address, const std::string& value) {
-	std::stringstream memoryStream;
-	std::string outputResult = "";
+void SsdWrite::writeOutputFile(const string& targetString) {
 
-	writeOutputFile(outputResult);
-	writeTheValueToMemory(address, value);
+	if (!ssdFileIoWrite.openWriteFileStream()) return;
+	std::vector<string> targetVector{ targetString };
+	ssdFileIoWrite.saveSsdNandData(targetVector);
+	ssdFileIoWrite.closeWriteFileStream();
 }

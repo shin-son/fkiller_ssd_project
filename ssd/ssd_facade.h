@@ -3,15 +3,16 @@
 #include "ssd_write.h"
 #include "ssd_erase.h"
 #include <string>
+#include "command_process.h"
 
 class SsdFacade
 {
 public:
 	static SsdFacade& getInstance();
 
-	void readSsdIndex(int index);
-	void writeSsdIndex(int index, const std::string& targetString);
-	void eraseSsdIndexToSize(int index, int size);
+	void readSsdIndex(CommandProcessor cmd);
+	void writeSsdIndex(CommandProcessor cmd);
+	void eraseSsdIndexToSize(CommandProcessor cmd);
 
 private:
 	SsdFacade() = default;
