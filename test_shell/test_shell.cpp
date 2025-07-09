@@ -100,6 +100,9 @@ int TestShell::runCommand(std::string& command)
         return NEXT_KEEP_GOING;
     }
 
+    // Reaching here means that the command is invalid.
+    std::cout << INVALID_COMMAND_MSG << std::endl;
+
     return retFlag;
 }
 
