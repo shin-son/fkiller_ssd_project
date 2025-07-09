@@ -40,10 +40,6 @@ int TestShell::runCommand(std::string& command)
         fullWriteAndReadCompare();
     }
 
-    if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
-        HandlePartialLbaWrite();
-    }
-  
     if (cmd == "write") {
         int lba;
         std::string data;
@@ -87,19 +83,14 @@ int TestShell::runCommand(std::string& command)
         return 3;
     }
 
-    return retFlag;
-}
-
-void TestShell::HandlePartialLbaWrite()
-{
-    vector<int> lbaSequence = { 4, 0, 3, 1, 2 };
-    for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+    if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
+        || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
     {
-        for (int lba : lbaSequence)
-        {
-            ssdAdapter->write(lba, INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
-        }
+        partialLBAWrite();
+        return NEXT_KEEP_GOING;
     }
+
+    return retFlag;
 }
 
 void TestShell::printHelp()
@@ -198,4 +189,46 @@ string TestShell::intToHexString(int value) {
         << std::hex << std::uppercase
         << value;
     return ss.str();
+}
+
+void TestShell::partialLBAWrite(const string& data)
+{
+    vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
+    
+    for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+    {
+        if (false == writeTheSequence(lbaSequence, data)) return;
+    }
+
+    if (false == verifyTheSequence(data, lbaSequence)) return;
+
+    std::cout << TEST_SCRIPT_2_SUCCESS_MSG << std::endl;
+}
+
+bool TestShell::writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data)
+{
+    for (int lba : lbaSequence)
+    {
+        if (RETURN_WRITE_DONE != write(lba, data))
+        {
+            std::cout << TEST_SCRIPT_2_WRITE_FAIL_MSG << std::endl;
+            return false;
+        }
+    }
+    return true;
+}
+
+bool TestShell::verifyTheSequence(
+    const std::string& data, const vector<int>& lbaSequence)
+{
+    for (int lba : lbaSequence)
+    {
+        string exptected = "[Read] LBA " + std::to_string(lba) + " : " + data;
+        if (exptected != read(lba))
+        {
+            std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG << std::endl;
+            return false;
+        }
+    }
+    return true;
 }
