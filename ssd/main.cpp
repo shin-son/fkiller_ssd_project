@@ -30,6 +30,9 @@ int main(int argc, char** argv) {
 			// Handle other types or errors
 		}
 	}
+	else {
+		cmdProcess.printErrorAndWriteToOutput();
+	}
 	return 0;
 
 #endif

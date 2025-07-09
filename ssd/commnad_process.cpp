@@ -7,7 +7,7 @@
 int CommandProcessor::process(int argc, char* argv[]) {
 	if (argc < 2) {
 		std::cout << "Usage: ssd.exe [w/r] [args...]\n";
-		return -1;
+		return INVALID_COMMAND;
 	}
 	std::string cmd = argv[1];
 	std::vector<std::string> args(argv + 2, argv + argc);
@@ -25,7 +25,6 @@ int CommandProcessor::dispatchCommand(const std::string& cmd, const std::vector<
 
 int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
 	if (!isWriteValidArgument(args)) {
-		printErrorAndWriteToOutput();
 		return INVALID_ARGUMENT;
 	}
 	this->ssdOperator = WRITE_OPERATION;
@@ -37,7 +36,6 @@ int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
 
 int CommandProcessor::handleRead(const std::vector<std::string>& args) {
 	if (!isReadValidArgument(args)) {
-		printErrorAndWriteToOutput();
 		return INVALID_ARGUMENT;
 	}
 
