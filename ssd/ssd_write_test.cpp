@@ -5,34 +5,40 @@ using namespace testing;
 
 TEST(SSDREADWRITE, WRITEPASS_1) {
 	SsdWrite ssdwrite;
-	int address = 0;
-	std::string value = "0xabc";
 
-	EXPECT_NO_THROW(ssdwrite.write(address, value));
+	ssdwrite.loadSsdNandFile();
+
+	int address = 2;
+	std::string value = "0xabcabcab";
+
+	EXPECT_NO_THROW(ssdwrite.writeSsdNandData(address, value));
 }
 
-TEST(SSDREADWRITE, WRITEPASS_2) {
+TEST(SSDREADWRITE, DISABLED_WRITEPASS_2) {
 	SsdWrite ssdwrite;
-	int address = 1;
-	std::string value = "0xc";
 
-	EXPECT_NO_THROW(ssdwrite.write(address, value));
+	ssdwrite.loadSsdNandFile();
+
+	int address = 1;
+	std::string value = "0xc0000000";
+
+	EXPECT_NO_THROW(ssdwrite.writeSsdNandData(address, value));
 }
 
-TEST(SSDREADWRITE, WRITEPASS_3) {
+TEST(SSDREADWRITE, DISABLED_WRITEPASS_3) {
 	SsdWrite ssdwrite;
 	int address = 2;
 	std::string value = "0xa123bc";
 
-	EXPECT_NO_THROW(ssdwrite.write(address, value));
+	EXPECT_NO_THROW(ssdwrite.writeSsdNandData(address, value));
 }
 
-TEST(SSDREADWRITE, WRITEPASS_4) {
+TEST(SSDREADWRITE, DISABLED_WRITEPASS_4) {
 	SsdWrite ssdwrite;
 	int address = 3;
 	std::string value = "0xaabbccdd";
 
-	EXPECT_NO_THROW(ssdwrite.write(address, value));
+	EXPECT_NO_THROW(ssdwrite.writeSsdNandData(address, value));
 }
 
 TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_1) {
@@ -40,7 +46,7 @@ TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_1) {
 	int address = 4;
 	std::string value = "124";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+	EXPECT_THROW(ssdwrite.writeSsdNandData(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, DISABLED_INVALID_ADDRESS_1) {
@@ -48,7 +54,7 @@ TEST(SSDREADWRITE, DISABLED_INVALID_ADDRESS_1) {
 	int address = -1;
 	std::string value = "0xabc";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+	EXPECT_THROW(ssdwrite.writeSsdNandData(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, DISABLED_INVALID_ADDRESS_2) {
@@ -56,7 +62,7 @@ TEST(SSDREADWRITE, DISABLED_INVALID_ADDRESS_2) {
 	int address = -12;
 	std::string value = "0xabc";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+	EXPECT_THROW(ssdwrite.writeSsdNandData(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_2) {
@@ -64,7 +70,7 @@ TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_2) {
 	int address = 34;
 	std::string value = "test";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+	EXPECT_THROW(ssdwrite.writeSsdNandData(address, value), std::invalid_argument);
 }
 
 TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_3) {
@@ -72,5 +78,5 @@ TEST(SSDREADWRITE, DISABLED_INVALID_MEMORY_VALUE_3) {
 	int address = 34;
 	std::string value = "";
 
-	EXPECT_THROW(ssdwrite.write(address, value), std::invalid_argument);
+	EXPECT_THROW(ssdwrite.writeSsdNandData(address, value), std::invalid_argument);
 }

@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "ssd_interface.h"
 #include "constants.h"
+#include "logger.h"
 
 using std::string;
 using std::vector;
@@ -45,6 +46,7 @@ public:
     bool writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data);
     bool verifyTheSequence(const std::string& data, const vector<int>& lbaSequence);
     void eraseWithSize(std::istringstream& iss);
+    void eraseWithEndLBA(std::istringstream& iss);
     bool getEraseParameter(int& startLBA, int& size, std::istringstream& iss);
     bool isVaiidEraseRange(const int startLBA, const int endLBA);
     bool eraseRange(int startLBA, int endLBA);
@@ -67,5 +69,7 @@ public:
     friend class TestShellFixture_EraseWithStartEnd_Test;
 
     SSDInterface* ssdAdapter;
+    Logger& logger = Logger::getInstance();
     unsigned int SSD_SIZE = 100;
+    const string CLASS_NAME = "TestShell";
 };

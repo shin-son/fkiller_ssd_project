@@ -13,26 +13,25 @@ int main(int argc, char** argv) {
 
 #else
 	CommandProcessor cmdProcess;
-	if (cmdProcess.process(argc, argv) == SUCCESS) {
-		int type = cmdProcess.getOperator();
-		int index = cmdProcess.getAddress();
-		std::string target = cmdProcess.getInputValue();
+	if (cmdProcess.process(argc, argv) != SUCCESS) cmdProcess.printErrorAndWriteToOutput();
 
-		SsdFacade& ssdFacade = SsdFacade::getInstance();
+	int type = cmdProcess.getOperator();
 
-		if (type == WRITE_OPERATION) { // Write operation
-			ssdFacade.writeSsdIndex(index, target);
-		}
-		else if (type == READ_OPERATION) { // Read operation
-			ssdFacade.readSsdIndex(index);
-		}
-		else {
-			// Handle other types or errors
-		}
+	SsdFacade& ssdFacade = SsdFacade::getInstance();
+
+	if (type == WRITE_OPERATION) { // Write operation
+		ssdFacade.writeSsdIndex(cmdProcess);
+	}
+	else if (type == READ_OPERATION) { // Read operation
+		ssdFacade.readSsdIndex(cmdProcess);
+	}
+	else if (type == ERASE_OPERATION) { // Erase operation
+		ssdFacade.eraseSsdIndexToSize(cmdProcess);
 	}
 	else {
-		cmdProcess.printErrorAndWriteToOutput();
+		// Handle other types or errors
 	}
+
 	return 0;
 
 #endif

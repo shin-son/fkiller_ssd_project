@@ -2,12 +2,15 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "ssd_file_io.h"
 
 class SsdRead
 {
 public:
 	SsdRead(std::string readFileName = "ssd_nand.txt", std::string writeFileName = "ssd_output.txt")
 		: ssdReadFileName(readFileName), ssdWriteFileName(writeFileName) {
+		ssdFileIoRead.setFileName(readFileName);
+		ssdFileIoWrite.setFileName(writeFileName);
 	}
 
 	bool readSsdNandFile();
@@ -19,20 +22,12 @@ public:
 
 private:
 
-	void loadSsdNandData();
-	void saveSsdResultData(const std::string &targetString);
-	void preConditionCheck(int index);
-
-	bool openReadFileStream(std::string fileName);
-	void closeReadFileStream();
-	bool openWriteFileStream();
-	void closeWriteFileStream();
-
 	std::string ssdReadFileName;
 	std::string ssdWriteFileName;
+
 	std::vector<std::string> ssdNandData;
 
-	std::ifstream readFileStream;
-	std::ofstream writeFileStream;
+	SsdFileIo ssdFileIoRead;
+	SsdFileIo ssdFileIoWrite;
 };
 
