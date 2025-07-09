@@ -9,8 +9,9 @@ using std::string;
 
 class SSDAdapter : public SSDInterface {
 public:
-    string read(const int LBA);
-    string write(const int LBA, const string& data);
+    string read(const int LBA) override;
+    string write(const int LBA, const string& data) override;
+    string erase(const int LBA, const int size) override;
 
 private:
     void executeSystemCall(const string& command);
