@@ -28,6 +28,11 @@ string SSDAdapter::write(const int LBA, const string& data) {
     return result;
 }
 
+string SSDAdapter::erase(const int LBA, const int size)
+{
+    return "";
+}
+
 string SSDAdapter::readOutputFile() {
     std::ifstream infile(SSD_OUTPUT_FILE_PATH);
     if (!infile.is_open()) {
