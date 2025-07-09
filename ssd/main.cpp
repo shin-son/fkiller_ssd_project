@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 	int type = cmdProcess.getOperator();
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
-	const std::string testDir = std::filesystem::current_path().string() + "/test_buffer_write";
+	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
 	BufferManager mgr(testDir);
 
 	switch (type) {

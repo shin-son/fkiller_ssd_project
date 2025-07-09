@@ -5,7 +5,7 @@
 #include "ssd_constants.h"
 #include <sstream>
 
-// de
+// debugging
 #include <iostream>
 using namespace std;
 //
@@ -23,7 +23,7 @@ bool BufferManager::addWrite(int lba, const std::string& value) {
 	int bufferIdx = 0;
 
 	bufferIdx = findWriteSameAddress(lba);
-	if (bufferIdx != -1) {
+	if (bufferIdx != NOT_FOUND_ANY_BUFFER) {
 		std::string new_path = formatWriteFileName(bufferIdx, lba, value);
 		std::string old_path = bufferDirectory + "/" + getTheSameAddressBuffer();
 		fs::rename(old_path, new_path);
@@ -32,7 +32,7 @@ bool BufferManager::addWrite(int lba, const std::string& value) {
 	}
 
 	bufferIdx = findEmtpyBuffer();
-	if (bufferIdx == -1) return false;
+	if (bufferIdx == ALL_BUFFER_USED) return false;
 
 	// Only Empty case
 	std::string empty_path = bufferDirectory + "/" + std::to_string(bufferIdx) + "_empty";
@@ -48,28 +48,28 @@ std::string BufferManager::getTheSameAddressBuffer() {
 }
 
 int BufferManager::findEmtpyBuffer() {
-	int i = 0;
+	int bufferIdx = 0;
 	bool isEmpty = false;
 	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
-		++i;
+		++bufferIdx;
 		std::string filename = entry.path().filename().string();
-		if (filename.rfind(std::to_string(i) + "_empty", 0) == 0) {
+		if (filename.rfind(std::to_string(bufferIdx) + "_empty", 0) == 0) {
 			isEmpty = true;
 			break;
 		}
 	}
-	if (isEmpty) return i;
-	return -1;
+	if (isEmpty) return bufferIdx;
+	return ALL_BUFFER_USED;
 }
 
 int BufferManager::findWriteSameAddress(int lba) {
-	int i = 0;
+	int bufferIdx = 0;
 	bool isSameAddress = false;
 	std::string fileName;
 	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
-		++i;
+		++bufferIdx;
 		fileName = entry.path().filename().string();
-		if (fileName.rfind(std::to_string(i) + "_w_" + std::to_string(lba) + "_", 0) == 0) {
+		if (fileName.rfind(std::to_string(bufferIdx) + "_w_" + std::to_string(lba) + "_", 0) == 0) {
 			isSameAddress = true;
 			break;
 		}
@@ -77,10 +77,10 @@ int BufferManager::findWriteSameAddress(int lba) {
 
 	if (isSameAddress) {
 		setTheSameAddressBuffer(fileName);
-		return i;
+		return bufferIdx;
 	}
 
-	return -1;
+	return NOT_FOUND_ANY_BUFFER;
 
 }
 
