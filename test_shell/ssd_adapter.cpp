@@ -45,6 +45,9 @@ string SSDAdapter::readOutputFile() {
     string result((std::istreambuf_iterator<char>(infile)),
         std::istreambuf_iterator<char>());
     infile.close();
+    if (!result.empty() && result.back() == '\n') {
+        result.erase(result.size() - 1);
+    }
     return result;
 }
 

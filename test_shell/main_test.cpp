@@ -139,14 +139,14 @@ TEST_F(TestShellFixture, FullWriteFail) {
 
 TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
     for (int i = 0; i < 20; i++) {
-        auto t = testShell.intToHexString(i);
+        auto testString = testShell.intToHexString(i);
         for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, testString)).Times(1)
                 .WillOnce(Return(""));
         }
         for (int j = 0; j < 5; j++) {
             EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
-                .WillOnce(Return(t));
+                .WillOnce(Return(testString));
         }
     }
     testing::internal::CaptureStdout();
@@ -157,14 +157,14 @@ TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
 
 TEST_F(TestShellFixture, FullWriteAndReadCompareFail) {
     for (int i = 0; i < 10; i++) {
-        auto t = testShell.intToHexString(i);
+        auto testString = testShell.intToHexString(i);
         for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, testString)).Times(1)
                 .WillOnce(Return(""));
         }
         for (int j = 0; j < 5; j++) {
             EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
-                .WillOnce(Return(t));
+                .WillOnce(Return(testString));
         }
     }
     EXPECT_CALL(mockSSDAdapter, write(50, testShell.intToHexString(10))).Times(1)
@@ -396,7 +396,7 @@ TEST_F(TestShellFixture, PartialLBAWriteVerifyFail) {
 
     EXPECT_CALL(mockSSDAdapter, read(_))
         .WillOnce(Return(string(writeData)))
-        .WillOnce(Return(string("0x0000")))
+        .WillOnce(Return(string("ERROR")))
         .WillRepeatedly(Return(string(writeData)));
 
     testing::internal::CaptureStdout();
