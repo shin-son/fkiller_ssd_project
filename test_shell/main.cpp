@@ -1,6 +1,6 @@
 #include "test_shell.h"
 #include "ssd_adapter.h"
-#include "runner.h"
+#include "test_runner.h"
 
 #ifdef _DEBUG
 #include "mock_ssd_adapter.h"

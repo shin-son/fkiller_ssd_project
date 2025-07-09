@@ -1,6 +1,6 @@
 #include <filesystem>
 #include <thread>
-#include "runner.h"
+#include "test_runner.h"
 
 TestRunner::TestRunner(TestShell& shell, SSDAdapter& adapter)
     : testShell(shell), ssdAdapter(adapter)
@@ -57,7 +57,7 @@ void TestRunner::runScript(std::ifstream& script) {
 
         std::cerr << cmd << " RUN" << std::flush;
 
-        if (getResultFromCommand(cmd) == NEXT_EXIT) std::cerr << " PASS!\n";
+        if (getResultFromCommand(cmd) == NEXT_EXIT) std::cerr << " Pass\n";
         else {
             std::cerr << " FAIL!\n";
             return;
