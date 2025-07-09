@@ -1,4 +1,5 @@
 #include "test_shell.h"
+#include "ssd_adapter.h"
 
 #ifdef _DEBUG
 #include "mock_ssd_adapter.h"
@@ -12,6 +13,8 @@ int main(int argc, char** argv) {
 #else
 int main() {
     TestShell testShell;
+    SSDAdapter ssdAdapter;
+    testShell.setSsdAdapter(&ssdAdapter);
     testShell.runShell();
 
     return 0;
