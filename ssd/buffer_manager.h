@@ -7,7 +7,7 @@ public:
 	BufferManager(const std::string& bufferDir = "./buffer");
 	bool addWrite(int lba, const std::string& value);
 	bool addErase(int lba, int size);
-	void flushBuffer();
+	std::vector<std::vector<std::string>> flushBuffer();
 	void resetAllBuffer();
 
 private:

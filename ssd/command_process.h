@@ -7,6 +7,7 @@ class CommandProcessor {
 public:
     PatternChecker patterChecker;
     int process(int argc, char* argv[]);
+    int flushProcess(const std::vector<std::string>& args);
     int getOperator();
     std::string getInputValue();
     int getAddress();

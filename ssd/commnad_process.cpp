@@ -14,6 +14,22 @@ int CommandProcessor::process(int argc, char* argv[]) {
 
 	return dispatchCommand(cmd, args);
 }
+
+int CommandProcessor::flushProcess(const std::vector<std::string>& args) {
+	for (auto& a : args) std::cout << a << " ";
+	std::cout << std::endl;
+
+	if (args.size() != 4) {
+		std::cout << "Usage: ssd.exe [w/r] [args...]\n";
+		return INVALID_COMMAND;
+	}
+
+	std::string cmd = args[1];
+	std::vector<std::string> cmdArgs{ args[2], args[3] };
+
+	return dispatchCommand(cmd, cmdArgs);
+
+}
 int CommandProcessor::dispatchCommand(const std::string& cmd, const std::vector<std::string>& args) {
 	if (isWriteCommand(cmd)) {
 		return handleWrite(args);

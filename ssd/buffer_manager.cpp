@@ -121,18 +121,22 @@ void BufferManager::resetAllBuffer() {
 	}
 }
 
-void BufferManager::flushBuffer() {
-	std::vector<std::string> preCmd;
+std::vector<std::vector<std::string>> BufferManager::flushBuffer() {
+	std::vector<std::vector<std::string>> commands;
+	std::cout << bufferDirectory  << std::endl;
 	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
-		std::string nowFile = entry.path().filename().string();
-		//execute cmd
-		preCmd = splitByUnderscore(nowFile);
-		for (auto tmp : preCmd) {
-			std::cout << tmp << std::endl;
-		}
-	}
-}
+		std::string filename = entry.path().filename().string();
+		auto tokens = splitByUnderscore(filename);
+		for (auto& t : tokens) std::cout << t << " ";
+		if (tokens.size() < 4) continue;
 
+		std::vector<std::string> cmd;
+		cmd.insert(cmd.end(), tokens.begin(), tokens.end());
+		commands.push_back(cmd);
+	}
+	return commands;
+
+}
 std::vector<std::string> BufferManager::splitByUnderscore(const std::string& input) {
 	std::vector<std::string> tokens;
 	std::stringstream ss(input);

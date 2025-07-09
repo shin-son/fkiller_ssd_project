@@ -2,6 +2,7 @@
 #include "buffer_manager.h"
 #include <filesystem>
 #include <fstream>
+#include "command_process.h"
 
 namespace fs = std::filesystem;
 
@@ -110,9 +111,15 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 	std::ofstream(testDir + "/4_w_10_0x12").close();
 	std::ofstream(testDir + "/5_e_10_10").close();
 
+	CommandProcessor cmdp;
 	//w_20_0x12341234
 	if (mgr.addWrite(50, "0x12341234") == false) {
-		mgr.flushBuffer();
+		auto commands = mgr.flushBuffer();
+
+		for (auto& cmd : commands) {
+			CommandProcessor cp;
+			cp.flushProcess(cmd);
+		}
 	}
 }
 
