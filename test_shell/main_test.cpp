@@ -17,6 +17,15 @@ protected:
     }
 };
 
+TEST_F(TestShellFixture, ExitCMD) {
+    string cmdInput = EXIT_COMMAND_NAME;
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("PROGRAM EXIT"), std::string::npos);
+}
+
 TEST_F(TestShellFixture, InvalidCMD) {
     string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
     testing::internal::CaptureStdout();
