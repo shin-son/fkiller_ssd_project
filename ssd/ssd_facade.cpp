@@ -1,4 +1,4 @@
-#include "SsdFacade.h"
+#include "ssd_facade.h"
 
 using std::string;
 
@@ -17,3 +17,11 @@ void SsdFacade::writeSsdIndex(int index, const std::string& targetString)
 {
 	ssdWrite.write(index, targetString);
 }
+
+void SsdFacade::eraseSsdIndexToSize(int index, int size) {
+	ssdErase.loadSsdNandFile();
+	ssdErase.eraseSsdNandData(index, size);
+	ssdErase.saveSsdNandFile();
+}
+
+

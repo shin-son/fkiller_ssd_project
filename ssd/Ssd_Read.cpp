@@ -1,4 +1,4 @@
-#include "ssd_Read.h"
+#include "ssd_read.h"
 #include <fstream>
 #include <string>
 #include "ssd_constants.h"
