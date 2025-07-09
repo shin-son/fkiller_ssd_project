@@ -193,11 +193,10 @@ void TestShell::fullWriteAndReadCompare()
     int j = 1;
     bool failFlag = false;
     for (int i = 0; i < 20; i++) {
-        auto test_string = intToHexString(i);
+        auto testString = intToHexString(i);
         for (int j = 0; j < 5; j++) {
-            auto ret = ssdAdapter->write(5 * i + j, test_string);
-            if (ret != "") {
-                LOG_PRINT("FAIL: ssdAdapter->write " + std::to_string(i) + " " + std::to_string(j));
+            auto ret = ssdAdapter->write(5 * i + j, testString);
+            if (ret.compare("") != 0) {
                 failFlag = true;
                 break;
             }
@@ -206,7 +205,8 @@ void TestShell::fullWriteAndReadCompare()
         if (failFlag == true) break;
 
         for (int j = 0; j < 5; j++) {
-            if (test_string.compare(ssdAdapter->read(5 * i + j)) == 0) {
+            auto ret = ssdAdapter->read(5 * i + j);
+            if (testString.compare(ret) != 0) {
                 failFlag = true;
                 break;
             }
