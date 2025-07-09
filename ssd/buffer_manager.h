@@ -5,6 +5,7 @@ class BufferManager {
 public:
     BufferManager(const std::string& bufferDir = "./buffer");
     bool addWrite(int lba, const std::string& value);
+    void resetAllBuffer();
 
 private:
     std::string bufferDirectory;

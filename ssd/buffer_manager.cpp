@@ -52,3 +52,12 @@ std::string BufferManager::formatWriteFileName(int bufferIdx, int lba, const std
     return bufferDirectory + "/" + std::to_string(bufferIdx) + "_w_" +
         std::to_string(lba) + "_" + value;
 }
+
+void BufferManager::resetAllBuffer() {
+    int bufferIdx = 0;
+    for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
+        std::string nowFile = bufferDirectory + "/" + entry.path().filename().string();
+        std::string empty_path = bufferDirectory + "/" + std::to_string(++bufferIdx) + "_empty";
+        fs::rename(nowFile, empty_path);
+    }
+}

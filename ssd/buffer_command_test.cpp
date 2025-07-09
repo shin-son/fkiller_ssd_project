@@ -11,6 +11,7 @@ TEST(BufferManagerTest, WriteCommand_First_Buffer) {
         fs::create_directory(testDir);
 
     BufferManager mgr(testDir);
+    // process ssd.exe w 3 0x234234
     mgr.addWrite(3, "0xABCD1234");
 
     bool found = false;
@@ -36,4 +37,14 @@ TEST(BufferManagerTest, WriteCommand_full_buffer) {
     mgr.addWrite(7, "0x3214");
     mgr.addWrite(9, "0xaaaa");
     mgr.addWrite(10, "0xbbbb");
+}
+
+TEST(BufferManagerTest, Make_All_empty_buffer) {
+    const std::string testDir = "./test_buffer_write";
+
+    if (fs::exists(testDir) && fs::is_directory(testDir))
+        fs::create_directory(testDir);
+
+    BufferManager mgr(testDir);
+    mgr.resetAllBuffer();
 }
