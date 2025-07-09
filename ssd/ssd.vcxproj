@@ -126,6 +126,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssd_erase.cpp" />
     <ClCompile Include="ssd_facade.cpp" />
+    <ClCompile Include="ssd_file_io.cpp" />
     <ClCompile Include="ssd_write.cpp" />
     <ClCompile Include="ssd_read.cpp" />
     <ClCompile Include="ssd_read_test.cpp">
@@ -145,6 +146,7 @@
     <ClInclude Include="ssd_erase.h" />
     <ClInclude Include="ssd_facade.h" />
     <ClInclude Include="ssd_constants.h" />
+    <ClInclude Include="ssd_file_io.h" />
     <ClInclude Include="ssd_read.h" />
     <ClInclude Include="ssd_write.h" />
   </ItemGroup>

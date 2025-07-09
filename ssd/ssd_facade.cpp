@@ -17,3 +17,11 @@ void SsdFacade::writeSsdIndex(int index, const std::string& targetString)
 {
 	
 }
+
+void SsdFacade::eraseSsdIndexToSize(int index, int size) {
+	ssdErase.loadSsdNandFile();
+	ssdErase.eraseSsdNandData(index, size);
+	ssdErase.saveSsdNandFile();
+}
+
+
