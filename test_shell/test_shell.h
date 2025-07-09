@@ -69,7 +69,7 @@ public:
     friend class TestShellFixture_EraseWithStartEnd_Test;
 
     SSDInterface* ssdAdapter;
-    Logger logger;
+    Logger& logger = Logger::getInstance();
     unsigned int SSD_SIZE = 100;
     const string CLASS_NAME = "TestShell";
 };
