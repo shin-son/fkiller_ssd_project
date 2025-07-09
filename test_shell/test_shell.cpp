@@ -41,7 +41,7 @@ int TestShell::runCommand(std::string& command)
     }
 
     if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
-        HandlePartialLbaWrite();
+        partialLBAWrite();
         return 3;
     }
 
