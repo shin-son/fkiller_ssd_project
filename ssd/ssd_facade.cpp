@@ -7,20 +7,22 @@ SsdFacade& SsdFacade::getInstance() {
 	return instance;
 }
 
-void SsdFacade::readSsdIndex(int index) {
+void SsdFacade::readSsdIndex(CommandProcessor cmd) {
 	ssdRead.readSsdNandFile();
-	string ret = ssdRead.getSsdNandDataAt(index);
+	string ret = ssdRead.getSsdNandDataAt(cmd.getAddress());
 	ssdRead.writeSsdNandDataToFile(ret);
 }
 
-void SsdFacade::writeSsdIndex(int index, const std::string& targetString)
+void SsdFacade::writeSsdIndex(CommandProcessor cmd)
 {
-	ssdWrite.write(index, targetString);
+	ssdWrite.loadSsdNandFile();
+	ssdWrite.writeSsdNandData(cmd.getAddress(), cmd.getInputValue());
+	ssdWrite.saveSsdNandFile();
 }
 
-void SsdFacade::eraseSsdIndexToSize(int index, int size) {
+void SsdFacade::eraseSsdIndexToSize(CommandProcessor cmd) {
 	ssdErase.loadSsdNandFile();
-	ssdErase.eraseSsdNandData(index, size);
+	ssdErase.eraseSsdNandData(cmd.getAddress(), cmd.getSize());
 	ssdErase.saveSsdNandFile();
 }
 

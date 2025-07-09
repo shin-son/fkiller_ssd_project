@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "ssd_interface.h"
 #include "constants.h"
+#include "logger.h"
 
 using std::string;
 using std::vector;
@@ -28,22 +29,27 @@ public:
     }
     void setSsdAdapter(SSDInterface* adapter);
     void runShell();
-    int runCommand(std::string& command);
+    int runCommand(const std::string& command);
 
-private:
+    private:
     void printHelp();
-    string read(const int LBA);
-    string write(const int LBA, const string& data);
-    void exit();
-    void help();
     void fullWrite(const std::string& data);
     void fullRead();
     void fullWriteAndReadCompare();
     void partialLBAWrite(const string& data = INPUT_DATA_FOR_PARTIAL_LBA_WRITE);
+    void writeReadAging();
+
+    string read(const int LBA);
+    string write(const int LBA, const string& data);
+    string erase(const int LBA, const int size);
+    string intToHexString(int value);
     bool writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data);
     bool verifyTheSequence(const std::string& data, const vector<int>& lbaSequence);
-    void writeReadAging();
-    string intToHexString(int value);
+    void eraseWithSize(std::istringstream& iss);
+    void eraseWithEndLBA(std::istringstream& iss);
+    bool getEraseParameter(int& startLBA, int& size, std::istringstream& iss);
+    bool isVaiidEraseRange(const int startLBA, const int endLBA);
+    bool eraseRange(int startLBA, int endLBA);
 
     friend class TestShellFixture_ReadPass_Test;
     friend class TestShellFixture_ReadFailWrongLBA_Test;
@@ -59,7 +65,11 @@ private:
     friend class TestShellFixture_PartialLBAWriteWriteFail_Test;
     friend class TestShellFixture_WriteReadAgingPass_Test;
     friend class TestShellFixture_WriteReadAgingFail_Test;
+    friend class TestShellFixture_EraseWithSize_Test;
+    friend class TestShellFixture_EraseWithStartEnd_Test;
 
     SSDInterface* ssdAdapter;
+    Logger& logger = Logger::getInstance();
     unsigned int SSD_SIZE = 100;
+    const string CLASS_NAME = "TestShell";
 };

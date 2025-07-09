@@ -2,14 +2,25 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "ssd_file_io.h"
 
 class SsdWrite
 {
 public:
-	void write(int address, const std::string& value);
-	void writeOutputFile(const std::string& result);
+	SsdWrite() {
+		ssdFileIoRead.setFileName("ssd_nand.txt");
+		ssdFileIoWrite.setFileName("ssd_output.txt");
+	}
+
+	void loadSsdNandFile();
+	void writeSsdNandData(int index, const std::string& value);
+	void saveSsdNandFile();
+	void writeOutputFile(const std::string& targetString);
+
 private:
-	void writeTheValueToMemory(int address, const std::string& value);
-	bool readTheNandMemory(const std::string& memoryFileName);
-	std::vector<uint32_t> memory;
+
+	std::vector<std::string> ssdNandData;
+
+	SsdFileIo ssdFileIoRead;
+	SsdFileIo ssdFileIoWrite;
 };

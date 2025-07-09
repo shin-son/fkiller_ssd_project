@@ -36,6 +36,12 @@
     <ClCompile Include="ssd_adapter.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="test_runner.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">
@@ -53,5 +59,19 @@
     <ClInclude Include="ssd_adapter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="test_runner.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="latest.log">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="shell_script.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
   </ItemGroup>
 </Project>

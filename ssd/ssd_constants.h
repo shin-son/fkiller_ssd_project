@@ -12,3 +12,5 @@ static const int INVALID_ARGUMENT = -2;
 const std::string ERROR_STRING = "ERROR";
 
 static const int ALL_BUFFER_USED = -1;
+const std::string EMPTY_STRING = "";
+const std::string INIT_STRING = "0x00000000";

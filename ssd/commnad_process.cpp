@@ -3,6 +3,8 @@
 #include "ssd_Read.h"
 #include "ssd_constants.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 int CommandProcessor::process(int argc, char* argv[]) {
 	if (argc < 2) {
@@ -37,6 +39,9 @@ int CommandProcessor::dispatchCommand(const std::string& cmd, const std::vector<
 	if (isReadCommand(cmd)) {
 		return handleRead(args);
 	}
+	if (isEraseCommand(cmd)) {
+		return handleErase(args);
+	}
 }
 
 int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
@@ -60,8 +65,30 @@ int CommandProcessor::handleRead(const std::vector<std::string>& args) {
 	return SUCCESS;
 }
 
+int CommandProcessor::handleErase(const std::vector<std::string>& args) {
+	if (!isEraseValidArgument(args)) {
+		return INVALID_ARGUMENT;
+	}
+
+	this->ssdOperator = ERASE_OPERATION;
+	this->address = std::stoi(args[0]);
+	this->size = std::stoi(args[1]);
+
+	if (address + size >= 100) return INVALID_ARGUMENT;
+
+	return SUCCESS;
+}
+
 bool CommandProcessor::isWriteCommand(const std::string& cmd) {
 	return cmd == "w" || cmd == "W";
+}
+
+bool CommandProcessor::isReadCommand(const std::string& cmd) {
+	return cmd == "r" || cmd == "R";
+}
+
+bool CommandProcessor::isEraseCommand(const std::string& cmd) {
+	return cmd == "e" || cmd == "E";
 }
 
 bool CommandProcessor::isWriteValidArgument(const std::vector<std::string>& args) {
@@ -74,8 +101,9 @@ bool CommandProcessor::isReadValidArgument(const std::vector<std::string>& args)
 	return patterChecker.isValidAddress(args[0]);
 }
 
-bool CommandProcessor::isReadCommand(const std::string& cmd) {
-	return cmd == "r" || cmd == "R";
+bool CommandProcessor::isEraseValidArgument(const std::vector<std::string>& args) {
+	if (args.size() != 2) return false;
+	return patterChecker.isValidAddress(args[0]) && patterChecker.isValidSize(args[1]);;
 }
 
 void CommandProcessor::printErrorAndWriteToOutput() {
@@ -92,5 +120,18 @@ int CommandProcessor::getAddress() {
 }
 
 std::string CommandProcessor::getInputValue() {
-	return this->memoryValue;
+
+	std::stringstream ss;
+	int decimalValue = std::stoul(this->memoryValue, nullptr, 16);
+
+	ss << "0x" << std::setw(8) << std::setfill('0')
+		<< std::hex << std::uppercase
+		<< decimalValue;
+
+	return ss.str();
 }
+
+int CommandProcessor::getSize() {
+	return this->size;
+}
+
