@@ -286,7 +286,7 @@ string TestShell::read(const int LBA)
 
 string TestShell::erase(const int LBA, const int size)
 {
-    logger.print(CLASS_NAME, __func__, "called");
+    logger.print(CLASS_NAME, __func__, "LBA(" + std::to_string(LBA) + ") size(" + std::to_string(size) + ")");
     string result = ssdAdapter->erase(LBA, size);
     if (result == "ERROR") result = "[Erase] ERROR";
     else result = "[Erase] Done";
