@@ -14,40 +14,40 @@ void TestShell::runShell() {
         std::getline(std::cin, command);
 
         int retFlag = runCommand(command);
-        if (retFlag == 2) break;
-        if (retFlag == 3) continue;
+        if (retFlag == NEXT_EXIT) break;
     }
 }
 
 int TestShell::runCommand(std::string& command)
 {
-    int retFlag = 1;
+    int retFlag = NEXT_KEEP_GOING;
     std::istringstream iss(command);
     std::string cmd;
     iss >> cmd;
 
     if (cmd == "exit") {
         std::cout << "PROGRAM EXIT" << std::endl;
-        { retFlag = 2; return retFlag; };
+        return NEXT_EXIT;
     }
 
     if (cmd == "help") {
         printHelp();
-        { retFlag = 3; return retFlag; };
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
         fullWriteAndReadCompare();
+        return NEXT_KEEP_GOING;
     }
 
     if ((cmd == "2_PartialLBAWrite") || (cmd == "2_")){
-        HandlePartialLbaWrite();
-        return 3;
+        partialLBAWrite();
+        return NEXT_KEEP_GOING;
     }
 
     if (("3_WriteReadAging" == command) || ("3_" == command)) {
         writeReadAging();
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "write") {
@@ -56,22 +56,22 @@ int TestShell::runCommand(std::string& command)
         std::string extra;
         if (!(iss >> lba)) {
             std::cout << "[Write] ERROR: Missing lba" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         if (!(iss >> data)) {
             std::cout << "[Write] ERROR: Missing data" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         if (iss >> extra) {
             std::cout << "[Write] ERROR: Too many arguments" << std::endl;
-            return 3;
+            return NEXT_KEEP_GOING;
         }
 
         std::string result = write(lba, data);
         std::cout << result << std::endl;
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "read") {
@@ -79,18 +79,18 @@ int TestShell::runCommand(std::string& command)
 
         if (!(iss >> LBA)) {
             std::cout << "[Read] ERROR: Missing LBA" << std::endl;
-            return 1;
+            return NEXT_KEEP_GOING;
         }
 
         string result = read(LBA);
 
         if (result == "[Read] ERROR") return 1;
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if (cmd == "fullread") {
         fullRead();
-        return 3;
+        return NEXT_KEEP_GOING;
     }
 
     if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
@@ -100,32 +100,10 @@ int TestShell::runCommand(std::string& command)
         return NEXT_KEEP_GOING;
     }
 
+    // Reaching here means that the command is invalid.
+    std::cout << INVALID_COMMAND_MSG << std::endl;
+
     return retFlag;
-}
-
-void TestShell::writeReadAging() {
-    bool allMatch = true;
-
-    for (int i = 0; i < 200; ++i) {
-        std::stringstream ss;
-        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
-        std::string randData = ss.str();
-
-        ssdAdapter->write(0, randData);
-        ssdAdapter->write(99, randData);
-
-        std::string result0 = ssdAdapter->read(0);
-        std::string result99 = ssdAdapter->read(99);
-
-        if (result0 != result99) {
-            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0  << " LBA[99] : " << result99 << std::endl;
-            allMatch = false;
-        }
-    }
-
-    if (allMatch) {
-        std::cout << "[Aging] PASS" << std::endl;
-    }
 }
 
 void TestShell::printHelp()
@@ -145,8 +123,15 @@ void TestShell::printHelp()
         "\t  step3) write the data to lba 3\n" <<
         "\t  step4) write the data to lba 1\n" <<
         "\t  step5) write the data to lba 2\n" <<
-        "\t  step6) Check if dat of all LBA 0 to 4 are the same\n" <<
+        "\t  step6) Check if data of all LBA 0 to 4 are the same\n" <<
         "\t usage - 2_PartialLBAWrite(or 2_)" << std::endl;
+    std::cout << " Test script - 3 (repeats following steps 200 times) \n" <<
+        "\t  step1) write the data to lba 0\n" <<
+        "\t  step2) write the data to lba 99\n" <<
+        "\t  step3) read the data to lba 0\n" <<
+        "\t  step4) read the data to lba 99\n" <<
+        "\t  step6) Check if data of LBA 0 and 99 is the same\n" <<
+        "\t usage - 3_WriteReadAging(or 3_)" << std::endl;
     std::cout << "---------------------------------------"
         << "---------------------------------" << std::endl;
 }
@@ -266,4 +251,29 @@ bool TestShell::verifyTheSequence(
         }
     }
     return true;
+}
+
+void TestShell::writeReadAging() {
+    bool allMatch = true;
+
+    for (int i = 0; i < 200; ++i) {
+        std::stringstream ss;
+        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
+        std::string randData = ss.str();
+
+        ssdAdapter->write(0, randData);
+        ssdAdapter->write(99, randData);
+
+        std::string result0 = ssdAdapter->read(0);
+        std::string result99 = ssdAdapter->read(99);
+
+        if (result0 != result99) {
+            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
+            allMatch = false;
+        }
+    }
+
+    if (allMatch) {
+        std::cout << "[Aging] PASS" << std::endl;
+    }
 }

@@ -4,6 +4,8 @@
 #define RETURN_WRITE_DONE				"[Write] Done"
 #define INVALID_COMMAND_MSG				"INVALID COMMAND"
 
+#define EXIT_COMMAND_NAME				"exit"
+
 // definition for Test Script2(PartialLBAWrite)
 #define TEST_SCRIPT_2_FULL_COMMAND_NAME	 "2_PartialLBAWrite"
 #define TEST_SCRIPT_2_SHORT_COMMAND_NAME "2_"
