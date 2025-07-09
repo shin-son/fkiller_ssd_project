@@ -18,3 +18,7 @@
 #define LBA_COUNT_FOR_PARTIAL_LBA_WRITE	 5
 
 #define ERASE_UNIT_LBA_COUNT			 10
+
+// definition for Test Shell Runner
+#define CONVERSATION_MODE				1
+#define TEST_SCRIPT_MODE				2

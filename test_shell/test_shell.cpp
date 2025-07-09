@@ -8,10 +8,10 @@ void TestShell::setSsdAdapter(SSDInterface* adapter)
 }
 
 void TestShell::runShell() {
-    std::string command;
+    string command;
     while (true) {
         std::cout << " SHELL> ";
-        std::getline(std::cin, command);
+        if (!std::getline(std::cin, command)) break;
 
         int retFlag = runCommand(command);
         if (retFlag == NEXT_EXIT) break;
