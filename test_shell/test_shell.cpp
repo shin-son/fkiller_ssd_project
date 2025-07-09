@@ -18,7 +18,7 @@ void TestShell::runShell() {
     }
 }
 
-int TestShell::runCommand(std::string& command)
+int TestShell::runCommand(const std::string& command)
 {
     int retFlag = NEXT_KEEP_GOING;
     std::istringstream iss(command);
@@ -93,6 +93,23 @@ int TestShell::runCommand(std::string& command)
         return NEXT_KEEP_GOING;
     }
 
+    if (cmd == "erase")
+    {
+        eraseWithSize(iss);
+        return NEXT_KEEP_GOING;
+    }
+
+    if (cmd == "erase_range")
+    {
+        int startLBA = 0;
+        int endLBA = 0;
+
+        iss >> startLBA;
+        iss >> endLBA;
+
+        return NEXT_KEEP_GOING;
+    }
+
     if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
         || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
     {
@@ -136,14 +153,6 @@ void TestShell::printHelp()
         << "---------------------------------" << std::endl;
 }
 
-string TestShell::write(const int LBA, const string& data) {
-    if (!ssdAdapter) return "[Write] ERROR";
-
-    std::string result = ssdAdapter->write(LBA, data);
-    if (result == "") return "[Write] Done";
-    else return "[Write] ERROR";
-}
-
 void TestShell::fullWrite(const string& data) {
     for (int i = 0; i < 100; ++i) {
         std::string result = write(i, data);
@@ -155,14 +164,6 @@ void TestShell::fullWrite(const string& data) {
     std::cout << "[fullWrite] Done" << std::endl;
 }
 
-string TestShell::read(const int LBA)
-{
-    string result = ssdAdapter->read(LBA);
-    if (result == "ERROR") result = "[Read] ERROR";
-    else result = "[Read] LBA " + std::to_string(LBA)+" : " + result;
-    std::cout << result << std::endl;
-    return result;
-}
 
 void TestShell::fullRead()
 {
@@ -202,15 +203,6 @@ void TestShell::fullWriteAndReadCompare()
     }
 }
 
-string TestShell::intToHexString(int value) {
-    std::stringstream ss;
-    ss << "0x"
-        << std::setfill('0') << std::setw(8)
-        << std::hex << std::uppercase
-        << value;
-    return ss.str();
-}
-
 void TestShell::partialLBAWrite(const string& data)
 {
     vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
@@ -223,6 +215,66 @@ void TestShell::partialLBAWrite(const string& data)
     if (false == verifyTheSequence(data, lbaSequence)) return;
 
     std::cout << TEST_SCRIPT_2_SUCCESS_MSG << std::endl;
+}
+
+void TestShell::writeReadAging() {
+    bool allMatch = true;
+
+    for (int i = 0; i < 200; ++i) {
+        std::stringstream ss;
+        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
+        std::string randData = ss.str();
+
+        ssdAdapter->write(0, randData);
+        ssdAdapter->write(99, randData);
+
+        std::string result0 = ssdAdapter->read(0);
+        std::string result99 = ssdAdapter->read(99);
+
+        if (result0 != result99) {
+            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
+            allMatch = false;
+        }
+    }
+
+    if (allMatch) {
+        std::cout << "[Aging] PASS" << std::endl;
+    }
+}
+
+string TestShell::write(const int LBA, const string& data) {
+    if (!ssdAdapter) return "[Write] ERROR";
+
+    std::string result = ssdAdapter->write(LBA, data);
+    if (result == "") return "[Write] Done";
+    else return "[Write] ERROR";
+}
+
+string TestShell::read(const int LBA)
+{
+    string result = ssdAdapter->read(LBA);
+    if (result == "ERROR") result = "[Read] ERROR";
+    else result = "[Read] LBA " + std::to_string(LBA) + " : " + result;
+    std::cout << result << std::endl;
+    return result;
+}
+
+string TestShell::erase(const int LBA, const int size)
+{
+    string result = ssdAdapter->erase(LBA, size);
+    if (result == "ERROR") result = "[Erase] ERROR";
+    else result = "[Erase] Done";
+    std::cout << result << std::endl;
+    return result;
+}
+
+string TestShell::intToHexString(int value) {
+    std::stringstream ss;
+    ss << "0x"
+        << std::setfill('0') << std::setw(8)
+        << std::hex << std::uppercase
+        << value;
+    return ss.str();
 }
 
 bool TestShell::writeTheSequence(const std::vector<int>& lbaSequence, const std::string& data)
@@ -253,27 +305,75 @@ bool TestShell::verifyTheSequence(
     return true;
 }
 
-void TestShell::writeReadAging() {
-    bool allMatch = true;
+void TestShell::eraseWithSize(std::istringstream& iss)
+{
+    int startLBA = 0;
+    int size = 0;
 
-    for (int i = 0; i < 200; ++i) {
-        std::stringstream ss;
-        ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
-        std::string randData = ss.str();
+    if (false == getEraseParameter(startLBA, size, iss)) return;
 
-        ssdAdapter->write(0, randData);
-        ssdAdapter->write(99, randData);
+    int endLBA = startLBA + size - 1;
+    if (false == isVaiidEraseRange(startLBA, endLBA))
+    {
+        std::cout << "[Erase] Error: invalid Range(startLBA, size)\n";
+        return;
+    }
 
-        std::string result0 = ssdAdapter->read(0);
-        std::string result99 = ssdAdapter->read(99);
+    if (false == eraseRange(startLBA, endLBA))
+    {
+        std::cout << "[Erase] Error: Erase Operation Fail\n";
+        return;
+    }
+    return;
+}
 
-        if (result0 != result99) {
-            std::cout << "[Aging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
-            allMatch = false;
+bool TestShell::getEraseParameter(int& startLBA, int& size, std::istringstream& iss)
+{
+    if (!(iss >> startLBA))
+    {
+        std::cout << "[Erase] Error: missing startLBA\n";
+        return false;
+    }
+
+    if (!(iss >> size))
+    {
+        std::cout << "[Erase] Error: missing size\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool TestShell::isVaiidEraseRange(const int startLBA, const int endLBA)
+{
+    if (startLBA < 0)  return false;
+    else if (endLBA >= SSD_SIZE) return false;
+    else if (startLBA >= endLBA) return false;
+
+    return true;
+}
+
+bool TestShell::eraseRange(int startLBA, int endLBA)
+{
+    int retSuccess = true;
+    string eraseResult = "";
+    int eraseCount = (endLBA - startLBA + 1) / ERASE_UNIT_LBA_COUNT;
+    eraseCount += ((endLBA - startLBA + 1) % ERASE_UNIT_LBA_COUNT) ? 1 : 0;
+    
+    for (int loopCount = 0; loopCount < eraseCount; loopCount++)
+    {
+        if (endLBA < startLBA + ERASE_UNIT_LBA_COUNT)
+        {
+            eraseResult = erase(startLBA, endLBA - startLBA + 1);
+            break;
+        }
+        else
+        {
+            eraseResult = erase(startLBA, ERASE_UNIT_LBA_COUNT);
+            startLBA += ERASE_UNIT_LBA_COUNT;
         }
     }
 
-    if (allMatch) {
-        std::cout << "[Aging] PASS" << std::endl;
-    }
+    if ("" != eraseResult) return false;    
+    return true;
 }
