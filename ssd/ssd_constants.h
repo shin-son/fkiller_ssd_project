@@ -10,3 +10,5 @@ static const int INVALID_COMMAND = -1;
 static const int INVALID_ARGUMENT = -2;
 
 const std::string ERROR_STRING = "ERROR";
+
+static const int ALL_BUFFER_USED = -1;
