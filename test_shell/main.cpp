@@ -11,13 +11,10 @@ int main(int argc, char** argv) {
     return RUN_ALL_TESTS();
 }
 #else
-
-#include "ssd_adapter.h"
-
 int main() {
     TestShell testShell;
-    SSDAdapter SSDAdapter_;
-    testShell.setSsdAdapter(&SSDAdapter_);
+    SSDAdapter ssdAdapter;
+    testShell.setSsdAdapter(&ssdAdapter);
     testShell.runShell();
 
     return 0;
