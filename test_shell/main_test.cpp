@@ -77,60 +77,6 @@ TEST(TestShellTest, FullReadFail) {
     EXPECT_EQ(expected, output);
 }
 
-TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithFullCommnad) {
-    MockSSDAdapter mockSSDAdapter;
-    TestShell testShell(&mockSSDAdapter);
-    string cmdInput = "2_";
-    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
-
-    {
-        InSequence seq;
-
-        for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
-        {
-            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
-                .Times(1);
-        }
-    }
-
-    testShell.runCommand(cmdInput);
-}
-
-TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithShortCommand) {
-    MockSSDAdapter mockSSDAdapter;
-    TestShell testShell(&mockSSDAdapter);
-    string cmdInput = "2_";
-    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
-
-    {
-        InSequence seq;
-
-        for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
-        {
-            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
-                .Times(1);
-            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
-                .Times(1);
-        }
-    }
-
-    testShell.runCommand(cmdInput);
-}
-
 TEST(TestShellTest, Write_Pass) {
     MockSSDAdapter mockSSD;
     TestShell testShell;
@@ -189,6 +135,188 @@ TEST(TestShellTest, FullWrite_Fail) {
     std::string output = testing::internal::GetCapturedStdout();
 
     EXPECT_NE(output.find("[fullWrite] Failed at LBA 3"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_FullCommand_Pass) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillRepeatedly(Return(writeData));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find("Fail"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_ShortCommand_Pass) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = TEST_SCRIPT_2_SHORT_COMMAND_NAME;
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillRepeatedly(Return(string(INPUT_DATA_FOR_PARTIAL_LBA_WRITE)));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find("Fail"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_WithData_Pass) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string writeData = "0xDEADDEAD";
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillRepeatedly(Return(writeData));
+
+    testing::internal::CaptureStdout();
+    testShell.partialLBAWrite(writeData);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find("Fail"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_Write_Fail) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string writeData = "0xDEAFDEAF";
+
+    EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+        .WillRepeatedly(Return("Error"));
+        //.WillRepeatedly(Return(""));
+
+    testing::internal::CaptureStdout();
+    testShell.partialLBAWrite(writeData);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    //EXPECT_EQ(string(TEST_SCRIPT_2_WRITE_FAIL_MSG), output);
+    EXPECT_NE(output.find("Fail"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_VerifyPass) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+        .WillRepeatedly(Return(""));
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillRepeatedly(Return(writeData));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find("Fail"), std::string::npos);
+}
+
+TEST(TestShellTest, PartialLBAWrite_VerifyFail) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+        .WillRepeatedly(Return(""));
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillOnce(Return(string(writeData)))
+        .WillOnce(Return(string("0x0000")))
+        .WillRepeatedly(Return(string(writeData)));
+
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("Fail"), std::string::npos);
 }
 
 TEST(TestShellTest, FullWriteAndReadCompare_Pass) {
