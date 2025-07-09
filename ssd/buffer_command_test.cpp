@@ -97,3 +97,22 @@ TEST(BufferManagerTest, Write_ReplacesOldWriteCommand_1) {
 	//w_20_0x12341234
 	mgr.addWrite(20, "0x12341234");
 }
+
+TEST(BufferManagerTest, FLUSH_TEST_1) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	BufferManager mgr(testDir);
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_1_0x12").close();
+	std::ofstream(testDir + "/3_e_2_4").close();
+	std::ofstream(testDir + "/4_w_10_0x12").close();
+	std::ofstream(testDir + "/5_e_10_10").close();
+
+	//w_20_0x12341234
+	if (mgr.addWrite(50, "0x12341234") == false) {
+		mgr.flushBuffer();
+	}
+}
+

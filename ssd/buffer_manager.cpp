@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include "ssd_constants.h"
+#include <sstream>
 
 // de
 #include <iostream>
@@ -21,7 +22,7 @@ BufferManager::BufferManager(const std::string& bufferDir)
 bool BufferManager::addWrite(int lba, const std::string& value) {
 	int bufferIdx = 0;
 
-	bufferIdx = findSameAddress(lba);
+	bufferIdx = findWriteSameAddress(lba);
 	if (bufferIdx != -1) {
 		std::string new_path = formatWriteFileName(bufferIdx, lba, value);
 		std::string old_path = bufferDirectory + "/" + getTheSameAddressBuffer();
@@ -61,7 +62,7 @@ int BufferManager::findEmtpyBuffer() {
 	return -1;
 }
 
-int BufferManager::findSameAddress(int lba) {
+int BufferManager::findWriteSameAddress(int lba) {
 	int i = 0;
 	bool isSameAddress = false;
 	std::string fileName;
@@ -118,4 +119,31 @@ void BufferManager::resetAllBuffer() {
 		std::string empty_path = bufferDirectory + "/" + std::to_string(++bufferIdx) + "_empty";
 		fs::rename(nowFile, empty_path);
 	}
+}
+
+void BufferManager::flushBuffer() {
+	std::vector<std::string> preCmd;
+	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
+		std::string nowFile = entry.path().filename().string();
+		//execute cmd
+		preCmd = splitByUnderscore(nowFile);
+		for (auto tmp : preCmd) {
+			std::cout << tmp << std::endl;
+		}
+	}
+}
+
+std::vector<std::string> BufferManager::splitByUnderscore(const std::string& input) {
+	std::vector<std::string> tokens;
+	std::stringstream ss(input);
+	std::string item;
+
+	std::getline(ss, item, '_');
+
+	tokens.push_back("ssd.exe");
+	while (std::getline(ss, item, '_')) {
+		tokens.push_back(item);
+	}
+
+	return tokens;
 }
