@@ -8,6 +8,8 @@
 using std::string;
 namespace fs = std::filesystem;
 
+#define LOG_PRINT(message) logger.print(CLASS_NAME, __func__, message)
+
 struct TimeData {
     string year;
     string month;
@@ -19,10 +21,21 @@ struct TimeData {
 
 class Logger {
 public:
+    static Logger& getInstance() {
+        static Logger instance;
+        return instance;
+    }
+
     void print(const string& className, const string& funcName, const string& logMessage);
     void print(const string& caller, const string& logMessage);
 
 private:
+    Logger() {
+
+    }
+    Logger& operator=(const Logger& other) = delete;
+    Logger(const Logger& other) = delete;
+
     string makeOneLineLog(const string& caller, const string& logMessage);
     void checkLogFileSize();
     TimeData getTime();

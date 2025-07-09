@@ -2,6 +2,7 @@
 
 string SSDAdapter::read(const int LBA) {
     std::string command = SSD_EXECUTE_FILE_PATH + " r " + std::to_string(LBA);
+    LOG_PRINT(command);
     string result;
         try {
         executeSystemCall(command);
@@ -16,6 +17,7 @@ string SSDAdapter::read(const int LBA) {
 
 string SSDAdapter::write(const int LBA, const string& data) {
     std::string command = SSD_EXECUTE_FILE_PATH + " w " + std::to_string(LBA) + " " + data;
+    LOG_PRINT(command);
     string result;
     try {
         executeSystemCall(command);
@@ -34,6 +36,7 @@ string SSDAdapter::erase(const int LBA, const int size)
 }
 
 string SSDAdapter::readOutputFile() {
+    LOG_PRINT("open " + SSD_OUTPUT_FILE_PATH);
     std::ifstream infile(SSD_OUTPUT_FILE_PATH);
     if (!infile.is_open()) {
         throw std::runtime_error("Output file open error");
@@ -47,6 +50,7 @@ string SSDAdapter::readOutputFile() {
 
 void SSDAdapter::executeSystemCall(const std::string& command)
 {
+    LOG_PRINT("called");
     if (std::system(command.c_str()) != 0) {
         throw std::runtime_error("System call fail");
     }
