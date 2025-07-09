@@ -1,6 +1,7 @@
 #include "command_process.h"
 #include "ssd_write.h"
 #include "ssd_Read.h"
+#include "ssd_constants.h"
 #include <iostream>
 
 int CommandProcessor::process(int argc, char* argv[]) {
@@ -26,21 +27,21 @@ int CommandProcessor::dispatchCommand(const std::string& cmd, const std::vector<
 int CommandProcessor::handleWrite(const std::vector<std::string>& args) {
 	if (!isWriteValidArgument(args)) {
 		printErrorAndWriteToOutput();
-		return -2;
+		return INVALID_ARGUMENT;
 	}
 
 	executeWrite(args);
-	return 0;
+	return SUCCESS;
 }
 
 int CommandProcessor::handleRead(const std::vector<std::string>& args) {
 	if (!isReadValidArgument(args)) {
 		printErrorAndWriteToOutput();
-		return -2;
+		return INVALID_ARGUMENT;
 	}
 
 	executeRead(args);
-	return 0;
+	return SUCCESS;
 }
 
 bool CommandProcessor::isWriteCommand(const std::string& cmd) {
@@ -73,5 +74,5 @@ void CommandProcessor::executeRead(const std::vector<std::string>& args) {
 
 void CommandProcessor::printErrorAndWriteToOutput() {
 	SsdWrite writer;
-	writer.writeOutputFile("ERROR");
+	writer.writeOutputFile(ERROR_STRING);
 }

@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
 #include "command_process.h"
+#include "ssd_constants.h"
 
 using namespace testing;
 
@@ -9,7 +10,7 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, 0);
+	EXPECT_EQ(result, SUCCESS);
 }
 
 TEST(PATTERNCHECKER, WRITE_VALID_ARG_2) {
@@ -18,7 +19,7 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, 0);
+	EXPECT_EQ(result, SUCCESS);
 }
 
 TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_1) {
@@ -27,7 +28,7 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_2) {
@@ -36,7 +37,7 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_1) {
@@ -45,7 +46,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_2) {
@@ -54,7 +55,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_1) {
@@ -63,7 +64,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_2) {
@@ -72,7 +73,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_1) {
@@ -81,7 +82,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
 
 TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_2) {
@@ -90,5 +91,5 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	int result = cp.process(argc, const_cast<char**>(argv));
 
-	EXPECT_EQ(result, -2);
+	EXPECT_EQ(result, INVALID_ARGUMENT);
 }
