@@ -37,8 +37,6 @@ int BufferManager::findEmtpyBuffer() const {
     for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
         ++i;
         std::string filename = entry.path().filename().string();
-        cout << "fileName : " << filename << endl;
-        cout << "std::to_string(i) : " << std::to_string(i) << endl;
         if (filename.rfind(std::to_string(i) + "_empty", 0) == 0) {
             isEmpty = true;
             break;
@@ -53,6 +51,24 @@ std::string BufferManager::formatWriteFileName(int bufferIdx, int lba, const std
         std::to_string(lba) + "_" + value;
 }
 
+bool BufferManager::addErase(int lba, int size) {
+    int bufferIdx = findEmtpyBuffer();
+    if (bufferIdx == -1) return false;
+
+    // Only Empty case
+    std::string empty_path = bufferDirectory + "/" + std::to_string(bufferIdx) + "_empty";
+    std::string new_path = formatEraseFileName(bufferIdx, lba, size);
+
+    fs::rename(empty_path, new_path);
+    std::cout << "Renamed: " << empty_path << " ¡æ " << new_path << "\n";
+    return true;
+}
+
+std::string BufferManager::formatEraseFileName(int bufferIdx, int lba, int size) const {
+    return bufferDirectory + "/" + std::to_string(bufferIdx) + "_e_" +
+        std::to_string(lba) + "_" + std::to_string(size);
+
+}
 void BufferManager::resetAllBuffer() {
     int bufferIdx = 0;
     for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
