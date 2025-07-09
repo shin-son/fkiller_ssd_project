@@ -10,6 +10,25 @@ TEST(SampleTest, Addition) {
     EXPECT_EQ(2 + 2, 4);
 }
 
+TEST(TestShellTest, Invalid_CMD) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find(INVALID_COMMAND_MSG), std::string::npos);
+
+    cmdInput = "XXXX";
+    testing::internal::CaptureStdout();
+    testShell.runCommand(cmdInput);
+    output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find(INVALID_COMMAND_MSG), std::string::npos);
+}
+
 TEST(TestShellTest, ReadPass) {
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
@@ -365,4 +384,5 @@ TEST(TestShellTest, FullWriteAndReadCompare_Fail) {
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_NE(output.find("FAIL"), std::string::npos);
 }
+
 #endif
