@@ -101,12 +101,7 @@ int TestShell::runCommand(const std::string& command)
 
     if (cmd == "erase_range")
     {
-        int startLBA = 0;
-        int endLBA = 0;
-
-        iss >> startLBA;
-        iss >> endLBA;
-
+        eraseWithEndLBA(iss);
         return NEXT_KEEP_GOING;
     }
 
@@ -324,6 +319,31 @@ void TestShell::eraseWithSize(std::istringstream& iss)
         std::cout << "[Erase] Error: Erase Operation Fail\n";
         return;
     }
+
+    std::cout << "[Erase] Done\n";
+    return;
+}
+
+void TestShell::eraseWithEndLBA(std::istringstream& iss)
+{
+    int startLBA = 0;
+    int endLBA = 0;
+
+    if (false == getEraseParameter(startLBA, endLBA, iss)) return;
+
+    if (false == isVaiidEraseRange(startLBA, endLBA))
+    {
+        std::cout << "[Erase_Range] Error: invalid Range(startLBA, endLBA)\n";
+        return;
+    }
+
+    if (false == eraseRange(startLBA, endLBA))
+    {
+        std::cout << "[Erase_Range] Error: Erase Operation Fail\n";
+        return;
+    }
+
+    std::cout << "[Erase_Range] Done\n";
     return;
 }
 
@@ -365,15 +385,16 @@ bool TestShell::eraseRange(int startLBA, int endLBA)
         if (endLBA < startLBA + ERASE_UNIT_LBA_COUNT)
         {
             eraseResult = erase(startLBA, endLBA - startLBA + 1);
+            if ("[Erase] Done" != eraseResult) return false;
             break;
         }
         else
         {
             eraseResult = erase(startLBA, ERASE_UNIT_LBA_COUNT);
+            if ("[Erase] Done" != eraseResult) return false;
             startLBA += ERASE_UNIT_LBA_COUNT;
-        }
+        }        
     }
-
-    if ("" != eraseResult) return false;    
+    
     return true;
 }
