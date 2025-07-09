@@ -3,6 +3,8 @@
 #include "ssd_Read.h"
 #include "ssd_constants.h"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 int CommandProcessor::process(int argc, char* argv[]) {
 	if (argc < 2) {
@@ -102,7 +104,15 @@ int CommandProcessor::getAddress() {
 }
 
 std::string CommandProcessor::getInputValue() {
-	return this->memoryValue;
+
+	std::stringstream ss;
+	int decimalValue = std::stoul(this->memoryValue, nullptr, 16);
+
+	ss << "0x" << std::setw(8) << std::setfill('0')
+		<< std::hex << std::uppercase
+		<< decimalValue;
+
+	return ss.str();
 }
 
 int CommandProcessor::getSize() {

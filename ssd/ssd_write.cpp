@@ -10,7 +10,7 @@ void SsdWrite::loadSsdNandFile() {
 	ssdFileIoRead.closeReadFileStream();
 }
 
-void SsdWrite::writeSsdNandData(int index, const std::string& value) {
+void SsdWrite::writeSsdNandData(int index, const string& value) {
 
 	writeOutputFile(EMPTY_STRING);
 	ssdNandData[index] = value;
