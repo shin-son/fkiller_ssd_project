@@ -1,5 +1,20 @@
 #include "logger.h"
 
+void Logger::print(const string& className, const string& funcName, const string& logMessage) {
+    const string caller = className + "." + funcName + "()";
+    string oneLineLog = makeOneLineLog(caller, logMessage);
+    std::ofstream file(LOG_FILE, std::ios::app);
+    if (file.is_open()) {
+        file << oneLineLog;
+        file.close();
+    }
+    else {
+        std::cout << "Rename failed: Log File\n";
+    }
+
+    checkLogFIleSize();
+}
+
 void Logger::print(const string& caller, const string& logMessage) {
     string oneLineLog = makeOneLineLog(caller, logMessage);
     std::ofstream file(LOG_FILE, std::ios::app);
@@ -56,7 +71,8 @@ string Logger::makeLogTimeFormat(const TimeData& time) {
 }
 
 string Logger::makeLogFileFormat(const TimeData& time) {
-    return "until_" + time.year + time.month + time.day + "_" + time.hour + "h_" + time.minunte + "m_" + time.second + "s.log";
+    return "until_" + time.year + time.month + time.day + "_" + time.hour +
+        "h_" + time.minunte + "m_" + time.second + "s.log";
 }
 
 string Logger::make2DigitString(const int number) {
@@ -74,7 +90,8 @@ void Logger::ifTooManyLogFileCompress() {
     }
 
     if (logFiles.size() > 1) {
-        std::sort(logFiles.begin(), logFiles.end(), [](const std::filesystem::path& a, const std::filesystem::path& b) {
+        std::sort(logFiles.begin(), logFiles.end(),
+            [](const std::filesystem::path& a, const std::filesystem::path& b) {
             return a.filename().string() < b.filename().string();
             });
 

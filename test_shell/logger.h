@@ -18,6 +18,7 @@ struct TimeData {
 
 class Logger {
 public:
+    void print(const string& className, const string& funcName, const string& logMessage);
     void print(const string& caller, const string& logMessage);
 
 private:
