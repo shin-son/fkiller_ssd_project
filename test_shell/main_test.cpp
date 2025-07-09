@@ -11,6 +11,7 @@ TEST(SampleTest, Addition) {
 }
 
 TEST(TestShellTest, ReadPass) {
+
     MockSSDAdapter mockSSDAdapter;
     TestShell testShell;
     testShell.setSsdAdapter(&mockSSDAdapter);
@@ -75,6 +76,116 @@ TEST(TestShellTest, FullReadFail) {
     string output = testing::internal::GetCapturedStdout();
 
     EXPECT_EQ(expected, output);
+}
+
+TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithFullCommnad) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = "2_";
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    testShell.runCommand(cmdInput);
+}
+
+TEST(TestShellTest, partialLBAWrite_CountWriteTimesWithShortCommand) {
+    MockSSDAdapter mockSSDAdapter;
+    TestShell testShell(&mockSSDAdapter);
+    string cmdInput = "2_";
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    testShell.runCommand(cmdInput);
+}
+
+TEST(TestShellTest, WriteReadAging_Pass) {
+    MockSSDAdapter mockSSD;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSD);
+
+    std::string testData = "0xA1B2C3D4";
+
+    EXPECT_CALL(mockSSD, write(0, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, write(99, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, read(0))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+    EXPECT_CALL(mockSSD, read(99))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+
+    testing::internal::CaptureStdout();
+    testShell.writeReadAging();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Aging] PASS"), std::string::npos);
+}
+
+TEST(TestShellTest, WriteReadAging_Fail) {
+    MockSSDAdapter mockSSD;
+    TestShell testShell;
+    testShell.setSsdAdapter(&mockSSD);
+
+    std::string testData = "0xA1B2C3D4";
+    std::string wrongData = "0xA1B2C3DF";
+
+    EXPECT_CALL(mockSSD, write(0, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, write(99, _))
+        .Times(200)
+        .WillRepeatedly(Return(""));
+    EXPECT_CALL(mockSSD, read(0))
+        .Times(200)
+        .WillRepeatedly(Return(testData));
+    EXPECT_CALL(mockSSD, read(99))
+        .Times(200)
+        .WillOnce(Return(wrongData))
+        .WillRepeatedly(Return(testData));
+
+    testing::internal::CaptureStdout();
+    testShell.writeReadAging();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Aging] ERROR mismatch value LBA[0] : 0xA1B2C3D4 LBA[99] : 0xA1B2C3DF"), std::string::npos);
 }
 
 TEST(TestShellTest, Write_Pass) {
