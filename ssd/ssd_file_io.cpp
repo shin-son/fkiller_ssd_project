@@ -5,6 +5,7 @@ using std::string;
 
 std::vector<std::string>  SsdFileIo::loadSsdNandData()
 {
+	ssdNandData.clear();
 	string line;
 	while (std::getline(readFileStream, line)) {
 		ssdNandData.push_back(line);

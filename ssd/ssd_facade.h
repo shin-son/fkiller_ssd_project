@@ -13,7 +13,7 @@ public:
 	void readSsdIndex(CommandProcessor cmd);
 	void writeSsdIndex(CommandProcessor cmd);
 	void eraseSsdIndexToSize(CommandProcessor cmd);
-
+	void run(CommandProcessor& cmd);
 private:
 	SsdFacade() = default;
 

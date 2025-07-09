@@ -17,14 +17,28 @@ int main(int argc, char** argv) {
 
 #else
 	CommandProcessor cmdProcess;
-	if (cmdProcess.process(argc, argv) != SUCCESS) cmdProcess.printErrorAndWriteToOutput();
+	if (cmdProcess.process(argc, argv) != SUCCESS) {
+		cmdProcess.printErrorAndWriteToOutput();
+		return 0;
+	}
 
 	int type = cmdProcess.getOperator();
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
-
+	const std::string testDir = std::filesystem::current_path().string() + "/test_buffer_write";
+	BufferManager mgr(testDir);
 	if (type == WRITE_OPERATION) { // Write operation
-		ssdFacade.writeSsdIndex(cmdProcess);
+		if (!mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue())) {
+			auto cmds = mgr.flushBuffer();
+			for (auto& c : cmds) {
+				CommandProcessor flushProc;
+				if (flushProc.flushProcess(c) == SUCCESS) {
+					ssdFacade.run(flushProc);
+				}
+			}
+			mgr.resetAllBuffer();
+			mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue());
+		}
 	}
 	else if (type == READ_OPERATION) { // Read operation
 		ssdFacade.readSsdIndex(cmdProcess);
