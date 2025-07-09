@@ -14,8 +14,8 @@ std::vector<std::string>  SsdFileIo::loadSsdNandData()
 
 void SsdFileIo::saveSsdNandData(std::vector<std::string> targetData) {
 
-	for (int index = 0; index < 100; ++index) {
-		writeFileStream << targetData[index] << std::endl;
+	for (string targetStr : targetData) {
+		writeFileStream << targetStr << std::endl;
 	}
 }
 

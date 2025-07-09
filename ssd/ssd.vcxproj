@@ -130,7 +130,6 @@
     <ClCompile Include="ssd_facade.cpp" />
     <ClCompile Include="ssd_file_io.cpp" />
     <ClCompile Include="pattern_checker.cpp" />
-    <ClCompile Include="SsdFacade.cpp" />
     <ClCompile Include="ssd_write.cpp" />
     <ClCompile Include="ssd_read.cpp" />
     <ClCompile Include="ssd_read_test.cpp">
@@ -151,7 +150,6 @@
     <ClInclude Include="ssd_facade.h" />
     <ClInclude Include="command_process.h" />
     <ClInclude Include="pattern_checker.h" />
-    <ClInclude Include="SsdFacade.h" />
     <ClInclude Include="ssd_constants.h" />
     <ClInclude Include="ssd_file_io.h" />
     <ClInclude Include="ssd_read.h" />
