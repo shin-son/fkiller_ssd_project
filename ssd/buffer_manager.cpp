@@ -19,7 +19,18 @@ BufferManager::BufferManager(const std::string& bufferDir)
 }
 
 bool BufferManager::addWrite(int lba, const std::string& value) {
-	int bufferIdx = findEmtpyBuffer();
+	int bufferIdx = 0;
+
+	bufferIdx = findSameAddress(lba);
+	if (bufferIdx != -1) {
+		std::string new_path = formatWriteFileName(bufferIdx, lba, value);
+		std::string old_path = bufferDirectory + "/" + getTheSameAddressBuffer();
+		fs::rename(old_path, new_path);
+		std::cout << "Renamed: " << old_path << " ¡æ " << new_path << "\n";
+		return true;
+	}
+
+	bufferIdx = findEmtpyBuffer();
 	if (bufferIdx == -1) return false;
 
 	// Only Empty case
@@ -31,7 +42,11 @@ bool BufferManager::addWrite(int lba, const std::string& value) {
 	return true;
 }
 
-int BufferManager::findEmtpyBuffer() const {
+std::string BufferManager::getTheSameAddressBuffer() {
+	return sameAddressBuffer;
+}
+
+int BufferManager::findEmtpyBuffer() {
 	int i = 0;
 	bool isEmpty = false;
 	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
@@ -46,7 +61,34 @@ int BufferManager::findEmtpyBuffer() const {
 	return -1;
 }
 
-std::string BufferManager::formatWriteFileName(int bufferIdx, int lba, const std::string& value) const {
+int BufferManager::findSameAddress(int lba) {
+	int i = 0;
+	bool isSameAddress = false;
+	std::string fileName;
+	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
+		++i;
+		fileName = entry.path().filename().string();
+		if (fileName.rfind(std::to_string(i) + "_w_" + std::to_string(lba) + "_", 0) == 0) {
+			isSameAddress = true;
+			break;
+		}
+	}
+
+	if (isSameAddress) {
+		setTheSameAddressBuffer(fileName);
+		return i;
+	}
+
+	return -1;
+
+}
+
+void BufferManager::setTheSameAddressBuffer(const std::string& filename) {
+	sameAddressBuffer = filename;
+}
+
+
+std::string BufferManager::formatWriteFileName(int bufferIdx, int lba, const std::string& value) {
 	return bufferDirectory + "/" + std::to_string(bufferIdx) + "_w_" +
 		std::to_string(lba) + "_" + value;
 }
@@ -64,7 +106,7 @@ bool BufferManager::addErase(int lba, int size) {
 	return true;
 }
 
-std::string BufferManager::formatEraseFileName(int bufferIdx, int lba, int size) const {
+std::string BufferManager::formatEraseFileName(int bufferIdx, int lba, int size) {
 	return bufferDirectory + "/" + std::to_string(bufferIdx) + "_e_" +
 		std::to_string(lba) + "_" + std::to_string(size);
 

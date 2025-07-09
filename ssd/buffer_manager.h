@@ -10,8 +10,12 @@ public:
 
 private:
 	std::string bufferDirectory;
+	std::string sameAddressBuffer;
 
-	int findEmtpyBuffer() const;
-	std::string formatWriteFileName(int slotIndex, int lba, const std::string& value) const;
-	std::string formatEraseFileName(int bufferIdx, int lba, int size) const;
+	int findEmtpyBuffer();
+	std::string formatWriteFileName(int slotIndex, int lba, const std::string& value);
+	std::string formatEraseFileName(int bufferIdx, int lba, int size);
+	int findSameAddress(int lba);
+	void setTheSameAddressBuffer(const std::string& filename);
+	std::string getTheSameAddressBuffer();
 };
