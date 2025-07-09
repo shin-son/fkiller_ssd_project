@@ -15,7 +15,9 @@ void SsdFacade::readSsdIndex(CommandProcessor cmd) {
 
 void SsdFacade::writeSsdIndex(CommandProcessor cmd)
 {
-	ssdWrite.write(cmd.getAddress(), cmd.getInputValue());
+	ssdWrite.loadSsdNandFile();
+	ssdWrite.writeSsdNandData(cmd.getAddress(), cmd.getInputValue());
+	ssdWrite.saveSsdNandFile();
 }
 
 void SsdFacade::eraseSsdIndexToSize(CommandProcessor cmd) {
