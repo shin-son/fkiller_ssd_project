@@ -42,8 +42,14 @@ private:
 	int optimizeWriteBuffer(const int lba, const int size);
 	bool isNeedWrite(const BufferEntry& buffer, const int lba, const int size);
 	void removeBuffer(const int index);
+	bool isLastBuffer(const int newBufferIndex);
 	void renameWithFileName(const std::string& oldName, const std::string& newName);
 	void updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
+
+	void optimizeEraseBuffer(const int emptyIdx);
+	bool isExistOverlapErase(const BufferEntry& oldBuffer, const BufferEntry& newBuffer);
+	bool updateEraseRange(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
+	void updateOldEraseBufferName(BufferEntry& oldBuffer);
 
 	std::vector<BufferEntry> bufferEntries;
 	void loadAndParseBufferFiles();
