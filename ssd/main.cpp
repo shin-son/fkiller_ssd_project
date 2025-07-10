@@ -12,10 +12,9 @@ void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
 	auto cmds = mgr.flushBuffer();
 	for (auto& c : cmds) {
 		CommandProcessor* flushProc = CommandProcessor::Builder()
-			.setParam(c)
-			.setOperator()
-			.setAddress()
-			.setData()
+			.setOperator(c[1])
+			.setAddress(c[2])
+			.setData(c[3])
 			.patternCheck();
 
 		if (flushProc->getResult() == SUCCESS) {
@@ -28,17 +27,25 @@ void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
 int main(int argc, char** argv) {
 
 #if _DEBUG
-	
+
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
 
 #else
+
+	vector<string> argsVector;
+	for (int index = 0; index < argc; ++index) {
+		argsVector.push_back(argv[index]);
+	}
 	
+	for (int index = argc; index < 4; ++index) {
+		argsVector.push_back("");
+	}
+
 	CommandProcessor* cmdProcess = CommandProcessor::Builder()
-		.setParam(argc, argv)
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argsVector[1])
+		.setAddress(argsVector[2])
+		.setData(argsVector[3])
 		.patternCheck();
 
 	if (cmdProcess->getResult() != SUCCESS) {

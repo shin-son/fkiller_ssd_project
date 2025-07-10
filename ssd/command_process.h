@@ -14,54 +14,36 @@ public:
     class Builder {
     
     public:
-        Builder& setParam(int argc, char* argv[]) {
-            argCount = argc;
-            argsVector = { argv + 0, argv + argc };
-            return *this;
-        }
+        Builder& setOperator(const string & param) {
+            string cmd = param;
 
-        Builder& setParam(vector<string>& args) {
-            argCount = 4;
-            argsVector = args;
-            return *this;
-        }
-
-        Builder& setOperator() {
-            if (argCount >= 2) {
-                string cmd = argsVector[1];
-
-                if (isWriteCommand(cmd)) {
-                    cmdProc->ssdOperator = WRITE_OPERATION;
-                }
-                if (isReadCommand(cmd)) {
-                    cmdProc->ssdOperator = READ_OPERATION;
-                }
-                if (isEraseCommand(cmd)) {
-                    cmdProc->ssdOperator = ERASE_OPERATION;
-                }
-                if (isFlushCommand(cmd)) {
-                    cmdProc->ssdOperator = FLUSH_OPERATION;
-                }
+            if (isWriteCommand(cmd)) {
+                cmdProc->ssdOperator = WRITE_OPERATION;
+            }
+            if (isReadCommand(cmd)) {
+                cmdProc->ssdOperator = READ_OPERATION;
+            }
+            if (isEraseCommand(cmd)) {
+                cmdProc->ssdOperator = ERASE_OPERATION;
+            }
+            if (isFlushCommand(cmd)) {
+                cmdProc->ssdOperator = FLUSH_OPERATION;
             }
             return *this;
         }
 
-        Builder& setAddress() {
-            if (argCount >= 3) {
-                cmdProc->address = argsVector[2];
-            }
+        Builder& setAddress(const string& param) {
+            cmdProc->address = param;
             return *this;
         }
 
-        Builder& setData() {
-            if (argCount >= 4) {
-                cmdProc->data = argsVector[3];
-            }
+        Builder& setData(const string& param) {
+            cmdProc->data = param;
             return *this;
         }
 
         CommandProcessor* patternCheck() {
-            if (argCount < 2) {
+            if (cmdProc->ssdOperator == INIT_OPERATION) {
                 std::cout << "Usage: ssd.exe [w/r] [args...]\n";
                 cmdProc->result = INVALID_COMMAND;
             }
@@ -104,9 +86,6 @@ public:
             return cmd == "f" || cmd == "F";
         }
 
-        int argCount;
-        vector<string> argsVector;
-        
         PatternChecker patternChecker;
 
         CommandProcessor * cmdProc = new CommandProcessor();        

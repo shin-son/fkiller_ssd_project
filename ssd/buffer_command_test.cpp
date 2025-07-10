@@ -118,10 +118,9 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 		for (auto& cmd : commands) {
 			
 			CommandProcessor* cp = CommandProcessor::Builder()
-				.setParam(cmd)
-				.setOperator()
-				.setAddress()
-				.setData()
+				.setOperator(cmd[1])
+				.setAddress(cmd[2])
+				.setData(cmd[3])
 				.patternCheck();
 		}
 	}

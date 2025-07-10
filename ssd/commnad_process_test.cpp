@@ -9,10 +9,9 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -25,10 +24,9 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -41,10 +39,9 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData("")
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -58,10 +55,9 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData("")
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -75,10 +71,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData("")
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -92,10 +87,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData("")
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -109,10 +103,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -126,10 +119,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -143,10 +135,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_1) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
@@ -160,10 +151,9 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_2) {
 	int argc = sizeof(argv) / sizeof(argv[0]);
 	
 	CommandProcessor* cp = CommandProcessor::Builder()
-		.setParam(argc, const_cast<char**>(argv))
-		.setOperator()
-		.setAddress()
-		.setData()
+		.setOperator(argv[1])
+		.setAddress(argv[2])
+		.setData(argv[3])
 		.patternCheck();
 
 	int result = cp->getResult();
