@@ -18,10 +18,6 @@ public:
 	static void setSsdAdapter(SSDInterface* _adapter);
 
 protected:
-	//virtual bool prepare() = 0;
-	//virtual bool execute() = 0;
-	//virtual bool wrapUp() = 0;
-
 	void printLog(const string& message);
 	string getCommandName();
 	string getDoneMessage();
