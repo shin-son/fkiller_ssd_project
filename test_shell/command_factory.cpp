@@ -1,6 +1,17 @@
 #include "constants.h"
 #include "command_factory.h"
 
+vector<string> CommandFactory::ALL_CMD = {
+    READ_COMMAND_NAME,
+    WRITE_COMMAND_NAME,
+    ERASE_COMMAND_NAME,
+    ERASE_RANGE_COMMAND_NAME,
+    TEST_SCRIPT_1_FULL_COMMAND_NAME,
+    TEST_SCRIPT_2_FULL_COMMAND_NAME,
+    TEST_SCRIPT_3_FULL_COMMAND_NAME,
+    TEST_SCRIPT_4_FULL_COMMAND_NAME,
+};
+
 std::unique_ptr<ICommand> CommandFactory::createCommand(const std::string& cmdType) {
     if (READ_COMMAND_NAME == cmdType) return std::make_unique<ReadCommand>();
     else if (WRITE_COMMAND_NAME == cmdType) return std::make_unique<WriteCommand>();
@@ -16,4 +27,9 @@ std::unique_ptr<ICommand> CommandFactory::createCommand(const std::string& cmdTy
         return std::make_unique<EraseWriteAgingCommand>();
     else
         return nullptr;
+}
+
+vector<string> CommandFactory::getAllCommandType()
+{
+    return ALL_CMD;
 }

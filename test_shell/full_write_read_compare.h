@@ -11,6 +11,8 @@ public:
 
 	void printHelp() override
 	{
-		return;
+		std::cout << " Test script - 1 FullWriteAndReadCompare \n" <<
+			"\t write and read Test all indices in 5-unit\n" <<
+			"\t usage - 1_FullWriteAndReadCompare(or 1_)" << std::endl;
 	}
 };

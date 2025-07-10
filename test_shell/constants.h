@@ -19,7 +19,6 @@
 
 #define INVALID_COMMAND_MSG				"INVALID COMMAND"
 
-
 // Write 
 #define WRITE_DONE_RETURN				"[Write] Done"
 #define WRITE_ERROR_RETURN				"[Write] ERROR"
@@ -52,7 +51,7 @@
 
 enum TEST_NEXT
 {
-    NEXT_KEEP_GOING = 0,
-    NEXT_EXIT = 2,
-    NEXT_MAX = 0xFFFFFFFF,
+	NEXT_KEEP_GOING = 0,
+	NEXT_EXIT = 2,
+	NEXT_MAX = 0xFFFFFFFF,
 };
