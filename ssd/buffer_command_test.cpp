@@ -14,19 +14,20 @@ TEST(BufferManagerTest, WriteCommand_First_Buffer) {
 
 	BufferManager mgr(testDir);
 	mgr.resetAllBuffer();
-	// process ssd.exe w 3 0x234234
+	// process ssd.exe w 3 0xABCD1234
 	mgr.addWrite(3, "0xABCD1234");
 
-	bool found = false;
+	std::vector<std::string> expected = { "1_w_3_0xABCD1234",
+											"2_empty",
+											"3_empty",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
 	for (const auto& entry : fs::directory_iterator(testDir)) {
-		std::string filename = entry.path().filename().string();
-		if (filename.find("_w_3_0xABCD1234") != std::string::npos) {
-			found = true;
-			break;
-		}
+		files.push_back(entry.path().filename().string());
 	}
 
-	EXPECT_TRUE(found) << "Expected write command file not found in buffer";
+	EXPECT_EQ(expected, files);
 }
 
 TEST(BufferManagerTest, WriteCommand_full_buffer) {
@@ -315,6 +316,114 @@ TEST(BufferManagerTest, EraseAfterWrite5) {
 											"3_empty",
 											"4_empty",
 											"5_empty"};
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+TEST(BufferManagerTest, WriteAfterErase) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_2").close();
+	std::ofstream(testDir + "/2_empty").close();
+	std::ofstream(testDir + "/3_empty").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addWrite(1, "0x12341234");
+
+	std::vector<std::string> expected = { "1_e_0_1",
+											"2_w_1_0x12341234",
+											"3_empty",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, WriteAfterErase2) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_2").close();
+	std::ofstream(testDir + "/2_empty").close();
+	std::ofstream(testDir + "/3_empty").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addWrite(0, "0x12341234");
+
+	std::vector<std::string> expected = { "1_e_1_1",
+											"2_w_0_0x12341234",
+											"3_empty",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, WriteAfterErase3) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_2").close();
+	std::ofstream(testDir + "/2_empty").close();
+	std::ofstream(testDir + "/3_empty").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addWrite(0, "0x10101010");
+	mgr.addWrite(1, "0x20202020");
+
+	std::vector<std::string> expected = { "1_w_0_0x10101010",
+											"2_w_1_0x20202020",
+											"3_empty",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, WriteAfterFullBuffer) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_2").close();
+	std::ofstream(testDir + "/2_e_5_2").close();
+	std::ofstream(testDir + "/3_w_10_0x12341234").close();
+	std::ofstream(testDir + "/4_e_24_0").close();
+	std::ofstream(testDir + "/5_w_55_0x11112222").close();
+	BufferManager mgr(testDir);
+
+	mgr.addWrite(0, "0x10101010");
+
+	std::vector<std::string> expected = { "1_w_0_0x10101010",
+											"2_empty",
+											"3_empty",
+											"4_empty",
+											"5_empty" };
 	std::vector<std::string> files;
 	for (const auto& entry : fs::directory_iterator(testDir)) {
 		files.push_back(entry.path().filename().string());
