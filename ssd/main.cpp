@@ -17,6 +17,10 @@ int main(int argc, char** argv) {
 	return RUN_ALL_TESTS();
 
 #else
+	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
+	BufferManager mgr(testDir);
+	SsdInitialFiles ssdInitialFiles;
+	ssdInitialFiles.initialize();
 
 	vector<string> argsVector;
 	for (int index = 0; index < argc; ++index) {
@@ -40,10 +44,6 @@ int main(int argc, char** argv) {
 
 	int type = cmdProcess->getOperator();
 
-	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
-	BufferManager mgr(testDir);
-	SsdInitialFiles ssdInitialFiles;
-	ssdInitialFiles.initialize();
 	std::string value;
 
 	switch (type) {
