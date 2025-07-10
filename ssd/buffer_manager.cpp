@@ -43,6 +43,32 @@ void BufferManager::addWrite(int lba, const std::string& value) {
 }
 
 void BufferManager::addErase(int lba, int size) {
+	for (int index = 0; index < bufferEntries.size(); index++) {
+		BufferEntry& buffer = bufferEntries[index];
+		if (buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size) {
+			std::cout << "find " << buffer.index << std::endl;
+			for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
+				BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
+				BufferEntry& newBuffer = bufferEntries[innerIndex];
+				std::string old_path = bufferDirectory + "/" + oldBuffer.originalFilename;
+				std::string new_path = bufferDirectory + "/" + std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+				std::filesystem::rename(old_path, new_path);
+
+				oldBuffer.lba = newBuffer.lba;
+				oldBuffer.originalFilename = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+				oldBuffer.type = newBuffer.type;
+				oldBuffer.value = newBuffer.value;
+			}
+			BufferEntry& lastBuffer = bufferEntries[4];
+			std::string old_path = bufferDirectory + "/" + lastBuffer.originalFilename;
+			std::string new_path = bufferDirectory + "/" + "5_empty";
+			std::filesystem::rename(old_path, new_path);
+
+			lastBuffer.originalFilename = std::to_string(lastBuffer.index) + "_empty";
+			lastBuffer.type = CommandType::EMPTY;
+		}
+	}
+
 	int emptyIdx = findEmptyBuffer();
 	if (emptyIdx == ALL_BUFFER_USED) {
 		flushAndReset();
