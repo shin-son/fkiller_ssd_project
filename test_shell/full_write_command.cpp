@@ -5,7 +5,7 @@ NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& i
 	std::string data;
 
 	if (!(iss >> data)) {
-		std::cout << "[Write] ERROR: Missing data" << std::endl;
+		printLog(getErrorHeader() + ": Missing data");
 		return NEXT_KEEP_GOING;
 	}
 
@@ -13,12 +13,12 @@ NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& i
 	for (int i = 0; i < 100; ++i) {
 		std::string result = adapter->write(i, data);
 		if (result == "[Write] ERROR") {
-			//LOG_PRINT("Failed at LBA " + std::to_string(i));
-			std::cout << "[fullWrite] Failed at LBA " << i << std::endl;
+			printLog(getErrorHeader() + ": Failed at LBA " + std::to_string(i));
 			return NEXT_KEEP_GOING;
 		}
 	}
-	std::cout << "[fullWrite] Done" << std::endl;
+
+	printLog(getDoneMessage());
 
 	return NEXT_KEEP_GOING;
 }

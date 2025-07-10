@@ -2,7 +2,6 @@
 
 NEXT_TEST EraseWriteAgingCommand::process(const string& command, std::istringstream& iss)
 {
-	LOG_PRINT("called");
 	bool AgingPass = false;
 	const int firstEraseLBA = 0;
 	const int firstEraseSize = 3;
@@ -13,22 +12,19 @@ NEXT_TEST EraseWriteAgingCommand::process(const string& command, std::istringstr
 
 	if (ERROR == adapter->erase(firstEraseLBA, firstEraseSize))
 	{
-		LOG_PRINT("[EraseAndWriteAging] ERROR: 1st Erase Fail");
-		std::cout << "[EraseAndWriteAging] ERROR: 1st Erase Fail" << std::endl;
+		printLog(getErrorHeader() + ": 1st Erase Fail");
 		return NEXT_KEEP_GOING;
 	}
 
 	for (int count = 0; count < LOOP_COUNT_FOR_AGING; ++count) {
 		if (false == eraseWriteAgingOneCycle(firstStartLBAForAging, lastStartLBAForAging, incrementNextLBA))
 		{
-			LOG_PRINT("[EraseAndWriteAging] ERROR");
-			std::cout << "[EraseAndWriteAging] ERROR" << std::endl;
+			printLog(getErrorHeader() + ": " + "Fail while" + std::to_string(count + 1) + " cycle");
 			return NEXT_KEEP_GOING;
 		}
 	}
 
-	LOG_PRINT("[EraseAndWriteAging] Done");
-	std::cout << "[EraseAndWriteAging] Done" << std::endl;
+	printLog(getDoneMessage());
 	return NEXT_KEEP_GOING;
 }
 

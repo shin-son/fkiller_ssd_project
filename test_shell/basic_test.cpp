@@ -56,7 +56,7 @@ TEST_F(TestShellFixture, FullReadPass) {
         .Times(100)
         .WillRepeatedly(Return("0x00ABCDEF"));
 
-    string expected = "[fullRead]\n";
+    string expected = "[fullRead] \n";
     for (int LBA = 0; LBA < 100; LBA++) {
         expected += "LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
     }
@@ -73,7 +73,7 @@ TEST_F(TestShellFixture, FullReadFail) {
         .WillOnce(Return("0x00ABCDEF"))
         .WillRepeatedly(Return(ERROR));
 
-    string expected = "[fullRead]\nLBA 0 : 0x00ABCDEF\n";
+    string expected = "[fullRead] \nLBA 0 : 0x00ABCDEF\n";
     for (int LBA = 1; LBA < 100; LBA++) {
         expected += ("LBA " + std::to_string(LBA) + " : " + ERROR + "\n");
     }
@@ -133,7 +133,7 @@ TEST_F(TestShellFixture, FullWriteFail) {
     testShell.runCommand("fullwrite 0xAAAABBBB");
     std::string output = internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[fullWrite] Failed at LBA 3"), std::string::npos);
+    EXPECT_NE(output.find("[fullWrite] ERROR : Failed at LBA 3"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseWithSize) {

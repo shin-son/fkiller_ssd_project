@@ -39,6 +39,10 @@
 #define ERASE_RANGE_DONE_RETURN		 		"[EraseRange] Done"
 #define ERASE_RANGE_FAIL_RETURN		 		"[EraseRange] ERROR"
 
+// WriteReadAging
+#define WRITE_READ_AGIING_DONE_RETURN		"[WriteReadAging] Done"
+
+
 // definition for Test Shell Runner
 #define CONVERSATION_MODE				1
 #define TEST_SCRIPT_MODE				2

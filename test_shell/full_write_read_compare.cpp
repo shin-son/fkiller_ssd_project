@@ -3,7 +3,6 @@
 NEXT_TEST FullWriteReadCompareCommand::process(
     const string& command, std::istringstream& iss)
 {
-    LOG_PRINT("called");
     int j = 1;
     bool failFlag = false;
     for (int i = 0; i < 20; i++) {
@@ -28,10 +27,10 @@ NEXT_TEST FullWriteReadCompareCommand::process(
         if (failFlag == true) break;
     }
     if (failFlag == true) {
-        std::cout << "[FullWriteReadCompare] ERROR" << std::endl;
+        printLog(getErrorHeader());
     }
     else {
-        std::cout << "FullWriteReadCompare] Done" << std::endl;
+        printLog(getDoneMessage());
     }
 	return NEXT_KEEP_GOING;
 }

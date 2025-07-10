@@ -2,17 +2,24 @@
 
 NEXT_TEST PartialLbaWriteCommand::process(const string& command, std::istringstream& iss)
 {
-	LOG_PRINT("called");
 	vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
 
 	for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
 	{
-		if (false == writeTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence)) return NEXT_KEEP_GOING;
-		else if (false == verifyTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence)) return NEXT_KEEP_GOING;
+		if (false == writeTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
+		{
+			printLog(getErrorHeader() + ": Write Fail");
+			return NEXT_KEEP_GOING;
+		}
+		else if (false == verifyTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
+		{
+			printLog(getErrorHeader() + ": Verify Fail");
+			return NEXT_KEEP_GOING;
+		}
 	}
+	
+	printLog(getDoneMessage());
 
-	LOG_PRINT(TEST_SCRIPT_2_SUCCESS_MSG);
-	std::cout << TEST_SCRIPT_2_SUCCESS_MSG << std::endl;
 	return NEXT_KEEP_GOING;
 }
 
@@ -32,7 +39,6 @@ void PartialLbaWriteCommand::printHelp()
 bool PartialLbaWriteCommand::writeTheSequence(
 	const std::string& data, const vector<int>& lbaSequence)
 {
-	LOG_PRINT("called");
 	for (int lba : lbaSequence)
 	{
 		if ("" != adapter->write(lba, data))
@@ -47,7 +53,6 @@ bool PartialLbaWriteCommand::writeTheSequence(
 bool PartialLbaWriteCommand::verifyTheSequence(
 	const std::string& data, const vector<int>& lbaSequence)
 {
-	LOG_PRINT("called");
 	for (int lba : lbaSequence)
 	{
 		string readReturn = "LBA " + std::to_string(lba) + " : " + data;
