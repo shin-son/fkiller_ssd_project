@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "logger.h"
 #include "command_factory.h"
+#include "ICommand.h"
 
 using std::string;
 using std::vector;
@@ -26,7 +27,11 @@ public:
     void runShell();
     int runCommand(const std::string& command);
 
-    private:
+private:
+    bool isSSDCommand(const std::string& cmdType);
+    NEXT_TEST processTestShellCommand(const std::string& cmdType);
+    NEXT_TEST processSsdTest(const std::string& cmd);
+
     void printHelp();
     void fullWrite(const std::string& data);
     void fullRead();
@@ -35,7 +40,7 @@ public:
     void writeReadAging();
     void eraseWriteAging();
 
-    string read(const int LBA);
+    string readWithPrintScreen(const int LBA);
     string write(const int LBA, const string& data);
     string erase(const int LBA, const int size = 1);
     string intToHexString(int value);

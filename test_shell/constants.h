@@ -1,8 +1,11 @@
 #pragma once
 // Please define constants which are shared for several class.
 // If the constant is used only one class, it should be defined in the class.
+// shell command
 #define HELP_COMMAND_NAME					"help"
 #define EXIT_COMMAND_NAME					"exit"
+
+// SSD command
 #define READ_COMMAND_NAME					"read"
 #define WRITE_COMMAND_NAME					"write"
 #define ERASE_COMMAND_NAME					"erase"
@@ -49,7 +52,7 @@
 // Test Script4 (eraseAndWriteAging)
 #define LOOP_COUNT_FOR_AGING				30
 
-enum TEST_NEXT
+enum NEXT_TEST
 {
 	NEXT_KEEP_GOING = 0,
 	NEXT_EXIT = 2,

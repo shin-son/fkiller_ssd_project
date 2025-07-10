@@ -1,18 +1,29 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "constants.h"
+#include "ssd_interface.h"
+#include "logger.h"
 
 using std::string;
 
 class ICommand
 {
 public:
-	virtual TEST_NEXT process(const string& command) = 0;
+	virtual NEXT_TEST process(const string& command) = 0;
 	virtual void printHelp() = 0;
+	static void setSsdAdapter(SSDInterface* adapter_)
+	{
+		adapter = adapter_;
+	}
 
-private:
+protected:
 	//virtual bool prepare() = 0;
 	//virtual bool execute() = 0;
 	//virtual bool wrapUp() = 0;
+
+
+	static SSDInterface* adapter;
+	Logger& logger = Logger::getInstance();
 };

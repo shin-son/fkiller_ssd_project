@@ -60,6 +60,12 @@
     <ClCompile Include="command_factory.cpp">
       <Filter>Commands\소스파일</Filter>
     </ClCompile>
+    <ClCompile Include="read_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
+    <ClCompile Include="write_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">
