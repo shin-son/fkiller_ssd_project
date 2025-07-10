@@ -93,6 +93,7 @@ int TestShell::runCommand(const std::string& command)
 			return NEXT_KEEP_GOING;
 		}
 
+		std::cout << "[Read] ";
 		string result = read(LBA);
 
 		if (result == "[Read] ERROR") return 1;
@@ -100,6 +101,7 @@ int TestShell::runCommand(const std::string& command)
 	}
 
 	if (cmd == "fullread") {
+		std::cout << "[Full Read]\n";
 		fullRead();
 		return NEXT_KEEP_GOING;
 	}
@@ -293,8 +295,7 @@ string TestShell::read(const int LBA)
 {
 	LOG_PRINT("LBA(" + std::to_string(LBA) + ")");
 	string result = ssdAdapter->read(LBA);
-	if (result == "ERROR") result = "[Read] ERROR";
-	else result = "[Read] LBA " + std::to_string(LBA) + " : " + result;
+	if (result != "ERROR") result = "LBA " + std::to_string(LBA) + " : " + result;
 	std::cout << result << std::endl;
 
 	return result;
@@ -341,7 +342,7 @@ bool TestShell::verifyTheSequence(
 	LOG_PRINT("called");
 	for (int lba : lbaSequence)
 	{
-		string readReturn = "[Read] LBA " + std::to_string(lba) + " : " + data;
+		string readReturn = "LBA " + std::to_string(lba) + " : " + data;
 		if (readReturn != read(lba))
 		{
 			LOG_PRINT(TEST_SCRIPT_2_VERIFY_FAIL_MSG);
