@@ -11,9 +11,14 @@
 void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
 	auto cmds = mgr.flushBuffer();
 	for (auto& c : cmds) {
-		CommandProcessor flushProc;
-		if (flushProc.flushProcess(c) == SUCCESS) {
-			facade.run(flushProc);
+		CommandProcessor* flushProc = CommandProcessor::Builder()
+			.setOperator(c[1])
+			.setAddress(c[2])
+			.setData(c[3])
+			.patternCheck();
+
+		if (flushProc->getResult() == SUCCESS) {
+			facade.run(*flushProc);
 		}
 	}
 	mgr.resetAllBuffer();
@@ -22,18 +27,33 @@ void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
 int main(int argc, char** argv) {
 
 #if _DEBUG
-	
+
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
 
 #else
-	CommandProcessor cmdProcess;
-	if (cmdProcess.process(argc, argv) != SUCCESS) {
-		cmdProcess.printWriteToOutput(ERROR_STRING);
+
+	vector<string> argsVector;
+	for (int index = 0; index < argc; ++index) {
+		argsVector.push_back(argv[index]);
+	}
+	
+	for (int index = argc; index < 4; ++index) {
+		argsVector.push_back("");
+	}
+
+	CommandProcessor* cmdProcess = CommandProcessor::Builder()
+		.setOperator(argsVector[1])
+		.setAddress(argsVector[2])
+		.setData(argsVector[3])
+		.patternCheck();
+
+	if (cmdProcess->getResult() != SUCCESS) {
+		cmdProcess->printWriteToOutput(ERROR_STRING);
 		return 0;
 	}
 
-	int type = cmdProcess.getOperator();
+	int type = cmdProcess->getOperator();
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
 	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
@@ -42,25 +62,25 @@ int main(int argc, char** argv) {
 
 	switch (type) {
 	case WRITE_OPERATION:
-		if (!mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue())) {
+		if (!mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue())) {
 			flushAndReset(mgr, ssdFacade);
-			mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue());
+			mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue());
 		}
 		break;
 
 	case ERASE_OPERATION:
-		if (!mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize())) {
+		if (!mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize())) {
 			flushAndReset(mgr, ssdFacade);
-			mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize());
+			mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize());
 		}
 		break;
 
 	case READ_OPERATION:
-		value = mgr.addRead(cmdProcess.getAddress());
+		value = mgr.addRead(cmdProcess->getAddress());
 		if (value == EMPTY_STRING) {
-			ssdFacade.readSsdIndex(cmdProcess);
+			ssdFacade.readSsdIndex(*cmdProcess);
 		} else {
-			cmdProcess.printWriteToOutput(value);
+			cmdProcess->printWriteToOutput(value);
 		}
 		break;
 

@@ -111,14 +111,17 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 	std::ofstream(testDir + "/5_e_10_10").close();
 	BufferManager mgr(testDir);
 
-	CommandProcessor cmdp;
 	//w_20_0x12341234
 	if (mgr.addWrite(50, "0x12341234") == false) {
 		auto commands = mgr.flushBuffer();
 
 		for (auto& cmd : commands) {
-			CommandProcessor cp;
-			cp.flushProcess(cmd);
+			
+			CommandProcessor* cp = CommandProcessor::Builder()
+				.setOperator(cmd[1])
+				.setAddress(cmd[2])
+				.setData(cmd[3])
+				.patternCheck();
 		}
 	}
 }
@@ -136,7 +139,6 @@ TEST(BufferManagerTest, READ_BUFFER_NO_MATCH) {
 
 	BufferManager mgr(testDir);
 
-	CommandProcessor cmdp;
 	//ssd.exe r 90
 	int lba = 90;
 	std::string result = mgr.addRead(lba);
@@ -155,7 +157,6 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH) {
 	std::ofstream(testDir + "/5_e_14_10").close();
 	BufferManager mgr(testDir);
 
-	CommandProcessor cmdp;
 	//ssd.exe r 3
 	int lba = 3;
 	std::string result = mgr.addRead(lba);
