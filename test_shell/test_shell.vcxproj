@@ -152,6 +152,7 @@
     <ClCompile Include="full_write_read_compare.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="partial_lba_write.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>

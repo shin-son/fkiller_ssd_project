@@ -5,7 +5,7 @@ class EraseRangeCommand : public ICommand
 {
 public:
 	EraseRangeCommand() { CLASS_NAME = "EraseRange"; }
-	NEXT_TEST process(const string& command, std::istringstream& iss) override;
+	NEXT_TEST process(std::istringstream& iss) override;
 	void printHelp() override;
 
 private:
