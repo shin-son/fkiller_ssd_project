@@ -1,6 +1,6 @@
 #include "full_write_command.h"
 
-NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST FullWriteCommand::process(std::istringstream& iss)
 {
 	std::string data;
 
@@ -11,7 +11,7 @@ NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& i
 
 	LOG_PRINT("called");
 	for (int i = 0; i < 100; ++i) {
-		std::string result = adapter->write(i, data);
+		std::string result = cmdRequester->write(i, data);
 		if (result == "[Write] ERROR") {
 			printLog(getErrorHeader() + ": Failed at LBA " + std::to_string(i));
 			return NEXT_KEEP_GOING;

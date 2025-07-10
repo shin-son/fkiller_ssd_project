@@ -1,18 +1,15 @@
 #include "read_command.h"
 
-SSDInterface* ICommand::adapter = nullptr;
-
-NEXT_TEST ReadCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST ReadCommand::process(std::istringstream& iss)
 {
 	int LBA;
-	std::istringstream iss_(command);
 
 	if (!(iss >> LBA)) {
 		printLog(getErrorHeader() + ": Missing lba");
 		return NEXT_KEEP_GOING;
 	}
 
-	string result = adapter->read(LBA);
+	string result = cmdRequester->read(LBA);
 
 	if (result == ERROR)
 	{

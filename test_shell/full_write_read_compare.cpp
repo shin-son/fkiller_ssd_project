@@ -1,14 +1,13 @@
 #include "full_write_read_compare.h"
 
-NEXT_TEST FullWriteReadCompareCommand::process(
-    const string& command, std::istringstream& iss)
+NEXT_TEST FullWriteReadCompareCommand::process(std::istringstream& iss)
 {
     int j = 1;
     bool failFlag = false;
     for (int i = 0; i < 20; i++) {
         auto testString = intToHexString(i);
         for (int j = 0; j < 5; j++) {
-            auto ret = adapter->write(5 * i + j, testString);
+            auto ret = cmdRequester->write(5 * i + j, testString);
             if (ret.compare("") != 0) {
                 failFlag = true;
                 break;
@@ -18,7 +17,7 @@ NEXT_TEST FullWriteReadCompareCommand::process(
         if (failFlag == true) break;
 
         for (int j = 0; j < 5; j++) {
-            auto ret = adapter->read(5 * i + j);
+            auto ret = cmdRequester->read(5 * i + j);
             if (testString.compare(ret) != 0) {
                 failFlag = true;
                 break;

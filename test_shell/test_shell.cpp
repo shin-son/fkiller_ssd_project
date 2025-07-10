@@ -72,12 +72,7 @@ NEXT_TEST TestShell::processSsdTest(const std::string& command)
 		return NEXT_KEEP_GOING;
 	}
 
-	int posParam = command.find(cmd) + cmd.size();
-	int sizeParam = command.find(cmd) - cmd.size();
-	string cmdparam = command.substr(posParam, sizeParam);
-	cmdPtr->process(cmdparam, iss);
-
-	return NEXT_KEEP_GOING;
+	return cmdPtr->process(iss);
 }
 
 void TestShell::printHelp()

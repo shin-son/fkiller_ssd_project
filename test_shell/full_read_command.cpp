@@ -1,11 +1,11 @@
 #include "full_read_command.h"
 
-NEXT_TEST FullReadCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST FullReadCommand::process(std::istringstream& iss)
 {
 	printLog(getCommandName());
 
 	for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
-		string result = adapter->read(LBA);
+		string result = cmdRequester->read(LBA);
 		if (result != "ERROR")
 		{
 			result = ("LBA " + std::to_string(LBA) + " : " + result);

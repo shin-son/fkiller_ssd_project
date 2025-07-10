@@ -1,6 +1,6 @@
 #include "erase_write_aging.h"
 
-NEXT_TEST EraseWriteAgingCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST EraseWriteAgingCommand::process(std::istringstream& iss)
 {
 	bool AgingPass = false;
 	const int firstEraseLBA = 0;
@@ -10,7 +10,7 @@ NEXT_TEST EraseWriteAgingCommand::process(const string& command, std::istringstr
 	const int lastStartLBAForAging = 98;
 	const int incrementNextLBA = 2;
 
-	if (ERROR == adapter->erase(firstEraseLBA, firstEraseSize))
+	if (ERROR == cmdRequester->erase(firstEraseLBA, firstEraseSize))
 	{
 		printLog(getErrorHeader() + ": 1st Erase Fail");
 		return NEXT_KEEP_GOING;
@@ -53,10 +53,10 @@ bool EraseWriteAgingCommand::eraseWriteAgingOneCycle(int firstStartLBA, int last
 	for (int startLBA = firstStartLBA; startLBA <= lastStartLBA; startLBA += increment)
 	{
 		randData = getRandomInput();
-		if (ERROR == adapter->write(startLBA, randData)) return false;
+		if (ERROR == cmdRequester->write(startLBA, randData)) return false;
 
 		randData = getRandomInput();
-		if (ERROR == adapter->write(startLBA, randData)) return false;
+		if (ERROR == cmdRequester->write(startLBA, randData)) return false;
 
 		eraseLastLBA = startLBA + ERASE_LBA_COUUNT - 1;
 
@@ -66,7 +66,7 @@ bool EraseWriteAgingCommand::eraseWriteAgingOneCycle(int firstStartLBA, int last
 			actualEraseCount = SSD_SIZE - startLBA;
 		}
 
-		if (ERROR == adapter->erase(startLBA, actualEraseCount))
+		if (ERROR == cmdRequester->erase(startLBA, actualEraseCount))
 		{
 			return false;
 		}
@@ -77,10 +77,9 @@ bool EraseWriteAgingCommand::eraseWriteAgingOneCycle(int firstStartLBA, int last
 
 string EraseWriteAgingCommand::getRandomInput()
 {
-#ifdef _DEBUG
+#ifndef _DEBUG
 	srand(time(0));
 #endif
-
 	std::stringstream ss;
 	ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
 	std::string randData = ss.str();

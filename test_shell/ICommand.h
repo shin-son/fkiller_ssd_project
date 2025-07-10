@@ -13,40 +13,21 @@ using std::string;
 class ICommand
 {
 public:
-	virtual NEXT_TEST process(const string& command, std::istringstream& iss) = 0;
+	virtual NEXT_TEST process(std::istringstream& iss) = 0;
 	virtual void printHelp() = 0;
-	static void setSsdAdapter(SSDInterface* adapter_)
-	{
-		adapter = adapter_;
-	}
+	static void setSsdAdapter(SSDInterface* _adapter);
 
 protected:
 	//virtual bool prepare() = 0;
 	//virtual bool execute() = 0;
 	//virtual bool wrapUp() = 0;
 
-	void printLog(const string& message)
-	{
-		LOG_PRINT(message);
-		std::cout << message << std::endl;
-	}
-
-	string getCommandName()
-	{
-		return ("[" + CLASS_NAME + "] ");
-	}
-
-	string getDoneMessage()
-	{
-		return (getCommandName() + DONE);
-	}
-
-	string getErrorHeader()
-	{
-		return (getCommandName() + ERROR + " ");
-	}
+	void printLog(const string& message);
+	string getCommandName();
+	string getDoneMessage();
+	string getErrorHeader();
 
 	string CLASS_NAME;
-	static SSDInterface* adapter;
+	static SSDInterface* cmdRequester;
 	Logger& logger = Logger::getInstance();
 };

@@ -90,6 +90,9 @@
     <ClCompile Include="erase_write_aging.cpp">
       <Filter>Commands\소스파일</Filter>
     </ClCompile>
+    <ClCompile Include="ICommand.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">

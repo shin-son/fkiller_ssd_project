@@ -1,6 +1,6 @@
 #include "erase_command.h"
 
-NEXT_TEST EraseCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST EraseCommand::process(std::istringstream& iss)
 {
 	LOG_PRINT("called");
 	int startLBA = 0;
@@ -73,13 +73,13 @@ bool EraseCommand::eraseRange(int startLBA, int endLBA)
 	{
 		if (endLBA < startLBA + ERASE_UNIT_LBA_COUNT)
 		{
-			eraseResult = adapter->erase(startLBA, endLBA - startLBA + 1);
+			eraseResult = cmdRequester->erase(startLBA, endLBA - startLBA + 1);
 			if ("" != eraseResult) return false;
 			break;
 		}
 		else
 		{
-			eraseResult = adapter->erase(startLBA, ERASE_UNIT_LBA_COUNT);
+			eraseResult = cmdRequester->erase(startLBA, ERASE_UNIT_LBA_COUNT);
 			if ("" != eraseResult) return false;
 			startLBA += ERASE_UNIT_LBA_COUNT;
 		}

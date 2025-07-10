@@ -1,7 +1,7 @@
 #include "write_read_aging.h"
 
 
-NEXT_TEST WriteReadAgingCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST WriteReadAgingCommand::process(std::istringstream& iss)
 {
 	LOG_PRINT("called");
 	bool allMatch = true;
@@ -11,11 +11,11 @@ NEXT_TEST WriteReadAgingCommand::process(const string& command, std::istringstre
 		ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
 		std::string randData = ss.str();
 
-		adapter->write(0, randData);
-		adapter->write(99, randData);
+		cmdRequester->write(0, randData);
+		cmdRequester->write(99, randData);
 
-		std::string result0 = adapter->read(0);
-		std::string result99 = adapter->read(99);
+		std::string result0 = cmdRequester->read(0);
+		std::string result99 = cmdRequester->read(99);
 
 		if (result0 != result99) {
 			string errorMessage = "[WriteReadAging] ERROR mismatch value LBA[0] : " + result0 + " LBA[99] : " + result99;

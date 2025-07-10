@@ -1,6 +1,6 @@
 #include "partial_lba_write.h"
 
-NEXT_TEST PartialLbaWriteCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST PartialLbaWriteCommand::process(std::istringstream& iss)
 {
 	vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
 
@@ -41,7 +41,7 @@ bool PartialLbaWriteCommand::writeTheSequence(
 {
 	for (int lba : lbaSequence)
 	{
-		if ("" != adapter->write(lba, data))
+		if ("" != cmdRequester->write(lba, data))
 		{
 			std::cout << TEST_SCRIPT_2_WRITE_FAIL_MSG << std::endl;
 			return false;
@@ -56,7 +56,7 @@ bool PartialLbaWriteCommand::verifyTheSequence(
 	for (int lba : lbaSequence)
 	{
 		string readReturn = "LBA " + std::to_string(lba) + " : " + data;
-		if ((data != adapter->read(lba) || (ERROR == adapter->read(lba))))
+		if ((data != cmdRequester->read(lba) || (ERROR == cmdRequester->read(lba))))
 		{
 			LOG_PRINT(TEST_SCRIPT_2_VERIFY_FAIL_MSG);
 			std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG << std::endl;

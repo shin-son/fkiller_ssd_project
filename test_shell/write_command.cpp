@@ -1,6 +1,6 @@
 #include "write_command.h"
 
-NEXT_TEST WriteCommand::process(const string& command, std::istringstream& iss)
+NEXT_TEST WriteCommand::process(std::istringstream& iss)
 {
 	int lba;
 	std::string data;
@@ -21,7 +21,7 @@ NEXT_TEST WriteCommand::process(const string& command, std::istringstream& iss)
 		return NEXT_KEEP_GOING;
 	}
 
-	std::string result = adapter->write(lba, data);
+	std::string result = cmdRequester->write(lba, data);
 	if (result == "") printLog(getDoneMessage());
 	else printLog(getErrorHeader() + ": Write Fail");
 
