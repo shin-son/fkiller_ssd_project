@@ -203,36 +203,36 @@ void TestShell::fullRead()
 
 void TestShell::fullWriteAndReadCompare()
 {
-	LOG_PRINT("called");
-	int j = 1;
-	bool failFlag = false;
-	for (int i = 0; i < 20; i++) {
-		auto test_string = intToHexString(i);
-		for (int j = 0; j < 5; j++) {
-			auto ret = ssdAdapter->write(5 * i + j, test_string);
-			if (ret != "") {
-				LOG_PRINT("FAIL: ssdAdapter->write " + std::to_string(i) + " " + std::to_string(j));
-				failFlag = true;
-				break;
-			}
-		}
-		// TODO: fix to if (isFail()) break;
-		if (failFlag == true) break;
+    LOG_PRINT("called");
+    int j = 1;
+    bool failFlag = false;
+    for (int i = 0; i < 20; i++) {
+        auto testString = intToHexString(i);
+        for (int j = 0; j < 5; j++) {
+            auto ret = ssdAdapter->write(5 * i + j, testString);
+            if (ret.compare("") != 0) {
+                failFlag = true;
+                break;
+            }
+        }
+        // TODO: fix to if (isFail()) break;
+        if (failFlag == true) break;
 
-		for (int j = 0; j < 5; j++) {
-			if (test_string.compare(ssdAdapter->read(5 * i + j)) == 0) {
-				failFlag = true;
-				break;
-			}
-		}
-		if (failFlag == true) break;
-	}
-	if (failFlag == true) {
-		std::cout << "FAIL" << std::endl;
-	}
-	else {
-		std::cout << "PASS" << std::endl;
-	}
+        for (int j = 0; j < 5; j++) {
+            auto ret = ssdAdapter->read(5 * i + j);
+            if (testString.compare(ret) != 0) {
+                failFlag = true;
+                break;
+            }
+        }
+        if (failFlag == true) break;
+    }
+    if (failFlag == true) {
+        std::cout << "FAIL" << std::endl;
+    }
+    else {
+        std::cout << "PASS" << std::endl;
+    }
 }
 
 void TestShell::partialLBAWrite(const string& data)
