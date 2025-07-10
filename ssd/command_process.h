@@ -57,7 +57,7 @@ public:
             return *this;
         }
 
-        CommandProcessor* patterCheck() {
+        CommandProcessor* patternCheck() {
             if (argCount < 2) {
                 std::cout << "Usage: ssd.exe [w/r] [args...]\n";
                 cmdProc->result = INVALID_COMMAND;
