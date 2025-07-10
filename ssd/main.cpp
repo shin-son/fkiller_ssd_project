@@ -3,6 +3,21 @@
 #include <string>
 #include "ssd_constants.h"
 #include "command_process.h"
+#include "buffer_manager.h"
+#include <iostream>
+
+#include <filesystem>
+
+void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
+	auto cmds = mgr.flushBuffer();
+	for (auto& c : cmds) {
+		CommandProcessor flushProc;
+		if (flushProc.flushProcess(c) == SUCCESS) {
+			facade.run(flushProc);
+		}
+	}
+	mgr.resetAllBuffer();
+}
 
 int main(int argc, char** argv) {
 
@@ -13,23 +28,45 @@ int main(int argc, char** argv) {
 
 #else
 	CommandProcessor cmdProcess;
-	if (cmdProcess.process(argc, argv) != SUCCESS) cmdProcess.printErrorAndWriteToOutput();
+	if (cmdProcess.process(argc, argv) != SUCCESS) {
+		cmdProcess.printWriteToOutput(ERROR_STRING);
+		return 0;
+	}
 
 	int type = cmdProcess.getOperator();
 
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
+	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
+	BufferManager mgr(testDir);
+	std::string value;
 
-	if (type == WRITE_OPERATION) { // Write operation
-		ssdFacade.writeSsdIndex(cmdProcess);
-	}
-	else if (type == READ_OPERATION) { // Read operation
-		ssdFacade.readSsdIndex(cmdProcess);
-	}
-	else if (type == ERASE_OPERATION) { // Erase operation
-		ssdFacade.eraseSsdIndexToSize(cmdProcess);
-	}
-	else {
-		// Handle other types or errors
+	switch (type) {
+	case WRITE_OPERATION:
+		if (!mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue())) {
+			flushAndReset(mgr, ssdFacade);
+			mgr.addWrite(cmdProcess.getAddress(), cmdProcess.getInputValue());
+		}
+		break;
+
+	case ERASE_OPERATION:
+		if (!mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize())) {
+			flushAndReset(mgr, ssdFacade);
+			mgr.addErase(cmdProcess.getAddress(), cmdProcess.getSize());
+		}
+		break;
+
+	case READ_OPERATION:
+		value = mgr.addRead(cmdProcess.getAddress());
+		if (value == EMPTY_STRING) {
+			ssdFacade.readSsdIndex(cmdProcess);
+		} else {
+			cmdProcess.printWriteToOutput(value);
+		}
+		break;
+
+	default:
+		std::cerr << "[ERROR] Unknown command type\n";
+		break;
 	}
 
 	return 0;

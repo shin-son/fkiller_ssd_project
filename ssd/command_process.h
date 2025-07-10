@@ -5,13 +5,14 @@
 
 class CommandProcessor {
 public:
-    PatternChecker patterChecker;
+    PatternChecker patternChecker;
     int process(int argc, char* argv[]);
+    int flushProcess(const std::vector<std::string>& args);
     int getOperator();
     std::string getInputValue();
     int getAddress();
     int getSize();
-    void printErrorAndWriteToOutput();
+    void printWriteToOutput(std::string value);
 private:
     int dispatchCommand(const std::string& cmd, const std::vector<std::string>& args);
     
