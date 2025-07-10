@@ -4,6 +4,7 @@
 class EraseCommand : public ICommand
 {
 public:
+	EraseCommand() { CLASS_NAME = "Erase"; }
 	NEXT_TEST process(const string& command, std::istringstream& iss) override;
 	void printHelp() override;
 

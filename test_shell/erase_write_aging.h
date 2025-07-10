@@ -4,6 +4,7 @@
 class EraseWriteAgingCommand : public ICommand
 {
 public:
+	EraseWriteAgingCommand() { CLASS_NAME = "EraseAndWriteAging"; }
 	NEXT_TEST process(const string& command, std::istringstream& iss) override;
 	void printHelp() override;
 
