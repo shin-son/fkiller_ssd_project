@@ -19,15 +19,13 @@ NEXT_TEST WriteReadAgingCommand::process(const string& command, std::istringstre
 
 		if (result0 != result99) {
 			string errorMessage = "[WriteReadAging] ERROR mismatch value LBA[0] : " + result0 + " LBA[99] : " + result99;
-			LOG_PRINT(errorMessage);
-			std::cout << "[WriteReadAging] ERROR mismatch value LBA[0] : " << result0 << " LBA[99] : " << result99 << std::endl;
+			printLog(errorMessage);
 			allMatch = false;
 		}
 	}
 
 	if (allMatch) {
-		LOG_PRINT("[WriteReadAging] Done");
-		std::cout << "[WriteReadAging] Done" << std::endl;
+		printLog(getDoneMessage());
 	}
 
 	return NEXT_KEEP_GOING;

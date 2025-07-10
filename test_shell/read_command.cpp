@@ -6,10 +6,9 @@ NEXT_TEST ReadCommand::process(const string& command, std::istringstream& iss)
 {
 	int LBA;
 	std::istringstream iss_(command);
-	std::cout << "[Read] ";
 
 	if (!(iss >> LBA)) {
-		std::cout << "ERROR: Missing LBA" << std::endl;
+		printLog(getErrorHeader() + ": Missing lba");
 		return NEXT_KEEP_GOING;
 	}
 
@@ -17,12 +16,15 @@ NEXT_TEST ReadCommand::process(const string& command, std::istringstream& iss)
 
 	if (result == ERROR)
 	{
-		std::cout << ERROR;
+		printLog(getErrorHeader() + ": Read Fail");
 	}
 	else
 	{
-		std::cout << "LBA " << std::setfill('0') << std::setw(2)
+		std::ostringstream oss;		
+		oss << "LBA " << std::setfill('0') << std::setw(2)
 			<< LBA << " : " << result << std::endl;
+		printLog(getCommandName() + oss.str());
+
 	}
 
 

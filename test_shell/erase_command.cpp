@@ -11,19 +11,17 @@ NEXT_TEST EraseCommand::process(const string& command, std::istringstream& iss)
 	int endLBA = startLBA + size - 1;
 	if (false == isVaiidEraseRange(startLBA, endLBA))
 	{
-		LOG_PRINT("[Erase] ERROR: invalid Range(startLBA, size)");
-		std::cout << "[Erase] ERROR: invalid Range(startLBA, size)\n";
+		printLog(getErrorHeader() + ": invalid Range(startLBA, size)");
 		return NEXT_KEEP_GOING;
 	}
 
 	if (false == eraseRange(startLBA, endLBA))
 	{
-		LOG_PRINT("[Erase] ERROR: Erase Operation Fail");
-		std::cout << "[Erase] ERROR: Erase Operation Fail\n";
+		printLog(getErrorHeader() + ": Erase Fail");
 		return NEXT_KEEP_GOING;
 	}
 
-	std::cout << ERASE_DONE_RETURN << std::endl;
+	printLog(getDoneMessage());
 
 	return NEXT_KEEP_GOING;
 }
@@ -40,15 +38,13 @@ bool EraseCommand::getEraseParameter(
 	LOG_PRINT("called");
 	if (!(iss >> startLBA))
 	{
-		LOG_PRINT("[Erase] ERROR: missing startLBA");
-		std::cout << "[Erase] ERROR: missing startLBA\n";
+		printLog(getErrorHeader() + ": missing startLBA");
 		return false;
 	}
 
 	if (!(iss >> size))
 	{
-		LOG_PRINT("[Erase] ERROR: missing size");
-		std::cout << "[Erase] ERROR: missing size\n";
+		printLog(getErrorHeader() + ": missing size");
 		return false;
 	}
 

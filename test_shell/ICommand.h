@@ -25,6 +25,27 @@ protected:
 	//virtual bool execute() = 0;
 	//virtual bool wrapUp() = 0;
 
+	void printLog(const string& message)
+	{
+		LOG_PRINT(message);
+		std::cout << message << std::endl;
+	}
+
+	string getCommandName()
+	{
+		return ("[" + CLASS_NAME + "] ");
+	}
+
+	string getDoneMessage()
+	{
+		return (getCommandName() + DONE);
+	}
+
+	string getErrorHeader()
+	{
+		return (getCommandName() + ERROR + " ");
+	}
+
 	string CLASS_NAME;
 	static SSDInterface* adapter;
 	Logger& logger = Logger::getInstance();

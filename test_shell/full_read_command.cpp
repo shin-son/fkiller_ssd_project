@@ -2,14 +2,22 @@
 
 NEXT_TEST FullReadCommand::process(const string& command, std::istringstream& iss)
 {
-	LOG_PRINT("called");
-	std::cout << "[fullRead]\n";
+	printLog(getCommandName());
+
 	for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
 		string result = adapter->read(LBA);
-		if (result != "ERROR") result = ("LBA " + std::to_string(LBA) + " : " + result);
-		else result = ("LBA " + std::to_string(LBA) + " : " + ERROR);
-		std::cout << result << std::endl;
+		if (result != "ERROR")
+		{
+			result = ("LBA " + std::to_string(LBA) + " : " + result);
+			std::cout << result << std::endl;
+		}
+		else
+		{
+			result = ("LBA " + std::to_string(LBA) + " : " + ERROR);
+			printLog(result);
+		}
 	}
+
 	return NEXT_KEEP_GOING;
 }
 

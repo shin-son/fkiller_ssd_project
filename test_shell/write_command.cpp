@@ -2,32 +2,28 @@
 
 NEXT_TEST WriteCommand::process(const string& command, std::istringstream& iss)
 {
-	string printlog = "[Write] ";
-
 	int lba;
 	std::string data;
 	std::string extra;
 
 	if (!(iss >> lba)) {
-		printlog += "ERROR: Missing lba";
+		printLog(getErrorHeader() + ": Missing lba");
 		return NEXT_KEEP_GOING;
 	}
 
 	if (!(iss >> data)) {
-		printlog += "ERROR: Missing data";
+		printLog(getErrorHeader() + ": Missing data");
 		return NEXT_KEEP_GOING;
 	}
 
 	if (iss >> extra) {
-		printlog += "ERROR: Too many arguments";
+		printLog(getErrorHeader() + ": Too many arguments");
 		return NEXT_KEEP_GOING;
 	}
 
 	std::string result = adapter->write(lba, data);
-	if (result == "") printlog = WRITE_DONE_RETURN;
-	else printlog += "ERROR";
-
-	std::cout << printlog << std::endl;
+	if (result == "") printLog(getDoneMessage());
+	else printLog(getErrorHeader() + ": Write Fail");
 
 	return NEXT_KEEP_GOING;
 }
