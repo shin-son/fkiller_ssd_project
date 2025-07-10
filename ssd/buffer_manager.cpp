@@ -290,7 +290,7 @@ std::string BufferManager::formatEraseFileName(int idx, int lba, int size) {
 }
 
 void BufferManager::createInitBufferFile() {
-	for (int idx = 1; idx < 6; idx++) {
+	for (int idx = 1; idx <= BUFFER_SIZE; idx++) {
 		std::filesystem::path filePath = bufferDirectory + "/" + std::to_string(idx) + "_empty";
 		std::ofstream file(filePath);
 		if (!file.is_open()) {
