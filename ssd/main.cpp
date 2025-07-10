@@ -47,12 +47,14 @@ int main(int argc, char** argv) {
 	case WRITE_OPERATION:
 		{
 			mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue());
+			cmdProcess->printWriteToOutput("");
 		}
 		break;
 
 	case ERASE_OPERATION:
 		{
 			mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize());
+			cmdProcess->printWriteToOutput("");
 		}
 		break;
 
