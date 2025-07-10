@@ -50,4 +50,5 @@ private:
 	BufferEntry parseFilename(const std::string& filename);
 
 	std::vector<std::vector<std::string>> flushBuffer();
+	void createInitBufferFile();
 };
