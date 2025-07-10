@@ -28,6 +28,15 @@ int TestShell::runCommand(const std::string& command)
 	std::string cmd;
 	iss >> cmd;
 
+	if (cmd == EXIT_COMMAND_NAME) {
+		std::cout << "PROGRAM EXIT" << std::endl;
+		return NEXT_EXIT;
+	}
+
+	std::unique_ptr<ICommand> cmdPtr = cmdCreator.createCommand(cmd);
+
+
+
 	if (cmd == "exit") {
 		std::cout << "PROGRAM EXIT" << std::endl;
 		return NEXT_EXIT;
@@ -327,7 +336,7 @@ bool TestShell::writeTheSequence(const std::vector<int>& lbaSequence, const std:
 	LOG_PRINT("called");
 	for (int lba : lbaSequence)
 	{
-		if (RETURN_WRITE_DONE != write(lba, data))
+		if (WRITE_DONE_RETURN != write(lba, data))
 		{
 			std::cout << TEST_SCRIPT_2_WRITE_FAIL_MSG << std::endl;
 			return false;

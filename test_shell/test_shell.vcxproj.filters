@@ -16,6 +16,15 @@
     <Filter Include="테스트파일">
       <UniqueIdentifier>{74220f61-b1cf-4b3f-8a1b-25ec9d82497a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands">
+      <UniqueIdentifier>{fafe17d0-a864-4546-b4a8-9054d2477672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Commands\헤더파일">
+      <UniqueIdentifier>{32c5791a-bec9-4fb4-a4e6-d15bd8808d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Commands\소스파일">
+      <UniqueIdentifier>{4c3eec1b-f88f-4be6-bf9b-741972706af6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -48,6 +57,9 @@
     <ClCompile Include="basic_test.cpp">
       <Filter>테스트파일</Filter>
     </ClCompile>
+    <ClCompile Include="command_factory.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">
@@ -73,6 +85,39 @@
     </ClInclude>
     <ClInclude Include="test_case.h">
       <Filter>테스트파일</Filter>
+    </ClInclude>
+    <ClInclude Include="all_commands.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="command_factory.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="erase_command.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="erase_range_command.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="erase_write_aging.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="full_write_read_compare.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ICommand.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="partial_lba_write.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="read_command.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="write_command.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="write_read_aging.h">
+      <Filter>Commands\헤더파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

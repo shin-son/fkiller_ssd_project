@@ -9,16 +9,10 @@
 #include "ssd_interface.h"
 #include "constants.h"
 #include "logger.h"
+#include "command_factory.h"
 
 using std::string;
 using std::vector;
-
-enum TEST_NEXT
-{
-    NEXT_KEEP_GOING = 0,
-    NEXT_EXIT = 2,
-    NEXT_MAX = 0xFFFFFFFF,
-};
 
 class TestShell
 {
@@ -75,6 +69,7 @@ public:
 
     SSDInterface* ssdAdapter;
     Logger& logger = Logger::getInstance();
+    CommandFactory cmdCreator;
     unsigned int SSD_SIZE = 100;
     const string CLASS_NAME = "TestShell";
 };
