@@ -27,19 +27,3 @@ void SsdFacade::eraseSsdIndexToSize(CommandProcessor cmd) {
 	ssdErase.saveSsdNandFile();
 }
 
-void SsdFacade::run(CommandProcessor& cmd) {
-	switch (cmd.getOperator()) {
-	case WRITE_OPERATION:
-		writeSsdIndex(cmd);
-		break;
-	case READ_OPERATION:
-		readSsdIndex(cmd);
-		break;
-	case ERASE_OPERATION:
-		eraseSsdIndexToSize(cmd);
-		break;
-	default:
-		break;
-	}
-}
-

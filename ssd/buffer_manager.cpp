@@ -4,6 +4,8 @@
 #include "ssd_constants.h"
 #include <sstream>
 #include <algorithm>
+#include "command_process.h"
+#include "ssd_facade.h"
 
 // debugging
 #include <iostream>
@@ -18,35 +20,39 @@ BufferManager::BufferManager(const std::string& bufferDir)
 	loadAndParseBufferFiles();
 }
 
-bool BufferManager::addWrite(int lba, const std::string& value) {
+void BufferManager::addWrite(int lba, const std::string& value) {
 	int idx = findWriteSameAddress(lba);
 	if (idx != NOT_FOUND_ANY_BUFFER) {
 		std::string old_path = bufferDirectory + "/" + bufferEntries[idx].originalFilename;
 		std::string new_path = formatWriteFileName(bufferEntries[idx].index, lba, value);
 		std::filesystem::rename(old_path, new_path);
 		reloadBufferFiles();
-		return true;
+		return;
 	}
 
 	int emptyIdx = findEmptyBuffer();
-	if (emptyIdx == ALL_BUFFER_USED) return false;
+	if (emptyIdx == ALL_BUFFER_USED) {
+		flushAndReset();
+		emptyIdx = 1;	//first
+	}
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
 	std::string new_path = formatWriteFileName(bufferEntries[emptyIdx].index, lba, value);
 	std::filesystem::rename(old_path, new_path);
-	reloadBufferFiles();
-	return true;
+	reloadBufferFiles();	
 }
 
-bool BufferManager::addErase(int lba, int size) {
+void BufferManager::addErase(int lba, int size) {
 	int emptyIdx = findEmptyBuffer();
-	if (emptyIdx == ALL_BUFFER_USED) return false;
+	if (emptyIdx == ALL_BUFFER_USED) {
+		flushAndReset();
+		emptyIdx = 1;	//first
+	}
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
 	reloadBufferFiles();
-	return true;
 }
 
 std::string  BufferManager::addRead(int lba) {
@@ -91,6 +97,36 @@ void BufferManager::reloadBufferFiles() {
 	loadAndParseBufferFiles();
 }
 
+void BufferManager::flushAndReset() {
+	auto cmds = flushBuffer();
+	for (auto& c : cmds) {
+		CommandProcessor* flushProc = CommandProcessor::Builder()
+			.setOperator(c[1])
+			.setAddress(c[2])
+			.setData(c[3])
+			.patternCheck();
+
+		if (flushProc->getResult() == SUCCESS) {
+			SsdFacade& ssdFacade = SsdFacade::getInstance();
+
+			switch (flushProc->getOperator()) {
+			case WRITE_OPERATION:
+				ssdFacade.writeSsdIndex(*flushProc);
+				break;
+			case READ_OPERATION:
+				ssdFacade.readSsdIndex(*flushProc);
+				break;
+			case ERASE_OPERATION:
+				ssdFacade.eraseSsdIndexToSize(*flushProc);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	resetAllBuffer();
+}
+
 void BufferManager::loadAndParseBufferFiles() {
 	bufferEntries.clear();
 	for (const auto& entry : std::filesystem::directory_iterator(bufferDirectory)) {
@@ -129,6 +165,8 @@ BufferEntry BufferManager::parseFilename(const std::string& filename) {
 }
 
 int BufferManager::findEmptyBuffer() {
+	if (bufferEntries.size() < 5) return 0;
+
 	for (size_t bufferIdx = 0; bufferIdx < bufferEntries.size(); ++bufferIdx) {
 		if (bufferEntries[bufferIdx].type == CommandType::EMPTY)
 			return bufferIdx;

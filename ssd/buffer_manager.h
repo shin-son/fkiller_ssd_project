@@ -20,12 +20,12 @@ struct BufferEntry {
 class BufferManager {
 public:
 	BufferManager(const std::string& bufferDir = "./buffer");
-	bool addWrite(int lba, const std::string& value);
-	bool addErase(int lba, int size);
-	std::vector<std::vector<std::string>> flushBuffer();
 	void resetAllBuffer();
+	void addWrite(int lba, const std::string& value);
+	void addErase(int lba, int size);
 	std::string addRead(int lba);
 	void reloadBufferFiles();
+	void flushAndReset();
 
 private:
 	std::string bufferDirectory;
@@ -43,4 +43,5 @@ private:
 	void loadAndParseBufferFiles();
 	BufferEntry parseFilename(const std::string& filename);
 
+	std::vector<std::vector<std::string>> flushBuffer();
 };

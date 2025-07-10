@@ -20,14 +20,17 @@ public:
             if (isWriteCommand(cmd)) {
                 cmdProc->ssdOperator = WRITE_OPERATION;
             }
-            if (isReadCommand(cmd)) {
+            else if (isReadCommand(cmd)) {
                 cmdProc->ssdOperator = READ_OPERATION;
             }
-            if (isEraseCommand(cmd)) {
+            else if (isEraseCommand(cmd)) {
                 cmdProc->ssdOperator = ERASE_OPERATION;
             }
-            if (isFlushCommand(cmd)) {
+            else if (isFlushCommand(cmd)) {
                 cmdProc->ssdOperator = FLUSH_OPERATION;
+            }
+            else {
+                cmdProc->ssdOperator = INIT_OPERATION;
             }
             return *this;
         }
