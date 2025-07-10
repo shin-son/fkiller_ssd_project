@@ -2,7 +2,6 @@
 
 NEXT_TEST WriteCommand::process(const string& command, std::istringstream& iss)
 {
-	//std::istringstream iss(command);
 	string printlog = "[Write] ";
 
 	int lba;

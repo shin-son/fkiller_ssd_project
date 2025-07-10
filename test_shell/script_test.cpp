@@ -1,5 +1,4 @@
-#if 0
-//#ifdef _DEBUG
+#ifdef _DEBUG
 #include "test_case.h"
 
 TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
@@ -15,6 +14,7 @@ TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
         }
     }
     testing::internal::CaptureStdout();
+    //testShell.fullWriteAndReadCompare();
     testShell.runCommand(TEST_SCRIPT_1_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_NE(output.find(DONE), std::string::npos);
@@ -172,6 +172,38 @@ TEST_F(TestShellFixture, PartialLBAWriteShortCommandPass) {
 
     EXPECT_EQ(output.find(ERROR), std::string::npos);
     EXPECT_NE(output.find(DONE), std::string::npos);
+}
+
+TEST_F(TestShellFixture, PartialLBAWriteWithDataPass) {
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    string writeData = "0xDEADDEAD";
+
+    {
+        InSequence seq;
+
+        for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+        {
+            EXPECT_CALL(mockSSDAdapter, write(4, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(0, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(3, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(1, writeData))
+                .Times(1);
+            EXPECT_CALL(mockSSDAdapter, write(2, writeData))
+                .Times(1);
+        }
+    }
+
+    EXPECT_CALL(mockSSDAdapter, read(_))
+        .WillRepeatedly(Return(writeData));
+
+    testing::internal::CaptureStdout();
+    testShell.partialLBAWrite(writeData);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteWriteFail) {

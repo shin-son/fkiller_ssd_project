@@ -2,7 +2,6 @@
 
 NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& iss)
 {
-	//std::istringstream iss(command);
 	std::string data;
 
 	if (!(iss >> data)) {
@@ -10,7 +9,7 @@ NEXT_TEST FullWriteCommand::process(const string& command, std::istringstream& i
 		return NEXT_KEEP_GOING;
 	}
 
-	//LOG_PRINT("called");
+	LOG_PRINT("called");
 	for (int i = 0; i < 100; ++i) {
 		std::string result = adapter->write(i, data);
 		if (result == "[Write] ERROR") {

@@ -2,7 +2,7 @@
 
 NEXT_TEST EraseCommand::process(const string& command, std::istringstream& iss)
 {
-	//LOG_PRINT("called");
+	LOG_PRINT("called");
 	int startLBA = 0;
 	int size = 0;
 
@@ -11,15 +11,14 @@ NEXT_TEST EraseCommand::process(const string& command, std::istringstream& iss)
 	int endLBA = startLBA + size - 1;
 	if (false == isVaiidEraseRange(startLBA, endLBA))
 	{
-		//LOG_PRINT("[Erase] Error: invalid Range(startLBA, size)");
+		LOG_PRINT("[Erase] ERROR: invalid Range(startLBA, size)");
 		std::cout << "[Erase] ERROR: invalid Range(startLBA, size)\n";
 		return NEXT_KEEP_GOING;
 	}
 
 	if (false == eraseRange(startLBA, endLBA))
 	{
-		//LOG_PRINT("[Erase] Error: Erase Operation Fail");
-		//std::cout << "[Erase] Error: Erase Operation Fail\n";
+		LOG_PRINT("[Erase] ERROR: Erase Operation Fail");
 		std::cout << "[Erase] ERROR: Erase Operation Fail\n";
 		return NEXT_KEEP_GOING;
 	}
@@ -35,19 +34,20 @@ void EraseCommand::printHelp()
 		"\t usage - erase <start LBA> <size> (ex.erase 0 10)" << std::endl;
 }
 
-bool EraseCommand::getEraseParameter(int& startLBA, int& size, std::istringstream& iss)
+bool EraseCommand::getEraseParameter(
+	int& startLBA, int& size, std::istringstream& iss)
 {
-	//LOG_PRINT("called");
+	LOG_PRINT("called");
 	if (!(iss >> startLBA))
 	{
-		//LOG_PRINT("[Erase] Error: missing startLBA");
+		LOG_PRINT("[Erase] ERROR: missing startLBA");
 		std::cout << "[Erase] ERROR: missing startLBA\n";
 		return false;
 	}
 
 	if (!(iss >> size))
 	{
-		//LOG_PRINT("[Erase] Error: missing size");
+		LOG_PRINT("[Erase] ERROR: missing size");
 		std::cout << "[Erase] ERROR: missing size\n";
 		return false;
 	}
@@ -57,7 +57,7 @@ bool EraseCommand::getEraseParameter(int& startLBA, int& size, std::istringstrea
 
 bool EraseCommand::isVaiidEraseRange(const int startLBA, const int endLBA)
 {
-	//LOG_PRINT("called");
+	LOG_PRINT("called");
 	if (startLBA < 0)  return false;
 	else if (endLBA >= SSD_SIZE) return false;
 	else if (startLBA >= endLBA) return false;
@@ -67,7 +67,7 @@ bool EraseCommand::isVaiidEraseRange(const int startLBA, const int endLBA)
 
 bool EraseCommand::eraseRange(int startLBA, int endLBA)
 {
-	//LOG_PRINT("called");
+	LOG_PRINT("called");
 	int retSuccess = true;
 	string eraseResult = "";
 	int eraseCount = (endLBA - startLBA + 1) / ERASE_UNIT_LBA_COUNT;
