@@ -46,6 +46,7 @@ void BufferManager::addErase(int lba, int size) {
 	int emptyIdx = findEmptyBuffer();
 	if (emptyIdx == ALL_BUFFER_USED) {
 		flushAndReset();
+		emptyIdx = 1;	//first
 	}
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
