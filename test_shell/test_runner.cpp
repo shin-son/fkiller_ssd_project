@@ -30,13 +30,12 @@ int TestRunner::getResultFromCommand(std::string& command) {
     std::thread dotter([&]() {
         while (!done) {
             std::cerr << '.' << std::flush;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
         });
 
     std::ostringstream hiddenBuf;
     auto* oldCout = std::cout.rdbuf(hiddenBuf.rdbuf());
-    auto* oldCerr = std::cerr.rdbuf(hiddenBuf.rdbuf());
 
     int getResult = testShell.runCommand(command);
 
@@ -44,7 +43,6 @@ int TestRunner::getResultFromCommand(std::string& command) {
     dotter.join();
 
     std::cout.rdbuf(oldCout);
-    std::cerr.rdbuf(oldCerr);
 
     return getResult;
 }
@@ -54,10 +52,10 @@ void TestRunner::runScript(std::ifstream& script) {
     while (std::getline(script, cmd)) {
         if (cmd.empty())
             continue;
+        std::cout << std::left << std::setw(30) << cmd;
+        std::cerr <<" RUN" << std::flush;
 
-        std::cerr << cmd << " RUN" << std::flush;
-
-        if (getResultFromCommand(cmd) == NEXT_EXIT) std::cerr << " Pass\n";
+        if (getResultFromCommand(cmd) != NEXT_EXIT) std::cerr << " Pass\n";
         else {
             std::cerr << " FAIL!\n";
             return;
