@@ -5,11 +5,21 @@ class EraseCommand : public ICommand
 {
 public:
 	EraseCommand() { CLASS_NAME = "Erase"; }
-	NEXT_TEST process(std::istringstream& iss) override;
 	void printHelp() override;
 
 private:
-	bool getEraseParameter(int& startLBA, int& size, std::istringstream& iss);
-	bool isVaiidEraseRange(const int startLBA, const int endLBA);
-	bool eraseRange(int startLBA, int endLBA);
+	bool prepare(std::istringstream& iss) override;
+	bool execute() override;
+	void wrapUp(bool noError) override;
+
+	bool getEraseParameter(std::istringstream& iss);
+	bool isVaiidEraseRange();
+	bool eraseRange();
+
+	void setEndLBA();
+	int getLastEraseLbaCount(int changedStartLBA);
+
+	int startLBA = 0;
+	int size = 0;
+	int endLBA = 0;
 };

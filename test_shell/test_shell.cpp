@@ -28,17 +28,6 @@ int TestShell::runCommand(const std::string& command)
 	return processSsdTest(command);
 }
 
-#ifdef _DEBUG
-string TestShell::intToHexString(int value) {
-	std::stringstream ss;
-	ss << "0x"
-		<< std::setfill('0') << std::setw(8)
-		<< std::hex << std::uppercase
-		<< value;
-	return ss.str();
-}
-#endif
-
 bool TestShell::isSSDCommand(const std::string& cmdType) {
 	if ((cmdType == HELP_COMMAND_NAME) || (cmdType == EXIT_COMMAND_NAME)) return false;
 	return true;
@@ -68,10 +57,10 @@ NEXT_TEST TestShell::processSsdTest(const std::string& command)
 	std::unique_ptr<ICommand> cmdPtr = cmdCreator.createCommand(cmd);
 	if (cmdPtr == nullptr)
 	{
+		LOG_PRINT(INVALID_COMMAND_MSG);
 		std::cout << INVALID_COMMAND_MSG << std::endl;
 		return NEXT_KEEP_GOING;
 	}
-
 	return cmdPtr->process(iss);
 }
 
@@ -90,3 +79,14 @@ void TestShell::printHelp()
 	std::cout << "---------------------------------------"
 		<< "---------------------------------" << std::endl;
 }
+
+#ifdef _DEBUG
+string TestShell::intToHexString(int value) {
+	std::stringstream ss;
+	ss << "0x"
+		<< std::setfill('0') << std::setw(8)
+		<< std::hex << std::uppercase
+		<< value;
+	return ss.str();
+}
+#endif

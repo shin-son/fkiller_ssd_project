@@ -1,6 +1,11 @@
 #pragma once
 // Please define constants which are shared for several class.
 // If the constant is used only one class, it should be defined in the class.
+
+// definition for Test Shell Runner
+#define CONVERSATION_MODE				1
+#define TEST_SCRIPT_MODE				2
+
 // shell command
 #define SSD_SIZE							100
 #define HELP_COMMAND_NAME					"help"
@@ -42,10 +47,9 @@
 // WriteReadAging
 #define WRITE_READ_AGIING_DONE_RETURN		"[WriteReadAging] Done"
 
-
-// definition for Test Shell Runner
-#define CONVERSATION_MODE				1
-#define TEST_SCRIPT_MODE				2
+// Test Script1 (FullWriteREadCompare)
+#define LBA_COUNT_FOR_FULL_WRC				5
+#define LOOP_COUNT_FOR_FULL_WRC				20
 
 // Test Script2 (PartialLBAWrite)
 
@@ -57,8 +61,11 @@
 #define LOOP_COUNT_FOR_PARTIAL_LBA_WRITE	30
 #define LBA_COUNT_FOR_PARTIAL_LBA_WRITE		5
 
+// Test Script3 (WriteReadAging)
+#define LOOP_COUNT_FOR_WRITE_READ_AGING				200
+
 // Test Script4 (eraseAndWriteAging)
-#define LOOP_COUNT_FOR_AGING				30
+#define LOOP_COUNT_FOR_ERASE_WRITE_AGING			30
 
 enum NEXT_TEST
 {

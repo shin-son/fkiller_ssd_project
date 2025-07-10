@@ -3,7 +3,6 @@
 
 NEXT_TEST WriteReadAgingCommand::process(std::istringstream& iss)
 {
-	LOG_PRINT("called");
 	bool allMatch = true;
 
 	for (int i = 0; i < 200; ++i) {
@@ -41,4 +40,43 @@ void WriteReadAgingCommand::printHelp()
 		"\t  step4) read the data to lba 99\n" <<
 		"\t  step6) Check if data of LBA 0 and 99 is the same\n" <<
 		"\t usage - 3_WriteReadAging(or 3_)" << std::endl;
+}
+
+bool WriteReadAgingCommand::prepare(std::istringstream& iss)
+{
+	return true;
+}
+
+bool WriteReadAgingCommand::execute()
+{
+	for (int loopCount = 0; loopCount < LOOP_COUNT_FOR_WRITE_READ_AGING; ++loopCount) {
+
+		std::string randData = getRandomData();
+
+		cmdRequester->write(0, randData);
+		cmdRequester->write(99, randData);
+
+		std::string result0 = cmdRequester->read(0);
+		std::string result99 = cmdRequester->read(99);
+
+		if (result0 != result99) {
+			logMessage = getErrorHeader() + "mismatch value LBA[0] : ";
+			logMessage += result0 + " LBA[99] : " + result99;
+			return false;
+		}
+	}
+	return true;
+}
+
+void WriteReadAgingCommand::wrapUp(bool noError)
+{
+	if (noError) logMessage = getDoneMessage();
+	printLog(logMessage);
+}
+
+string WriteReadAgingCommand::getRandomData()
+{
+	std::stringstream ss;
+	ss << "0x" << std::uppercase << std::hex << (rand() & 0xFFFFFFFF);
+	return ss.str();
 }

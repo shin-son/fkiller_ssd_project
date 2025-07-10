@@ -2,6 +2,15 @@
 
 SSDInterface* ICommand::cmdRequester = nullptr;
 
+NEXT_TEST ICommand::process(std::istringstream& iss)
+{
+	bool noError = prepare(iss);
+	if (noError) noError = execute();
+	wrapUp(noError);
+
+	return NEXT_KEEP_GOING;
+}
+
 void ICommand::setSsdAdapter(SSDInterface* _adapter)
 {
 	cmdRequester = _adapter;

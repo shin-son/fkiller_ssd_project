@@ -2,22 +2,7 @@
 
 NEXT_TEST PartialLbaWriteCommand::process(std::istringstream& iss)
 {
-	vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
 
-	for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
-	{
-		if (false == writeTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
-		{
-			printLog(getErrorHeader() + ": Write Fail");
-			return NEXT_KEEP_GOING;
-		}
-		else if (false == verifyTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
-		{
-			printLog(getErrorHeader() + ": Verify Fail");
-			return NEXT_KEEP_GOING;
-		}
-	}
-	
 	printLog(getDoneMessage());
 
 	return NEXT_KEEP_GOING;
@@ -34,6 +19,38 @@ void PartialLbaWriteCommand::printHelp()
 		"\t  step5) write the data to lba 2\n" <<
 		"\t  step6) Check if data of all LBA 0 to 4 are the same\n" <<
 		"\t usage - 2_PartialLBAWrite(or 2_)" << std::endl;
+}
+
+bool PartialLbaWriteCommand::prepare(std::istringstream& iss)
+{
+	return true;
+}
+
+bool PartialLbaWriteCommand::execute()
+{
+	vector<int> lbaSequence = INPUT_LBA_SEQUENCE;
+
+	for (int count = 0; count < LOOP_COUNT_FOR_PARTIAL_LBA_WRITE; count++)
+	{
+		if (false == writeTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
+		{
+			logMessage = getErrorHeader() + ": Write Fail";
+			return false;
+		}
+		
+		if (false == verifyTheSequence(INPUT_DATA_FOR_PARTIAL_LBA_WRITE, lbaSequence))
+		{
+			logMessage = getErrorHeader() + ": Verify Fail";
+			return false;
+		}
+	}
+	return true;
+}
+
+void PartialLbaWriteCommand::wrapUp(bool noError)
+{	
+	if (noError) logMessage = getDoneMessage();
+	printLog(logMessage);
 }
 
 bool PartialLbaWriteCommand::writeTheSequence(
