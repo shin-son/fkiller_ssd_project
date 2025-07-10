@@ -116,16 +116,6 @@ void BufferManager::addErase(int lba, int size) {
 		if (oldBuffer.type == CommandType::ERASE
 			&& ((newStartIndex <= oldEndIndex + 1)
 				|| (newEndIndex <= oldEndIndex - 1))) {
-			bool stopLoop = false;
-			for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
-				BufferEntry& writeBuffer = bufferEntries[innerIndex];
-				if (writeBuffer.type == CommandType::WRITE) {
-					if (writeBuffer.lba >= oldStartIndex && writeBuffer.lba <= oldEndIndex) {
-						stopLoop = true;
-					}
-				}
-			}
-			if (stopLoop) break;
 
 			if (newStartIndex < oldStartIndex) {
 				oldBuffer.lba = newStartIndex;

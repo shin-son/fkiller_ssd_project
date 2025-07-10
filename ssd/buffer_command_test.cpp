@@ -448,9 +448,9 @@ TEST(BufferManagerTest, MergeErase5) {
 
 	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
 											"2_w_30_0xABCDABCD",
-											"3_e_40_3",
+											"3_e_40_6",
 											"4_w_41_0xABCDABCD",
-											"5_e_43_3" };
+											"5_empty" };
 	std::vector<std::string> files;
 	for (const auto& entry : fs::directory_iterator(testDir)) {
 		files.push_back(entry.path().filename().string());
