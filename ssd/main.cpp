@@ -5,6 +5,7 @@
 #include "command_process.h"
 #include "buffer_manager.h"
 #include <iostream>
+#include "ssd_initial_files.h"
 
 #include <filesystem>
 
@@ -41,6 +42,8 @@ int main(int argc, char** argv) {
 
 	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
 	BufferManager mgr(testDir);
+	SsdInitialFiles ssdInitialFiles;
+	ssdInitialFiles.initialize();
 	std::string value;
 
 	switch (type) {
