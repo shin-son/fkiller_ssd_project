@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="테스트파일">
+      <UniqueIdentifier>{74220f61-b1cf-4b3f-8a1b-25ec9d82497a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -30,9 +33,6 @@
     <ClCompile Include="test_shell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="main_test.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ssd_adapter.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -41,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="test_runner.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="script_test.cpp">
+      <Filter>테스트파일</Filter>
+    </ClCompile>
+    <ClCompile Include="basic_test.cpp">
+      <Filter>테스트파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="test_runner.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="test_case.h">
+      <Filter>테스트파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

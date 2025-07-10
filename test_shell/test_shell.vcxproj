@@ -130,8 +130,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="basic_test.cpp" />
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="main_test.cpp">
+    <ClCompile Include="script_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
@@ -158,6 +159,7 @@
     <ClInclude Include="mock_ssd_adapter.h" />
     <ClInclude Include="ssd_adapter.h" />
     <ClInclude Include="ssd_interface.h" />
+    <ClInclude Include="test_case.h" />
     <ClInclude Include="test_runner.h" />
     <ClInclude Include="test_shell.h" />
   </ItemGroup>
