@@ -138,6 +138,8 @@ std::vector<std::vector<std::string>> BufferManager::flushBuffer() {
 							  std::to_string(entry.lba),
 							  entry.value });
 		}
+		else if (entry.type == CommandType::EMPTY)
+			break;
 	}
 	return result;
 }
