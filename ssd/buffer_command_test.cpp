@@ -13,6 +13,7 @@ TEST(BufferManagerTest, WriteCommand_First_Buffer) {
 		fs::create_directory(testDir);
 
 	BufferManager mgr(testDir);
+	mgr.resetAllBuffer();
 	// process ssd.exe w 3 0x234234
 	mgr.addWrite(3, "0xABCD1234");
 
@@ -87,13 +88,12 @@ TEST(BufferManagerTest, Write_ReplacesOldWriteCommand_1) {
 	fs::remove_all(testDir);
 	fs::create_directory(testDir);
 
-	BufferManager mgr(testDir);
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_empty").close();
 	std::ofstream(testDir + "/3_empty").close();
 	std::ofstream(testDir + "/4_empty").close();
 	std::ofstream(testDir + "/5_empty").close();
-
+	BufferManager mgr(testDir);
 
 	//w_20_0x12341234
 	mgr.addWrite(20, "0x12341234");
@@ -104,12 +104,12 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 	fs::remove_all(testDir);
 	fs::create_directory(testDir);
 
-	BufferManager mgr(testDir);
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_w_1_0x12").close();
 	std::ofstream(testDir + "/3_e_2_4").close();
 	std::ofstream(testDir + "/4_w_10_0x12").close();
 	std::ofstream(testDir + "/5_e_10_10").close();
+	BufferManager mgr(testDir);
 
 	CommandProcessor cmdp;
 	//w_20_0x12341234
@@ -128,12 +128,13 @@ TEST(BufferManagerTest, READ_BUFFER_NO_MATCH) {
 	fs::remove_all(testDir);
 	fs::create_directory(testDir);
 
-	BufferManager mgr(testDir);
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_w_1_0x12").close();
 	std::ofstream(testDir + "/3_e_2_4").close();
 	std::ofstream(testDir + "/4_w_12_0x12").close();
 	std::ofstream(testDir + "/5_e_14_10").close();
+
+	BufferManager mgr(testDir);
 
 	CommandProcessor cmdp;
 	//ssd.exe r 90
@@ -147,12 +148,12 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH) {
 	fs::remove_all(testDir);
 	fs::create_directory(testDir);
 
-	BufferManager mgr(testDir);
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_w_1_0x12").close();
 	std::ofstream(testDir + "/3_e_2_4").close();
 	std::ofstream(testDir + "/4_w_12_0x12").close();
 	std::ofstream(testDir + "/5_e_14_10").close();
+	BufferManager mgr(testDir);
 
 	CommandProcessor cmdp;
 	//ssd.exe r 3
