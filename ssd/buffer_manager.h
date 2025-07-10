@@ -23,6 +23,11 @@ public:
 	void resetAllBuffer();
 	void addWrite(int lba, const std::string& value);
 	void addErase(int lba, int size);
+	void removeRedundantWrite(const int index);
+	void updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
+	void makeEmptyLastBuffer();
+	void renameWithFileName(const std::string& oldName, const std::string& newName);
+	bool isNeedWrite(const BufferEntry& buffer, const int lba, const int size);
 	std::string addRead(int lba);
 	void reloadBufferFiles();
 	void flushAndReset();

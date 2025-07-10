@@ -45,28 +45,10 @@ void BufferManager::addWrite(int lba, const std::string& value) {
 void BufferManager::addErase(int lba, int size) {
 	for (int index = 0; index < bufferEntries.size(); index++) {
 		BufferEntry& buffer = bufferEntries[index];
-		if (buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size) {
-			std::cout << "find " << buffer.index << std::endl;
-			for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
-				BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
-				BufferEntry& newBuffer = bufferEntries[innerIndex];
-				std::string old_path = bufferDirectory + "/" + oldBuffer.originalFilename;
-				std::string new_path = bufferDirectory + "/" + std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
-				std::filesystem::rename(old_path, new_path);
+		if (isNeedWrite(buffer, lba, size)) continue;
 
-				oldBuffer.lba = newBuffer.lba;
-				oldBuffer.originalFilename = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
-				oldBuffer.type = newBuffer.type;
-				oldBuffer.value = newBuffer.value;
-			}
-			BufferEntry& lastBuffer = bufferEntries[4];
-			std::string old_path = bufferDirectory + "/" + lastBuffer.originalFilename;
-			std::string new_path = bufferDirectory + "/" + "5_empty";
-			std::filesystem::rename(old_path, new_path);
-
-			lastBuffer.originalFilename = std::to_string(lastBuffer.index) + "_empty";
-			lastBuffer.type = CommandType::EMPTY;
-		}
+		removeRedundantWrite(index);
+		makeEmptyLastBuffer();
 	}
 
 	int emptyIdx = findEmptyBuffer();
@@ -79,6 +61,46 @@ void BufferManager::addErase(int lba, int size) {
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
 	reloadBufferFiles();
+}
+
+bool BufferManager::isNeedWrite(const BufferEntry& buffer, const int lba, const int size)
+{
+	return !(buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size);
+}
+
+void BufferManager::removeRedundantWrite(const int index)
+{
+	for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
+		BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
+		BufferEntry& newBuffer = bufferEntries[innerIndex];
+		std::string newFileName = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+		renameWithFileName(oldBuffer.originalFilename, newFileName);
+		updateBufferInfo(oldBuffer, newBuffer);
+	}
+}
+
+void BufferManager::makeEmptyLastBuffer()
+{
+	BufferEntry& lastBuffer = bufferEntries[bufferEntries.size() - 1];
+	renameWithFileName(lastBuffer.originalFilename, "5_empty");
+
+	lastBuffer.originalFilename = "5_empty";
+	lastBuffer.type = CommandType::EMPTY;
+}
+
+void BufferManager::renameWithFileName(const std::string& oldName, const std::string& newName)
+{
+	std::string old_path = bufferDirectory + "/" + oldName;
+	std::string new_path = bufferDirectory + "/" + newName;
+	std::filesystem::rename(old_path, new_path);
+}
+
+void BufferManager::updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer)
+{
+	oldBuffer.lba = newBuffer.lba;
+	oldBuffer.originalFilename = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+	oldBuffer.type = newBuffer.type;
+	oldBuffer.value = newBuffer.value;
 }
 
 std::string  BufferManager::addRead(int lba) {
