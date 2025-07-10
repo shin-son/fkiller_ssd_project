@@ -25,6 +25,7 @@ public:
 	void addErase(int lba, int size);
 	std::string addRead(int lba);
 	void reloadBufferFiles();
+	void flushAndReset();
 
 private:
 	std::string bufferDirectory;
@@ -43,5 +44,4 @@ private:
 	BufferEntry parseFilename(const std::string& filename);
 
 	std::vector<std::vector<std::string>> flushBuffer();
-	void flushAndReset();
 };

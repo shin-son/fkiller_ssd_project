@@ -66,6 +66,12 @@ int main(int argc, char** argv) {
 		}
 		break;
 
+	case FLUSH_OPERATION:
+		{
+			mgr.flushAndReset();
+		}
+		break;
+
 	default:
 		std::cerr << "[ERROR] Unknown command type\n";
 		break;
