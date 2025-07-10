@@ -132,6 +132,10 @@
   <ItemGroup>
     <ClCompile Include="basic_test.cpp" />
     <ClCompile Include="command_factory.cpp" />
+    <ClCompile Include="erase_command.cpp" />
+    <ClCompile Include="erase_range_command.cpp" />
+    <ClCompile Include="full_read_command.cpp" />
+    <ClCompile Include="full_write_command.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="read_command.cpp" />
     <ClCompile Include="script_test.cpp">
@@ -163,6 +167,8 @@
     <ClInclude Include="erase_command.h" />
     <ClInclude Include="erase_range_command.h" />
     <ClInclude Include="erase_write_aging.h" />
+    <ClInclude Include="full_read_command.h" />
+    <ClInclude Include="full_write_command.h" />
     <ClInclude Include="full_write_read_compare.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="logger.h" />

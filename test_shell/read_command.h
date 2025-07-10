@@ -4,6 +4,6 @@
 class ReadCommand : public ICommand
 {
 public:
-	NEXT_TEST process(const string& command) override;
+	NEXT_TEST process(const string& command, std::istringstream& iss) override;
 	void printHelp() override;
 };
