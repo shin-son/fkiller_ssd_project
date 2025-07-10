@@ -137,8 +137,8 @@ TEST(BufferManagerTest, READ_BUFFER_NO_MATCH) {
 
 	CommandProcessor cmdp;
 	//ssd.exe r 90
-	int address = 90;
-	std::string result = mgr.readCmdBuffer(address);
+	int lba = 90;
+	std::string result = mgr.addRead(lba);
 	EXPECT_EQ("", result);
 }
 
@@ -156,7 +156,7 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH) {
 
 	CommandProcessor cmdp;
 	//ssd.exe r 3
-	int address = 3;
-	std::string result = mgr.readCmdBuffer(address);
+	int lba = 3;
+	std::string result = mgr.addRead(lba);
 	EXPECT_EQ("0x00000000", result);
 }

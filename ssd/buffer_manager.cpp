@@ -121,6 +121,38 @@ void BufferManager::resetAllBuffer() {
 	}
 }
 
+std::string BufferManager::addRead(int lba) {
+	int bufferIdx = 0;
+	std::string fileName;
+	std::string bufferIdxToString;
+	std::string operatorString;
+	std::string lbaString;
+	std::string memoryValue;
+
+	for (const auto& entry : fs::directory_iterator(bufferDirectory)) {
+		fileName = entry.path().filename().string();
+		std::stringstream ss(fileName);
+		std::getline(ss, bufferIdxToString, '_'); // bufferIdx
+		std::getline(ss, operatorString, '_'); // e or w
+		std::getline(ss, lbaString, '_'); // startId
+		std::getline(ss, memoryValue, '_'); // memoryVaue or size
+
+		if (operatorString == "w") {
+			if (std::stoi(lbaString) == lba)
+				return memoryValue;
+		}
+		else if (operatorString == "e") {
+			int start_idx =  std::stoi(lbaString);
+			int end_idx = std::stoi(memoryValue) + start_idx - 1;
+			if (start_idx <= lba && end_idx >= lba) return INIT_STRING;
+			else
+				return EMPTY_STRING;
+		}
+	}
+
+	return EMPTY_STRING;
+}
+
 std::vector<std::vector<std::string>> BufferManager::flushBuffer() {
 	std::vector<std::vector<std::string>> commands;
 	std::cout << bufferDirectory  << std::endl;

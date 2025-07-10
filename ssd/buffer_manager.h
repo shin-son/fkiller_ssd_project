@@ -9,6 +9,7 @@ public:
 	bool addErase(int lba, int size);
 	std::vector<std::vector<std::string>> flushBuffer();
 	void resetAllBuffer();
+	std::string addRead(int lba);
 
 private:
 	std::string bufferDirectory;
