@@ -8,22 +8,6 @@
 
 #include <filesystem>
 
-void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
-	auto cmds = mgr.flushBuffer();
-	for (auto& c : cmds) {
-		CommandProcessor* flushProc = CommandProcessor::Builder()
-			.setOperator(c[1])
-			.setAddress(c[2])
-			.setData(c[3])
-			.patternCheck();
-
-		if (flushProc->getResult() == SUCCESS) {
-			facade.run(*flushProc);
-		}
-	}
-	mgr.resetAllBuffer();
-}
-
 int main(int argc, char** argv) {
 
 #if _DEBUG
@@ -55,22 +39,19 @@ int main(int argc, char** argv) {
 
 	int type = cmdProcess->getOperator();
 
-	SsdFacade& ssdFacade = SsdFacade::getInstance();
 	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
 	BufferManager mgr(testDir);
 	std::string value;
 
 	switch (type) {
 	case WRITE_OPERATION:
-		if (!mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue())) {
-			flushAndReset(mgr, ssdFacade);
+		{
 			mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue());
 		}
 		break;
 
 	case ERASE_OPERATION:
-		if (!mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize())) {
-			flushAndReset(mgr, ssdFacade);
+		{
 			mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize());
 		}
 		break;
@@ -78,6 +59,7 @@ int main(int argc, char** argv) {
 	case READ_OPERATION:
 		value = mgr.addRead(cmdProcess->getAddress());
 		if (value == EMPTY_STRING) {
+			SsdFacade& ssdFacade = SsdFacade::getInstance();
 			ssdFacade.readSsdIndex(*cmdProcess);
 		} else {
 			cmdProcess->printWriteToOutput(value);

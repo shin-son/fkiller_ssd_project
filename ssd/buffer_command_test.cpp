@@ -112,18 +112,7 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 	BufferManager mgr(testDir);
 
 	//w_20_0x12341234
-	if (mgr.addWrite(50, "0x12341234") == false) {
-		auto commands = mgr.flushBuffer();
-
-		for (auto& cmd : commands) {
-			
-			CommandProcessor* cp = CommandProcessor::Builder()
-				.setOperator(cmd[1])
-				.setAddress(cmd[2])
-				.setData(cmd[3])
-				.patternCheck();
-		}
-	}
+	mgr.addWrite(50, "0x12341234");
 }
 
 TEST(BufferManagerTest, READ_BUFFER_NO_MATCH) {
