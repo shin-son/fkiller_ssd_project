@@ -43,16 +43,64 @@ void BufferManager::addWrite(int lba, const std::string& value) {
 }
 
 void BufferManager::addErase(int lba, int size) {
+
 	int emptyIdx = findEmptyBuffer();
-	if (emptyIdx == ALL_BUFFER_USED) {
+	if (emptyIdx == ALL_BUFFER_USED)
 		flushAndReset();
-		emptyIdx = 1;	//first
-	}
+
+	emptyIdx = optimizeWriteBuffer(lba, size);
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
 	reloadBufferFiles();
+}
+
+int BufferManager::optimizeWriteBuffer(const int lba, const int size)
+{
+	int index = 0;
+	while (index < bufferEntries.size()) {
+		BufferEntry& buffer = bufferEntries[index];
+		if (buffer.type == CommandType::EMPTY) break;
+		if (isNeedWrite(buffer, lba, size)) {
+			index++;
+			continue;
+		}
+
+		removeWriteBuffer(index);
+	}
+	return index;
+}
+
+bool BufferManager::isNeedWrite(const BufferEntry& buffer, const int lba, const int size)
+{
+	return !(buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size);
+}
+
+void BufferManager::removeWriteBuffer(const int index)
+{
+	for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
+		BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
+		BufferEntry& newBuffer = bufferEntries[innerIndex];
+		std::string newFileName = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+		renameWithFileName(oldBuffer.originalFilename, newFileName);
+		updateBufferInfo(oldBuffer, newBuffer);
+	}
+}
+
+void BufferManager::renameWithFileName(const std::string& oldName, const std::string& newName)
+{
+	std::string old_path = bufferDirectory + "/" + oldName;
+	std::string new_path = bufferDirectory + "/" + newName;
+	std::filesystem::rename(old_path, new_path);
+}
+
+void BufferManager::updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer)
+{
+	oldBuffer.lba = newBuffer.lba;
+	oldBuffer.originalFilename = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
+	oldBuffer.type = newBuffer.type;
+	oldBuffer.value = newBuffer.value;
 }
 
 std::string  BufferManager::addRead(int lba) {

@@ -39,6 +39,12 @@ private:
 	std::string getTheSameAddressBuffer();
 	std::vector<std::string> splitByUnderscore(const std::string& input);
 
+	int optimizeWriteBuffer(const int lba, const int size);
+	bool isNeedWrite(const BufferEntry& buffer, const int lba, const int size);
+	void removeWriteBuffer(const int index);
+	void renameWithFileName(const std::string& oldName, const std::string& newName);
+	void updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
+
 	std::vector<BufferEntry> bufferEntries;
 	void loadAndParseBufferFiles();
 	BufferEntry parseFilename(const std::string& filename);
