@@ -89,17 +89,17 @@ bool CommandProcessor::isEraseCommand(const std::string& cmd) {
 
 bool CommandProcessor::isWriteValidArgument(const std::vector<std::string>& args) {
 	if (args.size() != 2) return false;
-	return patterChecker.isValidAddress(args[0]) && patterChecker.isValidMemoryValue(args[1]);
+	return patternChecker.isValidAddress(args[0]) && patternChecker.isValidMemoryValue(args[1]);
 }
 
 bool CommandProcessor::isReadValidArgument(const std::vector<std::string>& args) {
 	if (args.size() != 1) return false;
-	return patterChecker.isValidAddress(args[0]);
+	return patternChecker.isValidAddress(args[0]);
 }
 
 bool CommandProcessor::isEraseValidArgument(const std::vector<std::string>& args) {
 	if (args.size() != 2) return false;
-	return patterChecker.isValidAddress(args[0]) && patterChecker.isValidSize(args[1]);;
+	return patternChecker.isValidAddress(args[0]) && patternChecker.isValidSize(args[1]);;
 }
 
 void CommandProcessor::printErrorAndWriteToOutput() {
