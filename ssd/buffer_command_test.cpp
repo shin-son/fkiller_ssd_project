@@ -547,6 +547,33 @@ TEST(BufferManagerTest, MergeErase9) {
 
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_e_40_2").close();
+	std::ofstream(testDir + "/3_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/4_e_44_2").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(42, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_e_40_6",
+											"3_w_31_0xABCDABCD",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase10) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_e_40_2").close();
 	std::ofstream(testDir + "/3_e_44_5").close();
 	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
 	std::ofstream(testDir + "/5_empty").close();
