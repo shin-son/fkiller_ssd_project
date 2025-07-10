@@ -49,7 +49,7 @@ bool BufferManager::addErase(int lba, int size) {
 	return true;
 }
 
-std::string BufferManager::addRead(int lba) {
+std::string  BufferManager::addRead(int lba) {
 	for (const auto& entry : bufferEntries) {
 		if (entry.type == CommandType::WRITE && entry.lba == lba) {
 			return entry.value;

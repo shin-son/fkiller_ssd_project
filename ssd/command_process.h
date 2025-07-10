@@ -12,7 +12,7 @@ public:
     std::string getInputValue();
     int getAddress();
     int getSize();
-    void printErrorAndWriteToOutput();
+    void printWriteToOutput(std::string value);
 private:
     int dispatchCommand(const std::string& cmd, const std::vector<std::string>& args);
     

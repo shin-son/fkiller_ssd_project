@@ -102,9 +102,9 @@ bool CommandProcessor::isEraseValidArgument(const std::vector<std::string>& args
 	return patternChecker.isValidAddress(args[0]) && patternChecker.isValidSize(args[1]);;
 }
 
-void CommandProcessor::printErrorAndWriteToOutput() {
+void CommandProcessor::printWriteToOutput(std::string value) {
 	SsdWrite writer;
-	writer.writeOutputFile(ERROR_STRING);
+	writer.writeOutputFile(value);
 }
 
 int CommandProcessor::getOperator() {

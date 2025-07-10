@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 #else
 	CommandProcessor cmdProcess;
 	if (cmdProcess.process(argc, argv) != SUCCESS) {
-		cmdProcess.printErrorAndWriteToOutput();
+		cmdProcess.printWriteToOutput(ERROR_STRING);
 		return 0;
 	}
 
@@ -38,6 +38,7 @@ int main(int argc, char** argv) {
 	SsdFacade& ssdFacade = SsdFacade::getInstance();
 	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
 	BufferManager mgr(testDir);
+	std::string value;
 
 	switch (type) {
 	case WRITE_OPERATION:
@@ -55,7 +56,12 @@ int main(int argc, char** argv) {
 		break;
 
 	case READ_OPERATION:
-		ssdFacade.readSsdIndex(cmdProcess);
+		value = mgr.addRead(cmdProcess.getAddress());
+		if (value == EMPTY_STRING) {
+			ssdFacade.readSsdIndex(cmdProcess);
+		} else {
+			cmdProcess.printWriteToOutput(value);
+		}
 		break;
 
 	default:
