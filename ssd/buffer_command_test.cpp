@@ -122,7 +122,7 @@ TEST(BufferManagerTest, FLUSH_TEST_1) {
 				.setOperator()
 				.setAddress()
 				.setData()
-				.patterCheck();			
+				.patternCheck();
 		}
 	}
 }

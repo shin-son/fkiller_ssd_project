@@ -16,7 +16,7 @@ void flushAndReset(BufferManager& mgr, SsdFacade& facade) {
 			.setOperator()
 			.setAddress()
 			.setData()
-			.patterCheck();
+			.patternCheck();
 
 		if (flushProc->getResult() == SUCCESS) {
 			facade.run(*flushProc);
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	if (cmdProcess->getResult() != SUCCESS) {
 		cmdProcess->printWriteToOutput(ERROR_STRING);

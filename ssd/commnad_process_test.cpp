@@ -13,7 +13,7 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_1) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -29,7 +29,7 @@ TEST(PATTERNCHECKER, WRITE_VALID_ARG_2) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -45,7 +45,7 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_1) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -62,7 +62,7 @@ TEST(PATTERNCHECKER, INVALID_READ_ADDRESS_2) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -79,7 +79,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_1) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -96,7 +96,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ARGUMENT_2) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -113,7 +113,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_1) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -130,7 +130,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_ADDRESS_2) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -147,7 +147,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_1) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
@@ -164,7 +164,7 @@ TEST(PATTERNCHECKER, INVALID_WRITE_MEMORYVALUE_2) {
 		.setOperator()
 		.setAddress()
 		.setData()
-		.patterCheck();
+		.patternCheck();
 
 	int result = cp->getResult();
 
