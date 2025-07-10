@@ -11,6 +11,7 @@ public:
 
 	void printHelp() override
 	{
-		return;
+		std::cout << " READ - read one LBA (Logical Block Addressing) \n" <<
+			"\t usage - read <LBA>(ex.read 0)" << std::endl;
 	}
 };

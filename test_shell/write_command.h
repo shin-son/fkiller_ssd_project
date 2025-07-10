@@ -11,6 +11,7 @@ public:
 
 	void printHelp() override
 	{
-		return;
+		std::cout << " WRITE - write value to LBA(Logical Block Addressing) \n" <<
+			"\t usage - write <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
 	}
 };

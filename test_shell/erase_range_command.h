@@ -11,6 +11,7 @@ public:
 
 	void printHelp() override
 	{
-		return;
+		std::cout << " ERASE RANGE - erase at LBA(Logical Block Addressing) Range \n" <<
+			"\t usage - erase_range <start LBA> <end LBA> (ex.erase_range 0 10)" << std::endl;
 	}
 };

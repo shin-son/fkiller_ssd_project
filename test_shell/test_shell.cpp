@@ -33,19 +33,19 @@ int TestShell::runCommand(const std::string& command)
 		return NEXT_EXIT;
 	}
 
+	if (cmd == "help") {
+		printHelp();
+		return NEXT_KEEP_GOING;
+	}
+
 	std::unique_ptr<ICommand> cmdPtr = cmdCreator.createCommand(cmd);
-
-
 
 	if (cmd == "exit") {
 		std::cout << "PROGRAM EXIT" << std::endl;
 		return NEXT_EXIT;
 	}
 
-	if (cmd == "help") {
-		printHelp();
-		return NEXT_KEEP_GOING;
-	}
+
 
 	if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
 		fullWriteAndReadCompare();
@@ -148,43 +148,13 @@ void TestShell::printHelp()
 	LOG_PRINT("called");
 	std::cout << "--------------------------------- HELP "
 		<< "---------------------------------" << std::endl;
-	std::cout << " READ - read one LBA (Logical Block Addressing) \n" <<
-		"\t usage - read <LBA>(ex.read 0)" << std::endl;
-	std::cout << " WRITE - write value to LBA(Logical Block Addressing) \n" <<
-		"\t usage - write <LBA> <value> (ex.write 3 0xAAAABBBB)" << std::endl;
-	std::cout << " ERASE - erase at LBA(Logical Block Addressing) Range \n" <<
-		"\t usage1 - erase <start LBA> <size> (ex.erase 0 10)\n" <<
-		"\t usage2 - erase_range <start LBA> <end LBA> (ex.erase_range 0 10)" << std::endl;
-	std::cout << " Test script - 1 FullWriteAndReadCompare \n" <<
-		"\t write and read Test all indices in 5-unit\n" <<
-		"\t usage - 1_FullWriteAndReadCompare(or 1_)" << std::endl;
-	std::cout << " Test script - 2 PartialLBAWrite\n" <<
-		"\trepeats following steps 30 times \n" <<
-		"\t  step1) write the data to lba 4\n" <<
-		"\t  step2) write the data to lba 0\n" <<
-		"\t  step3) write the data to lba 3\n" <<
-		"\t  step4) write the data to lba 1\n" <<
-		"\t  step5) write the data to lba 2\n" <<
-		"\t  step6) Check if data of all LBA 0 to 4 are the same\n" <<
-		"\t usage - 2_PartialLBAWrite(or 2_)" << std::endl;
-	std::cout << " Test script - 3 WriteReadAging\n"
-		"\trepeats following steps 200 times \n" <<
-		"\t  step1) write the data to lba 0\n" <<
-		"\t  step2) write the data to lba 99\n" <<
-		"\t  step3) read the data to lba 0\n" <<
-		"\t  step4) read the data to lba 99\n" <<
-		"\t  step6) Check if data of LBA 0 and 99 is the same\n" <<
-		"\t usage - 3_WriteReadAging(or 3_)" << std::endl;
-	std::cout << " Test script - 4 EraseAndWriteAging\n"
-		"\t  erase lba 0~2\n" <<
-		"\trepeats following steps 30 times) \n" <<
-		"\t  step1) write lba 2 two times with different random values\n" <<
-		"\t  step2) erase lba 2~4with another random value\n" <<
-		"\t  step3) write lba 4 two times with different random values\n" <<
-		"\t  step4) erase lba 4~6with another random value\n" <<
-		"\t ...\n" <<
-		"\t  step49) write lba 98 two times with different random values\n" <<
-		"\t  step50) erase lba 98~99with another random value" << std::endl;
+
+	for (std::string cmdType : cmdCreator.getAllCommandType())
+	{
+		std::unique_ptr<ICommand> cmdPtr = cmdCreator.createCommand(cmdType);
+		cmdPtr->printHelp();
+	}
+
 	std::cout << "---------------------------------------"
 		<< "---------------------------------" << std::endl;
 }
@@ -212,36 +182,36 @@ void TestShell::fullRead()
 
 void TestShell::fullWriteAndReadCompare()
 {
-    LOG_PRINT("called");
-    int j = 1;
-    bool failFlag = false;
-    for (int i = 0; i < 20; i++) {
-        auto testString = intToHexString(i);
-        for (int j = 0; j < 5; j++) {
-            auto ret = ssdAdapter->write(5 * i + j, testString);
-            if (ret.compare("") != 0) {
-                failFlag = true;
-                break;
-            }
-        }
-        // TODO: fix to if (isFail()) break;
-        if (failFlag == true) break;
+	LOG_PRINT("called");
+	int j = 1;
+	bool failFlag = false;
+	for (int i = 0; i < 20; i++) {
+		auto testString = intToHexString(i);
+		for (int j = 0; j < 5; j++) {
+			auto ret = ssdAdapter->write(5 * i + j, testString);
+			if (ret.compare("") != 0) {
+				failFlag = true;
+				break;
+			}
+		}
+		// TODO: fix to if (isFail()) break;
+		if (failFlag == true) break;
 
-        for (int j = 0; j < 5; j++) {
-            auto ret = ssdAdapter->read(5 * i + j);
-            if (testString.compare(ret) != 0) {
-                failFlag = true;
-                break;
-            }
-        }
-        if (failFlag == true) break;
-    }
-    if (failFlag == true) {
-        std::cout << "FAIL" << std::endl;
-    }
-    else {
-        std::cout << "PASS" << std::endl;
-    }
+		for (int j = 0; j < 5; j++) {
+			auto ret = ssdAdapter->read(5 * i + j);
+			if (testString.compare(ret) != 0) {
+				failFlag = true;
+				break;
+			}
+		}
+		if (failFlag == true) break;
+	}
+	if (failFlag == true) {
+		std::cout << "FAIL" << std::endl;
+	}
+	else {
+		std::cout << "PASS" << std::endl;
+	}
 }
 
 void TestShell::partialLBAWrite(const string& data)
