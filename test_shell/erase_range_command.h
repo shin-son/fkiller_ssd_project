@@ -4,7 +4,7 @@
 class EraseRangeCommand : public ICommand
 {
 public:
-	TEST_NEXT process(const string& command) override
+	NEXT_TEST process(const string& command) override
 	{
 		return NEXT_KEEP_GOING;
 	}

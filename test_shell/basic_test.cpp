@@ -32,7 +32,7 @@ TEST_F(TestShellFixture, ReadPass) {
         .Times(1)
         .WillRepeatedly(Return("0xAAAABBBB"));
 
-    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.read(10));
+    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.readWithPrintScreen(10));
 }
 
 TEST_F(TestShellFixture, ReadFailWrongLBA) {
@@ -40,7 +40,7 @@ TEST_F(TestShellFixture, ReadFailWrongLBA) {
         .Times(1)
         .WillOnce(Return("ERROR"));
 
-    EXPECT_EQ("[Read] ERROR", testShell.read(100));
+    EXPECT_EQ("[Read] ERROR", testShell.readWithPrintScreen(100));
 }
 
 TEST_F(TestShellFixture, FullReadPass) {
@@ -80,10 +80,12 @@ TEST_F(TestShellFixture, FullReadFail) {
 
 TEST_F(TestShellFixture, WritePass) {
     EXPECT_CALL(mockSSDAdapter, write(5, "0xAAAABBBB"))
+        .Times(1)
         .WillOnce(Return(""));
 
-    std::string result = testShell.write(5, "0xAAAABBBB");
-    EXPECT_EQ(result, "[Write] Done");
+    //std::string result = testShell.write(5, "0xAAAABBBB");
+    testShell.runCommand("write 5 0xAAAABBBB");
+    //EXPECT_EQ(result, "[Write] Done");
 }
 
 TEST_F(TestShellFixture, WriteFail) {

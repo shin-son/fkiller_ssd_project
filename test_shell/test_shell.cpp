@@ -5,6 +5,7 @@
 void TestShell::setSsdAdapter(SSDInterface* adapter)
 {
 	ssdAdapter = adapter;
+	ICommand::setSsdAdapter(adapter);
 }
 
 void TestShell::runShell() {
@@ -23,124 +24,52 @@ void TestShell::runShell() {
 int TestShell::runCommand(const std::string& command)
 {
 	LOG_PRINT("called");
-	int retFlag = NEXT_KEEP_GOING;
 	std::istringstream iss(command);
 	std::string cmd;
 	iss >> cmd;
 
-	if (cmd == EXIT_COMMAND_NAME) {
+	if (false == isSSDCommand(cmd))	return processTestShellCommand(cmd);
+	return processSsdTest(command);
+}
+
+bool TestShell::isSSDCommand(const std::string& cmdType) {
+	if ((cmdType == HELP_COMMAND_NAME) || (cmdType == EXIT_COMMAND_NAME)) return false;
+	return true;
+}
+
+NEXT_TEST TestShell::processTestShellCommand(const std::string& cmdType)
+{
+	if (cmdType == EXIT_COMMAND_NAME) {
 		std::cout << "PROGRAM EXIT" << std::endl;
 		return NEXT_EXIT;
 	}
-
-	if (cmd == "help") {
+	else if (cmdType == "help") {
 		printHelp();
 		return NEXT_KEEP_GOING;
 	}
 
+	return NEXT_KEEP_GOING;
+}
+
+NEXT_TEST TestShell::processSsdTest(const std::string& command)
+{
+	std::istringstream iss(command);
+	std::string cmd;
+	iss >> cmd;
+
 	std::unique_ptr<ICommand> cmdPtr = cmdCreator.createCommand(cmd);
-
-	if (cmd == "exit") {
-		std::cout << "PROGRAM EXIT" << std::endl;
-		return NEXT_EXIT;
-	}
-
-
-
-	if (cmd == "1_" || cmd == "1_FullWriteAndReadCompare") {
-		fullWriteAndReadCompare();
-		return NEXT_KEEP_GOING;
-	}
-
-	if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == command)
-		|| (TEST_SCRIPT_2_SHORT_COMMAND_NAME == command))
+	if (cmdPtr == nullptr)
 	{
-		partialLBAWrite();
+		std::cout << INVALID_COMMAND_MSG << std::endl;
 		return NEXT_KEEP_GOING;
 	}
 
-	if (("3_WriteReadAging" == command) || ("3_" == command)) {
-		writeReadAging();
-		return NEXT_KEEP_GOING;
-	}
+	int posParam = command.find(cmd) + cmd.size();
+	int sizeParam = command.find(cmd) - cmd.size();
+	string cmdparam = command.substr(posParam, sizeParam);
+	cmdPtr->process(cmdparam);
 
-	if ((TEST_SCRIPT_4_FULL_COMMAND_NAME == command)
-		|| (TEST_SCRIPT_4_SHORT_COMMAND_NAME == command)) {
-		eraseWriteAging();
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "write") {
-		int lba;
-		std::string data;
-		std::string extra;
-		if (!(iss >> lba)) {
-			std::cout << "[Write] ERROR: Missing lba" << std::endl;
-			return NEXT_KEEP_GOING;
-		}
-
-		if (!(iss >> data)) {
-			std::cout << "[Write] ERROR: Missing data" << std::endl;
-			return NEXT_KEEP_GOING;
-		}
-
-		if (iss >> extra) {
-			std::cout << "[Write] ERROR: Too many arguments" << std::endl;
-			return NEXT_KEEP_GOING;
-		}
-
-		std::string result = write(lba, data);
-		std::cout << result << std::endl;
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "read") {
-		int LBA;
-
-		if (!(iss >> LBA)) {
-			std::cout << "[Read] ERROR: Missing LBA" << std::endl;
-			return NEXT_KEEP_GOING;
-		}
-
-		string result = read(LBA);
-
-		if (result == "[Read] ERROR") return 1;
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "fullread") {
-		fullRead();
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "erase")
-	{
-		eraseWithSize(iss);
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "erase_range")
-	{
-		eraseWithEndLBA(iss);
-		return NEXT_KEEP_GOING;
-	}
-
-	if (cmd == "fullwrite") {
-		std::string data;
-
-		if (!(iss >> data)) {
-			std::cout << "[Write] ERROR: Missing data" << std::endl;
-			return NEXT_KEEP_GOING;
-		}
-
-		fullWrite(data);
-		return NEXT_KEEP_GOING;
-	}
-
-	// Reaching here means that the command is invalid.
-	std::cout << INVALID_COMMAND_MSG << std::endl;
-
-	return retFlag;
+	return NEXT_KEEP_GOING;
 }
 
 void TestShell::printHelp()
@@ -176,7 +105,7 @@ void TestShell::fullRead()
 {
 	LOG_PRINT("called");
 	for (int LBA = 0; LBA < SSD_SIZE; LBA++) {
-		read(LBA);
+		readWithPrintScreen(LBA);
 	}
 }
 
@@ -268,7 +197,7 @@ string TestShell::write(const int LBA, const string& data) {
 	else return WRITE_ERROR_RETURN;
 }
 
-string TestShell::read(const int LBA)
+string TestShell::readWithPrintScreen(const int LBA)
 {
 	LOG_PRINT("LBA(" + std::to_string(LBA) + ")");
 	string result = ssdAdapter->read(LBA);
@@ -321,7 +250,7 @@ bool TestShell::verifyTheSequence(
 	for (int lba : lbaSequence)
 	{
 		string readReturn = "[Read] LBA " + std::to_string(lba) + " : " + data;
-		if (readReturn != read(lba))
+		if (readReturn != readWithPrintScreen(lba))
 		{
 			LOG_PRINT(TEST_SCRIPT_2_VERIFY_FAIL_MSG);
 			std::cout << TEST_SCRIPT_2_VERIFY_FAIL_MSG << std::endl;

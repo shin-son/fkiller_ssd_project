@@ -133,6 +133,7 @@
     <ClCompile Include="basic_test.cpp" />
     <ClCompile Include="command_factory.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="read_command.cpp" />
     <ClCompile Include="script_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -153,6 +154,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="write_command.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all_commands.h" />
