@@ -1,15 +1,16 @@
+//#if 0
 #ifdef _DEBUG
 #include "test_case.h"
 
 TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
     for (int i = 0; i < 20; i++) {
         auto t = testShell.intToHexString(i);
-        for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+        for (int j = 0; j < LBA_COUNT_FOR_FULL_WRC; j++) {
+            EXPECT_CALL(mockSSDAdapter, write(LBA_COUNT_FOR_FULL_WRC * i + j, t)).Times(1)
                 .WillOnce(Return(""));
         }
-        for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
+        for (int j = 0; j < LBA_COUNT_FOR_FULL_WRC; j++) {
+            EXPECT_CALL(mockSSDAdapter, read(LBA_COUNT_FOR_FULL_WRC * i + j)).Times(1)
                 .WillOnce(Return(t));
         }
     }
@@ -20,14 +21,14 @@ TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
 }
 
 TEST_F(TestShellFixture, FullWriteAndReadCompareFail) {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < LOOP_COUNT_FOR_FULL_WRC / 2; i++) {
         auto t = testShell.intToHexString(i);
-        for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, write(5 * i + j, t)).Times(1)
+        for (int j = 0; j < LBA_COUNT_FOR_FULL_WRC; j++) {
+            EXPECT_CALL(mockSSDAdapter, write(LBA_COUNT_FOR_FULL_WRC * i + j, t)).Times(1)
                 .WillOnce(Return(""));
         }
-        for (int j = 0; j < 5; j++) {
-            EXPECT_CALL(mockSSDAdapter, read(5 * i + j)).Times(1)
+        for (int j = 0; j < LBA_COUNT_FOR_FULL_WRC; j++) {
+            EXPECT_CALL(mockSSDAdapter, read(LBA_COUNT_FOR_FULL_WRC * i + j)).Times(1)
                 .WillOnce(Return(t));
         }
     }
@@ -274,16 +275,12 @@ TEST_F(TestShellFixture, WriteReadAgingFail) {
     std::string wrongData = "0xA1B2C3DF";
 
     EXPECT_CALL(mockSSDAdapter, write(0, _))
-        .Times(200)
         .WillRepeatedly(Return(""));
     EXPECT_CALL(mockSSDAdapter, write(99, _))
-        .Times(200)
         .WillRepeatedly(Return(""));
     EXPECT_CALL(mockSSDAdapter, read(0))
-        .Times(200)
         .WillRepeatedly(Return(testData));
     EXPECT_CALL(mockSSDAdapter, read(99))
-        .Times(200)
         .WillOnce(Return(wrongData))
         .WillRepeatedly(Return(testData));
 

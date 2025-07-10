@@ -1,33 +1,5 @@
 #include "erase_write_aging.h"
 
-NEXT_TEST EraseWriteAgingCommand::process(std::istringstream& iss)
-{
-	bool AgingPass = false;
-	const int firstEraseLBA = 0;
-	const int firstEraseSize = 3;
-
-	const int firstStartLBAForAging = 2;
-	const int lastStartLBAForAging = 98;
-	const int incrementNextLBA = 2;
-
-	if (ERROR == cmdRequester->erase(firstEraseLBA, firstEraseSize))
-	{
-		printLog(getErrorHeader() + ": 1st Erase Fail");
-		return NEXT_KEEP_GOING;
-	}
-
-	for (int count = 0; count < LOOP_COUNT_FOR_AGING; ++count) {
-		if (false == eraseWriteAgingOneCycle(firstStartLBAForAging, lastStartLBAForAging, incrementNextLBA))
-		{
-			printLog(getErrorHeader() + ": " + "Fail while" + std::to_string(count + 1) + " cycle");
-			return NEXT_KEEP_GOING;
-		}
-	}
-
-	printLog(getDoneMessage());
-	return NEXT_KEEP_GOING;
-}
-
 void EraseWriteAgingCommand::printHelp()
 {
 	std::cout << " Test script - 4 EraseAndWriteAging\n"
@@ -73,6 +45,34 @@ bool EraseWriteAgingCommand::eraseWriteAgingOneCycle(int firstStartLBA, int last
 	}
 
 	return true;
+}
+
+bool EraseWriteAgingCommand::prepare(std::istringstream& iss)
+{
+	if (ERROR == cmdRequester->erase(firstEraseLBA, firstEraseSize))
+	{
+		logMessage = getErrorHeader() + ": 1st Erase Fail";
+		return false;
+	}
+	return true;
+}
+
+bool EraseWriteAgingCommand::execute()
+{
+	for (int count = 0; count < LOOP_COUNT_FOR_ERASE_WRITE_AGING; ++count) {
+		if (false == eraseWriteAgingOneCycle(firstStartLBAForAging, lastStartLBAForAging, incrementNextLBA))
+		{
+			logMessage = getErrorHeader() + ": " + "Fail while" + std::to_string(count + 1) + " cycle";
+			return false;
+		}
+	}
+	return true;
+}
+
+void EraseWriteAgingCommand::wrapUp(bool noError)
+{
+	if (noError) logMessage = getDoneMessage();
+	printLog(logMessage);
 }
 
 string EraseWriteAgingCommand::getRandomInput()

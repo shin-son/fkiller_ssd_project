@@ -1,30 +1,34 @@
 #include "full_write_command.h"
 
-NEXT_TEST FullWriteCommand::process(std::istringstream& iss)
-{
-	std::string data;
-
-	if (!(iss >> data)) {
-		printLog(getErrorHeader() + ": Missing data");
-		return NEXT_KEEP_GOING;
-	}
-
-	LOG_PRINT("called");
-	for (int i = 0; i < 100; ++i) {
-		std::string result = cmdRequester->write(i, data);
-		if (result == "[Write] ERROR") {
-			printLog(getErrorHeader() + ": Failed at LBA " + std::to_string(i));
-			return NEXT_KEEP_GOING;
-		}
-	}
-
-	printLog(getDoneMessage());
-
-	return NEXT_KEEP_GOING;
-}
-
 void FullWriteCommand::printHelp()
 {
 	std::cout << " FULL Write - write value to all LBA\n" <<
 		"\t usage - fullwrite <value> (ex. fullwrite 0xAAAABBBB)" << std::endl;
+}
+
+bool FullWriteCommand::prepare(std::istringstream& iss)
+{
+	if (!(iss >> data)) {
+		logMessage = getErrorHeader() + ": Missing data";
+		return false;
+	}
+	return true;
+}
+
+bool FullWriteCommand::execute()
+{
+	for (int lba = 0; lba < SSD_SIZE; ++lba) {
+		std::string result = cmdRequester->write(lba, data);
+		if (result == ERROR){
+			printLog(getErrorHeader() + ": Failed at LBA " + std::to_string(lba));
+			return false;
+		}
+	}
+	return true;
+}
+
+void FullWriteCommand::wrapUp(bool noError)
+{
+	if (noError) logMessage = getDoneMessage();
+	printLog(logMessage);
 }

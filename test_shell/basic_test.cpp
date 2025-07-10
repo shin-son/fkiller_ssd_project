@@ -127,7 +127,7 @@ TEST_F(TestShellFixture, FullWriteFail) {
         .WillOnce(Return(""))
         .WillOnce(Return(""))
         .WillOnce(Return(""))
-        .WillOnce(Return("[Write] ERROR"));
+        .WillOnce(Return(ERROR));
 
     internal::CaptureStdout();
     testShell.runCommand("fullwrite 0xAAAABBBB");

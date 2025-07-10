@@ -5,11 +5,18 @@ class EraseRangeCommand : public ICommand
 {
 public:
 	EraseRangeCommand() { CLASS_NAME = "EraseRange"; }
-	NEXT_TEST process(std::istringstream& iss) override;
 	void printHelp() override;
 
 private:
-	bool getEraseParameter(int& startLBA, int& endLBA, std::istringstream& iss);
-	bool isVaiidEraseRange(const int startLBA, const int endLBA);
-	bool eraseRange(int startLBA, int endLBA);
+	bool prepare(std::istringstream& iss) override;
+	bool execute() override;
+	void wrapUp(bool noError) override;
+
+	bool getEraseParameter(std::istringstream& iss);
+	bool isVaiidEraseRange();
+	bool eraseRange();
+	int getLastEraseLbaCount(int changedStartLBA);
+
+	int startLBA = 0;;
+	int endLBA = 0;
 };
