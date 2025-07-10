@@ -102,6 +102,54 @@ void BufferManager::addErase(int lba, int size) {
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
 	reloadBufferFiles();
+
+	if (emptyIdx == 0) return;
+
+	BufferEntry& newBuffer = bufferEntries[emptyIdx];
+	int newStartIndex = lba;
+	int newEndIndex = lba + size - 1;
+	for (int index = emptyIdx - 1; index >= 0; index--) {
+		BufferEntry& oldBuffer = bufferEntries[index];
+		int oldStartIndex = oldBuffer.lba;
+		int oldEndIndex = oldBuffer.lba + std::stoi(oldBuffer.value) - 1;
+		if (oldBuffer.type == CommandType::ERASE
+			&& ((newStartIndex <= oldEndIndex + 1)
+				|| (newEndIndex <= oldEndIndex - 1))) {
+			bool stopLoop = false;
+			for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
+				BufferEntry& writeBuffer = bufferEntries[innerIndex];
+				if (writeBuffer.type == CommandType::WRITE) {
+					if (writeBuffer.lba >= oldStartIndex && writeBuffer.lba <= oldEndIndex) {
+						stopLoop = true;
+					}
+				}
+			}
+			if (stopLoop) break;
+
+			if (newStartIndex < oldStartIndex) {
+				oldBuffer.lba = newStartIndex;
+				int newValue = std::stoi(oldBuffer.value) + oldStartIndex - newStartIndex;
+				if (newValue > 10) break;
+				oldBuffer.value = std::to_string(newValue);
+			}
+			if (newEndIndex > oldEndIndex) {
+				int newValue = std::stoi(oldBuffer.value) + newEndIndex - oldEndIndex;
+				if (newValue > 10) break;
+				oldBuffer.value = std::to_string(newValue);
+			}
+			std::string newFileName = std::to_string(index + 1) + "_e_" + std::to_string(oldBuffer.lba) + "_" + oldBuffer.value;
+			renameWithFileName(oldBuffer.originalFilename, newFileName);
+			oldBuffer.originalFilename = newFileName;
+
+			std::cout << newBuffer.originalFilename << endl;
+			std::cout << std::to_string(newBuffer.index + 1) + "_empty" << std::endl;
+
+			renameWithFileName(newBuffer.originalFilename, std::to_string(newBuffer.index) + "_empty");
+			newBuffer.type = CommandType::EMPTY;
+			newBuffer.originalFilename = std::to_string(newBuffer.index) + "_empty";
+			break;
+		}
+	}
 }
 
 int BufferManager::optimizeWriteBuffer(const int lba, const int size)
