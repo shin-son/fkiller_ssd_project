@@ -161,3 +161,41 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH) {
 	std::string result = mgr.addRead(lba);
 	EXPECT_EQ("0x00000000", result);
 }
+
+TEST(BufferManagerTest, READ_BUFFER_MATCH_1) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_4").close();
+	std::ofstream(testDir + "/2_w_1_0x2").close();
+	std::ofstream(testDir + "/3_w_3_0x4").close();
+	std::ofstream(testDir + "/4_e_12_2").close();
+	std::ofstream(testDir + "/5_w_13_0x10").close();
+	BufferManager mgr(testDir);
+
+	CommandProcessor cmdp;
+	//ssd.exe r 3
+	int lba = 1;
+	std::string result = mgr.addRead(lba);
+	EXPECT_EQ("0x2", result);
+}
+
+TEST(BufferManagerTest, READ_BUFFER_MATCH_2) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_e_0_4").close();
+	std::ofstream(testDir + "/2_w_1_0x2").close();
+	std::ofstream(testDir + "/3_w_12_0x4").close();
+	std::ofstream(testDir + "/4_e_10_5").close();
+	std::ofstream(testDir + "/5_w_13_0x10").close();
+	BufferManager mgr(testDir);
+
+	CommandProcessor cmdp;
+	//ssd.exe r 3
+	int lba = 12;
+	std::string result = mgr.addRead(lba);
+	EXPECT_EQ("0x00000000", result);
+}
