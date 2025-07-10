@@ -22,25 +22,73 @@ BufferManager::BufferManager(const std::string& bufferDir)
 }
 
 void BufferManager::addWrite(int lba, const std::string& value) {
-	int idx = findWriteSameAddress(lba);
-	if (idx != NOT_FOUND_ANY_BUFFER) {
-		std::string old_path = bufferDirectory + "/" + bufferEntries[idx].originalFilename;
-		std::string new_path = formatWriteFileName(bufferEntries[idx].index, lba, value);
-		std::filesystem::rename(old_path, new_path);
-		reloadBufferFiles();
-		return;
-	}
-
 	int emptyIdx = findEmptyBuffer();
 	if (emptyIdx == ALL_BUFFER_USED) {
 		flushAndReset();
-		emptyIdx = 1;	//first
+		emptyIdx = 0;
 	}
 
-	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
-	std::string new_path = formatWriteFileName(bufferEntries[emptyIdx].index, lba, value);
+	int idx = findWriteSameAddress(lba);
+	if (idx != NOT_FOUND_ANY_BUFFER) {
+		updateBufferPath(idx, lba, value);
+		return;
+	}
+
+	if (checkWriteIdxIsEraseIdxBoundary(lba, emptyIdx, value)) return;
+
+	updateBufferPath(emptyIdx, lba, value);
+	return;
+}
+
+bool BufferManager::checkWriteIdxIsEraseIdxBoundary(int lba, int emptyIdx, const std::string& value)
+{
+	for (int bufferIdx = bufferEntries.size() - 1; bufferIdx >= 0; bufferIdx--) {
+		if (bufferEntries[bufferIdx].type == CommandType::ERASE) {
+			auto eraseStartIdx = bufferEntries[bufferIdx].lba;
+			if (eraseStartIdx == lba) {
+				auto newEraseStartIdx = eraseStartIdx + 1;
+				auto newEraseSize = stoi(bufferEntries[bufferIdx].value) - 1;
+				if (newEraseSize == 0) {
+					removeBuffer(bufferIdx);
+					updateBufferPath(emptyIdx - 1, lba, value);
+					return true;
+				}
+				updateBufferPath(bufferIdx, newEraseStartIdx, newEraseSize);
+				updateBufferPath(emptyIdx, lba, value);
+				return true;
+			}
+
+			auto eraseEndIdx = eraseStartIdx + stoi(bufferEntries[bufferIdx].value) - 1;
+			if (eraseEndIdx == lba) {
+				auto newEraseSize = stoi(bufferEntries[bufferIdx].value) - 1;
+				if (newEraseSize == 0) {
+					removeBuffer(bufferIdx);
+					updateBufferPath(emptyIdx - 1, lba, value);
+					return true;
+				}
+				updateBufferPath(bufferIdx, eraseStartIdx, newEraseSize);
+				updateBufferPath(emptyIdx, lba, value);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void BufferManager::updateBufferPath(int bufferIdx, int lba, int size)
+{
+	std::string old_path = bufferDirectory + "/" + bufferEntries[bufferIdx].originalFilename;
+	std::string new_path = formatEraseFileName(bufferEntries[bufferIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
-	reloadBufferFiles();	
+	reloadBufferFiles();
+}
+
+void BufferManager::updateBufferPath(int bufferIdx, int lba, const std::string& value)
+{
+	std::string old_path = bufferDirectory + "/" + bufferEntries[bufferIdx].originalFilename;
+	std::string new_path = formatWriteFileName(bufferEntries[bufferIdx].index, lba, value);
+	std::filesystem::rename(old_path, new_path);
+	reloadBufferFiles();
 }
 
 void BufferManager::addErase(int lba, int size) {
@@ -68,7 +116,7 @@ int BufferManager::optimizeWriteBuffer(const int lba, const int size)
 			continue;
 		}
 
-		removeWriteBuffer(index);
+		removeBuffer(index);
 	}
 	return index;
 }
@@ -78,7 +126,7 @@ bool BufferManager::isNeedWrite(const BufferEntry& buffer, const int lba, const 
 	return !(buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size);
 }
 
-void BufferManager::removeWriteBuffer(const int index)
+void BufferManager::removeBuffer(const int index)
 {
 	for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
 		BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
@@ -226,7 +274,7 @@ int BufferManager::findEmptyBuffer() {
 }
 
 int BufferManager::findWriteSameAddress(int lba) {
-	for (size_t bufferIdx = 0; bufferIdx < bufferEntries.size(); ++bufferIdx) {
+	for (int bufferIdx = bufferEntries.size() - 1; bufferIdx >= 0; bufferIdx--) {
 		if (bufferEntries[bufferIdx].type == CommandType::WRITE && bufferEntries[bufferIdx].lba == lba)
 			return bufferIdx;
 	}
