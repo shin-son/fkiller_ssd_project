@@ -43,19 +43,12 @@ void BufferManager::addWrite(int lba, const std::string& value) {
 }
 
 void BufferManager::addErase(int lba, int size) {
-	for (int index = 0; index < bufferEntries.size(); index++) {
-		BufferEntry& buffer = bufferEntries[index];
-		if (isNeedWrite(buffer, lba, size)) continue;
-
-		removeRedundantWrite(index);
-		makeEmptyLastBuffer();
-	}
 
 	int emptyIdx = findEmptyBuffer();
-	if (emptyIdx == ALL_BUFFER_USED) {
+	if (emptyIdx == ALL_BUFFER_USED)
 		flushAndReset();
-		emptyIdx = 1;	//first
-	}
+
+	emptyIdx = optimizeWriteBuffer(lba, size);
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
@@ -63,12 +56,28 @@ void BufferManager::addErase(int lba, int size) {
 	reloadBufferFiles();
 }
 
+int BufferManager::optimizeWriteBuffer(const int lba, const int size)
+{
+	int index = 0;
+	while (index < bufferEntries.size()) {
+		BufferEntry& buffer = bufferEntries[index];
+		if (buffer.type == CommandType::EMPTY) break;
+		if (isNeedWrite(buffer, lba, size)) {
+			index++;
+			continue;
+		}
+
+		removeWriteBuffer(index);
+	}
+	return index;
+}
+
 bool BufferManager::isNeedWrite(const BufferEntry& buffer, const int lba, const int size)
 {
 	return !(buffer.type == CommandType::WRITE && buffer.lba >= lba && buffer.lba < lba + size);
 }
 
-void BufferManager::removeRedundantWrite(const int index)
+void BufferManager::removeWriteBuffer(const int index)
 {
 	for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
 		BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
@@ -77,15 +86,6 @@ void BufferManager::removeRedundantWrite(const int index)
 		renameWithFileName(oldBuffer.originalFilename, newFileName);
 		updateBufferInfo(oldBuffer, newBuffer);
 	}
-}
-
-void BufferManager::makeEmptyLastBuffer()
-{
-	BufferEntry& lastBuffer = bufferEntries[bufferEntries.size() - 1];
-	renameWithFileName(lastBuffer.originalFilename, "5_empty");
-
-	lastBuffer.originalFilename = "5_empty";
-	lastBuffer.type = CommandType::EMPTY;
 }
 
 void BufferManager::renameWithFileName(const std::string& oldName, const std::string& newName)

@@ -23,11 +23,6 @@ public:
 	void resetAllBuffer();
 	void addWrite(int lba, const std::string& value);
 	void addErase(int lba, int size);
-	void removeRedundantWrite(const int index);
-	void updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
-	void makeEmptyLastBuffer();
-	void renameWithFileName(const std::string& oldName, const std::string& newName);
-	bool isNeedWrite(const BufferEntry& buffer, const int lba, const int size);
 	std::string addRead(int lba);
 	void reloadBufferFiles();
 	void flushAndReset();
@@ -43,6 +38,12 @@ private:
 	void setTheSameAddressBuffer(const std::string& filename);
 	std::string getTheSameAddressBuffer();
 	std::vector<std::string> splitByUnderscore(const std::string& input);
+
+	int optimizeWriteBuffer(const int lba, const int size);
+	bool isNeedWrite(const BufferEntry& buffer, const int lba, const int size);
+	void removeWriteBuffer(const int index);
+	void renameWithFileName(const std::string& oldName, const std::string& newName);
+	void updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& newBuffer);
 
 	std::vector<BufferEntry> bufferEntries;
 	void loadAndParseBufferFiles();

@@ -241,15 +241,42 @@ TEST(BufferManagerTest, EraseAfterWrite4) {
 	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
 	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
 	std::ofstream(testDir + "/3_w_21_0xABCDABCD").close();
+	std::ofstream(testDir + "/4_w_22_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(20, 3);
+
+	std::vector<std::string> expected = {"1_w_30_0xABCDABCD",
+											"2_e_20_3",
+											"3_empty",
+											"4_empty",
+											"5_empty"};
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, EraseAfterWrite5) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_w_21_0xABCDABCD").close();
 	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
 	std::ofstream(testDir + "/5_w_22_0xABCDABCD").close();
 	BufferManager mgr(testDir);
 
 	mgr.addErase(20, 3);
 
-	std::vector<std::string> expected = {"1_w_30_0xABCDABCD",
-											"2_w_31_0xABCDABCD",
-											"3_e_20_3",
+	std::vector<std::string> expected = {"1_e_20_3",
+											"2_empty",
+											"3_empty",
 											"4_empty",
 											"5_empty"};
 	std::vector<std::string> files;
