@@ -528,9 +528,9 @@ TEST(BufferManagerTest, MergeErase8) {
 	mgr.addErase(42, 3);
 
 	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
-											"2_e_40_2",
-											"3_e_42_4",
-											"4_w_31_0xABCDABCD",
+											"2_e_40_6",
+											"3_w_31_0xABCDABCD",
+											"4_empty",
 											"5_empty" };
 	std::vector<std::string> files;
 	for (const auto& entry : fs::directory_iterator(testDir)) {

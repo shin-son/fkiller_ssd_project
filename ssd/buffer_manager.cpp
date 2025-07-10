@@ -106,6 +106,7 @@ void BufferManager::addErase(int lba, int size) {
 	if (emptyIdx == 0) return;
 
 	BufferEntry& newBuffer = bufferEntries[emptyIdx];
+	int newBufferIndex = emptyIdx;
 	int newStartIndex = lba;
 	int newEndIndex = lba + size - 1;
 	for (int index = emptyIdx - 1; index >= 0; index--) {
@@ -141,13 +142,17 @@ void BufferManager::addErase(int lba, int size) {
 			renameWithFileName(oldBuffer.originalFilename, newFileName);
 			oldBuffer.originalFilename = newFileName;
 
-			std::cout << newBuffer.originalFilename << endl;
-			std::cout << std::to_string(newBuffer.index + 1) + "_empty" << std::endl;
-
-			renameWithFileName(newBuffer.originalFilename, std::to_string(newBuffer.index) + "_empty");
-			newBuffer.type = CommandType::EMPTY;
-			newBuffer.originalFilename = std::to_string(newBuffer.index) + "_empty";
-			break;
+			if (bufferEntries[newBufferIndex].index == bufferEntries.size()) {
+				renameWithFileName(bufferEntries[newBufferIndex].originalFilename, std::to_string(bufferEntries[newBufferIndex].index) + "_empty");
+				bufferEntries[newBufferIndex].type = CommandType::EMPTY;
+				bufferEntries[newBufferIndex].originalFilename = std::to_string(bufferEntries[newBufferIndex].index) + "_empty";
+			}
+			else {
+				removeBuffer(bufferEntries[newBufferIndex].index - 1);
+			}
+			newBufferIndex = index;
+			newStartIndex = bufferEntries[newBufferIndex].lba;
+			newEndIndex = bufferEntries[newBufferIndex].lba + std::stoi(bufferEntries[newBufferIndex].value) - 1;
 		}
 	}
 }
