@@ -47,7 +47,7 @@ TEST_F(TestShellFixture, ReadPass) {
         .Times(1)
         .WillRepeatedly(Return("0xAAAABBBB"));
 
-    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.read(10));
+    EXPECT_EQ("LBA 10 : 0xAAAABBBB", testShell.read(10));
 }
 
 TEST_F(TestShellFixture, ReadFailWrongLBA) {
@@ -55,7 +55,7 @@ TEST_F(TestShellFixture, ReadFailWrongLBA) {
         .Times(1)
         .WillOnce(Return("ERROR"));
 
-    EXPECT_EQ("[Read] ERROR", testShell.read(100));
+    EXPECT_EQ("ERROR", testShell.read(100));
 }
 
 TEST_F(TestShellFixture, FullReadPass) {
@@ -66,7 +66,7 @@ TEST_F(TestShellFixture, FullReadPass) {
 
     string expected;
     for (int LBA = 0; LBA < 100; LBA++) {
-        expected += "[Read] LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
+        expected += "LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
     }
 
     testShell.fullRead();
@@ -82,9 +82,9 @@ TEST_F(TestShellFixture, FullReadFail) {
         .WillOnce(Return("0x00ABCDEF"))
         .WillRepeatedly(Return("ERROR"));
 
-    string expected = "[Read] LBA 0 : 0x00ABCDEF\n";
+    string expected = "LBA 0 : 0x00ABCDEF\n";
     for (int LBA = 1; LBA < 100; LBA++) {
-        expected += "[Read] ERROR\n";
+        expected += "ERROR\n";
     }
 
     testShell.fullRead();
