@@ -1,12 +1,11 @@
-#include "constants.h"
 #include "command_factory.h"
 
-vector<string> CommandFactory::ALL_CMD = {
+const list<string> CommandFactory::ALL_CMD_LIST = {
     READ_COMMAND_NAME,
     WRITE_COMMAND_NAME,
     ERASE_COMMAND_NAME,
     ERASE_RANGE_COMMAND_NAME,
-    FULL_READ_COMMAND_NAME, 
+    FULL_READ_COMMAND_NAME,
     FULL_WRITE_COMMAND_NAME,
     TEST_SCRIPT_1_FULL_COMMAND_NAME,
     TEST_SCRIPT_2_FULL_COMMAND_NAME,
@@ -33,7 +32,7 @@ std::unique_ptr<ICommand> CommandFactory::createCommand(const std::string& cmdTy
         return nullptr;
 }
 
-vector<string> CommandFactory::getAllCommandType()
+list<string> CommandFactory::getAllCommandType()
 {
-    return ALL_CMD;
+    return ALL_CMD_LIST;
 }
