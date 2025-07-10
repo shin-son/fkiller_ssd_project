@@ -164,7 +164,7 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH_1) {
 	std::ofstream(testDir + "/5_w_13_0x10").close();
 	BufferManager mgr(testDir);
 
-	//ssd.exe r 3
+	//ssd.exe r 1
 	int lba = 1;
 	std::string result = mgr.addRead(lba);
 	EXPECT_EQ("0x2", result);
@@ -182,7 +182,7 @@ TEST(BufferManagerTest, READ_BUFFER_MATCH_2) {
 	std::ofstream(testDir + "/5_w_13_0x10").close();
 	BufferManager mgr(testDir);
 
-	//ssd.exe r 3
+	//ssd.exe r 12
 	int lba = 12;
 	std::string result = mgr.addRead(lba);
 	EXPECT_EQ("0x00000000", result);

@@ -56,7 +56,7 @@ void BufferManager::addErase(int lba, int size) {
 }
 
 std::string  BufferManager::addRead(int lba) {
-	for(int bufferIdx = 4; bufferIdx >= 0; bufferIdx--) {
+	for(int bufferIdx = bufferEntries.size() - 1; bufferIdx >= 0; bufferIdx--) {
 		if (bufferEntries[bufferIdx].type == CommandType::WRITE && bufferEntries[bufferIdx].lba == lba) {
 			return bufferEntries[bufferIdx].value;
 		}
