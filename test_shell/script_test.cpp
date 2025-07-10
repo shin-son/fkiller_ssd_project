@@ -1,5 +1,4 @@
-#if 0
-//#ifdef _DEBUG
+#ifdef _DEBUG
 #include "test_case.h"
 
 TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
@@ -15,9 +14,10 @@ TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
         }
     }
     testing::internal::CaptureStdout();
-    testShell.fullWriteAndReadCompare();
+    //testShell.fullWriteAndReadCompare();
+    testShell.runCommand(TEST_SCRIPT_1_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_NE(output.find("PASS"), std::string::npos);
+    EXPECT_NE(output.find(DONE), std::string::npos);
 }
 
 TEST_F(TestShellFixture, FullWriteAndReadCompareFail) {
@@ -32,17 +32,19 @@ TEST_F(TestShellFixture, FullWriteAndReadCompareFail) {
                 .WillOnce(Return(t));
         }
     }
+
     EXPECT_CALL(mockSSDAdapter, write(50, testShell.intToHexString(10))).Times(1)
-        .WillOnce(Return("ERROR"));
+        .WillOnce(Return(ERROR));
 
     testing::internal::CaptureStdout();
-    testShell.fullWriteAndReadCompare();
+    //testShell.fullWriteAndReadCompare();
+    testShell.runCommand(TEST_SCRIPT_1_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_NE(output.find("FAIL"), std::string::npos);
+    EXPECT_NE(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteCountWriteTimesWithFullCommnad) {
-    string cmdInput = "2_";
+    string cmdInput = TEST_SCRIPT_2_SHORT_COMMAND_NAME;
     string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
 
     {
@@ -69,10 +71,12 @@ TEST_F(TestShellFixture, PartialLBAWriteCountWriteTimesWithFullCommnad) {
     testing::internal::CaptureStdout();
     testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find(TEST_SCRIPT_2_SUCCESS_MSG), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteCountWriteTimesWithShortCommand) {
-    string cmdInput = "2_";
+    string cmdInput = TEST_SCRIPT_2_SHORT_COMMAND_NAME;
     string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
 
     {
@@ -99,6 +103,9 @@ TEST_F(TestShellFixture, PartialLBAWriteCountWriteTimesWithShortCommand) {
     testing::internal::CaptureStdout();
     testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
+    EXPECT_NE(output.find(TEST_SCRIPT_2_SUCCESS_MSG), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteFullCommandPass) {
@@ -130,7 +137,8 @@ TEST_F(TestShellFixture, PartialLBAWriteFullCommandPass) {
     testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("Fail"), std::string::npos);
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
+    EXPECT_NE(output.find(TEST_SCRIPT_2_SUCCESS_MSG), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteShortCommandPass) {
@@ -162,10 +170,12 @@ TEST_F(TestShellFixture, PartialLBAWriteShortCommandPass) {
     testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("Fail"), std::string::npos);
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
+    EXPECT_NE(output.find(DONE), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteWithDataPass) {
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
     string writeData = "0xDEADDEAD";
 
     {
@@ -193,11 +203,12 @@ TEST_F(TestShellFixture, PartialLBAWriteWithDataPass) {
     testShell.partialLBAWrite(writeData);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("Fail"), std::string::npos);
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteWriteFail) {
-    string writeData = "0xDEAFDEAF";
+    string cmdInput = TEST_SCRIPT_2_FULL_COMMAND_NAME;
+    string writeData = INPUT_DATA_FOR_PARTIAL_LBA_WRITE;
 
     EXPECT_CALL(mockSSDAdapter, write(4, writeData))
         .WillRepeatedly(Return(""));
@@ -208,15 +219,13 @@ TEST_F(TestShellFixture, PartialLBAWriteWriteFail) {
     EXPECT_CALL(mockSSDAdapter, write(1, writeData))
         .WillRepeatedly(Return(""));
     EXPECT_CALL(mockSSDAdapter, write(2, writeData))
-        .WillRepeatedly(Return("Error"));
-        //.WillRepeatedly(Return(""));
+        .WillRepeatedly(Return(ERROR));
 
     testing::internal::CaptureStdout();
-    testShell.partialLBAWrite(writeData);
+    testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
 
-    //EXPECT_EQ(string(TEST_SCRIPT_2_WRITE_FAIL_MSG), output);
-    EXPECT_NE(output.find("Fail"), std::string::npos);
+    EXPECT_NE(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteVerifyPass) {
@@ -241,7 +250,7 @@ TEST_F(TestShellFixture, PartialLBAWriteVerifyPass) {
     testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("Fail"), std::string::npos);
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, PartialLBAWriteVerifyFail) {
@@ -260,16 +269,14 @@ TEST_F(TestShellFixture, PartialLBAWriteVerifyFail) {
         .WillRepeatedly(Return(""));
 
     EXPECT_CALL(mockSSDAdapter, read(_))
-        .WillOnce(Return(string(writeData)))
-        .WillOnce(Return(string("0x0000")))
-        .WillRepeatedly(Return(string(writeData)));
+        .WillOnce(Return(writeData))
+        .WillRepeatedly(Return("0x0000"));
 
     testing::internal::CaptureStdout();
-    //testShell.runCommand(cmdInput);
-    testShell.partialLBAWrite();
+    testShell.runCommand(cmdInput);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("Fail"), std::string::npos);
+    EXPECT_NE(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, WriteReadAgingPass) {
@@ -289,10 +296,10 @@ TEST_F(TestShellFixture, WriteReadAgingPass) {
         .WillRepeatedly(Return(testData));
 
     testing::internal::CaptureStdout();
-    testShell.writeReadAging();
+    testShell.runCommand(TEST_SCRIPT_3_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Aging] PASS"), std::string::npos);
+    EXPECT_NE(output.find("[WriteReadAging] Done"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, WriteReadAgingFail) {
@@ -314,10 +321,10 @@ TEST_F(TestShellFixture, WriteReadAgingFail) {
         .WillRepeatedly(Return(testData));
 
     testing::internal::CaptureStdout();
-    testShell.writeReadAging();
+    testShell.runCommand(TEST_SCRIPT_3_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Aging] ERROR mismatch value LBA[0] : 0xA1B2C3D4 LBA[99] : 0xA1B2C3DF"), std::string::npos);
+    EXPECT_NE(output.find("[WriteReadAging] ERROR mismatch value LBA[0] : 0xA1B2C3D4 LBA[99] : 0xA1B2C3DF"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseAndWriteAging_Pass) {
@@ -335,7 +342,7 @@ TEST_F(TestShellFixture, EraseAndWriteAging_Pass) {
     testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("Fail"), std::string::npos);
+    EXPECT_EQ(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseAndWriteAging_WriteFail) {
@@ -344,7 +351,7 @@ TEST_F(TestShellFixture, EraseAndWriteAging_WriteFail) {
         .WillOnce(Return(""))
         .WillOnce(Return(""))
         .WillOnce(Return(""))
-        .WillOnce(Return("ERROR"))
+        .WillOnce(Return(ERROR))
         .WillRepeatedly(Return(""));
 
     EXPECT_CALL(mockSSDAdapter, erase(_, _))
@@ -354,7 +361,7 @@ TEST_F(TestShellFixture, EraseAndWriteAging_WriteFail) {
     testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("Fail"), std::string::npos);
+    EXPECT_NE(output.find(ERROR), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseAndWriteAging_EraseFail) {
@@ -366,12 +373,12 @@ TEST_F(TestShellFixture, EraseAndWriteAging_EraseFail) {
         .WillOnce(Return(""))
         .WillOnce(Return(""))
         .WillOnce(Return(""))
-        .WillRepeatedly(Return("ERROR"));
+        .WillRepeatedly(Return(ERROR));
 
     testing::internal::CaptureStdout();
     testShell.runCommand(TEST_SCRIPT_4_FULL_COMMAND_NAME);
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("Fail"), std::string::npos);
+    EXPECT_NE(output.find(ERROR), std::string::npos);
 }
 #endif

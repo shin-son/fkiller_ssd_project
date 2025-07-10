@@ -5,7 +5,7 @@ SSDInterface* ICommand::adapter = nullptr;
 NEXT_TEST ReadCommand::process(const string& command, std::istringstream& iss)
 {
 	int LBA;
-	//std::istringstream iss_(command);
+	std::istringstream iss_(command);
 	std::cout << "[Read] ";
 
 	if (!(iss >> LBA)) {

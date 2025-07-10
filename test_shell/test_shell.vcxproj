@@ -134,9 +134,12 @@
     <ClCompile Include="command_factory.cpp" />
     <ClCompile Include="erase_command.cpp" />
     <ClCompile Include="erase_range_command.cpp" />
+    <ClCompile Include="erase_write_aging.cpp" />
     <ClCompile Include="full_read_command.cpp" />
     <ClCompile Include="full_write_command.cpp" />
+    <ClCompile Include="full_write_read_compare.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="partial_lba_write.cpp" />
     <ClCompile Include="read_command.cpp" />
     <ClCompile Include="script_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -159,6 +162,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="write_command.cpp" />
+    <ClCompile Include="write_read_aging.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all_commands.h" />

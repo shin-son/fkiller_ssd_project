@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include "constants.h"
 #include "ssd_interface.h"
 #include "logger.h"

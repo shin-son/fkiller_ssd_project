@@ -8,7 +8,8 @@
 using std::string;
 namespace fs = std::filesystem;
 
-#define LOG_PRINT(message) logger.print(CLASS_NAME, __func__, message)
+//#define LOG_PRINT(message) logger.print(CLASS_NAME, __func__, message)
+#define LOG_PRINT(message)
 
 struct TimeData {
     string year;

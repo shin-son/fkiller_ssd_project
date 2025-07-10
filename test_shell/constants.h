@@ -25,6 +25,7 @@
 
 #define INVALID_COMMAND_MSG				"INVALID COMMAND"
 #define ERROR							"ERROR"
+#define DONE							"Done"
 // Write 
 #define WRITE_DONE_RETURN				"[Write] Done"
 #define WRITE_ERROR_RETURN				"[Write] ERROR"
@@ -35,8 +36,8 @@
 #define ERASE_UNIT_LBA_COUNT			 10
 
 // Erase
-#define ERASE_RANGE_DONE_RETURN		 		"[Erase Range] Done"
-#define ERASE_RANGE_FAIL_RETURN		 		"[Erase Range] ERROR"
+#define ERASE_RANGE_DONE_RETURN		 		"[EraseRange] Done"
+#define ERASE_RANGE_FAIL_RETURN		 		"[EraseRange] ERROR"
 
 // definition for Test Shell Runner
 #define CONVERSATION_MODE				1
@@ -44,9 +45,9 @@
 
 // Test Script2 (PartialLBAWrite)
 
-#define TEST_SCRIPT_2_SUCCESS_MSG			"[TestSecript2 - PartialLBAWrite] Done"
-#define TEST_SCRIPT_2_WRITE_FAIL_MSG		"[TestSecript2 - PartialLBAWrite] Write Fail"
-#define TEST_SCRIPT_2_VERIFY_FAIL_MSG		"[TestSecript2 - PartialLBAWrite] Verify Fail"
+#define TEST_SCRIPT_2_SUCCESS_MSG			"[PartialLBAWrite] Done"
+#define TEST_SCRIPT_2_WRITE_FAIL_MSG		"[PartialLBAWrite] ERROR: Write Fail"
+#define TEST_SCRIPT_2_VERIFY_FAIL_MSG		"[PartialLBAWrite] ERROR: Verify Fail"
 #define INPUT_LBA_SEQUENCE					{ 4, 0, 3, 1, 2 }
 #define INPUT_DATA_FOR_PARTIAL_LBA_WRITE	"0x12341234"
 #define LOOP_COUNT_FOR_PARTIAL_LBA_WRITE	30
