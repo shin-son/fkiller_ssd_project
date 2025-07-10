@@ -1,8 +1,8 @@
 #include "write_command.h"
 
-NEXT_TEST WriteCommand::process(const string& command)
+NEXT_TEST WriteCommand::process(const string& command, std::istringstream& iss)
 {
-	std::istringstream iss(command);
+	//std::istringstream iss(command);
 	string printlog = "[Write] ";
 
 	int lba;
@@ -26,6 +26,7 @@ NEXT_TEST WriteCommand::process(const string& command)
 
 	std::string result = adapter->write(lba, data);
 	if (result == "") printlog = WRITE_DONE_RETURN;
+	else printlog += "ERROR";
 
 	std::cout << printlog << std::endl;
 

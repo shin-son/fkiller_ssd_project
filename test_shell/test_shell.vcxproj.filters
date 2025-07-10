@@ -66,6 +66,18 @@
     <ClCompile Include="write_command.cpp">
       <Filter>Commands\소스파일</Filter>
     </ClCompile>
+    <ClCompile Include="full_write_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
+    <ClCompile Include="full_read_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
+    <ClCompile Include="erase_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
+    <ClCompile Include="erase_range_command.cpp">
+      <Filter>Commands\소스파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_shell.h">
@@ -123,6 +135,12 @@
       <Filter>Commands\헤더파일</Filter>
     </ClInclude>
     <ClInclude Include="write_read_aging.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="full_read_command.h">
+      <Filter>Commands\헤더파일</Filter>
+    </ClInclude>
+    <ClInclude Include="full_write_command.h">
       <Filter>Commands\헤더파일</Filter>
     </ClInclude>
   </ItemGroup>

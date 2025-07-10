@@ -75,6 +75,5 @@ private:
     SSDInterface* ssdAdapter;
     Logger& logger = Logger::getInstance();
     CommandFactory cmdCreator;
-    unsigned int SSD_SIZE = 100;
     const string CLASS_NAME = "TestShell";
 };

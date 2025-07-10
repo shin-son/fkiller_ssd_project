@@ -6,6 +6,8 @@ vector<string> CommandFactory::ALL_CMD = {
     WRITE_COMMAND_NAME,
     ERASE_COMMAND_NAME,
     ERASE_RANGE_COMMAND_NAME,
+    FULL_READ_COMMAND_NAME, 
+    FULL_WRITE_COMMAND_NAME,
     TEST_SCRIPT_1_FULL_COMMAND_NAME,
     TEST_SCRIPT_2_FULL_COMMAND_NAME,
     TEST_SCRIPT_3_FULL_COMMAND_NAME,
@@ -17,6 +19,8 @@ std::unique_ptr<ICommand> CommandFactory::createCommand(const std::string& cmdTy
     else if (WRITE_COMMAND_NAME == cmdType) return std::make_unique<WriteCommand>();
     else if (ERASE_COMMAND_NAME == cmdType) return std::make_unique<EraseCommand>();
     else if (ERASE_RANGE_COMMAND_NAME == cmdType) return std::make_unique<EraseRangeCommand>();
+    else if (FULL_READ_COMMAND_NAME == cmdType) return std::make_unique<FullReadCommand>();
+    else if (FULL_WRITE_COMMAND_NAME == cmdType) return std::make_unique<FullWriteCommand>();
     else if ((TEST_SCRIPT_1_FULL_COMMAND_NAME == cmdType) || (TEST_SCRIPT_1_SHORT_COMMAND_NAME == cmdType)) 
         return std::make_unique<FullWriteReadCompareCommand>();
     else if ((TEST_SCRIPT_2_FULL_COMMAND_NAME == cmdType) || (TEST_SCRIPT_2_SHORT_COMMAND_NAME == cmdType)) 

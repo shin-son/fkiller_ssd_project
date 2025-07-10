@@ -2,10 +2,10 @@
 
 SSDInterface* ICommand::adapter = nullptr;
 
-NEXT_TEST ReadCommand::process(const string& command) 
+NEXT_TEST ReadCommand::process(const string& command, std::istringstream& iss)
 {
 	int LBA;
-	std::istringstream iss(command);
+	//std::istringstream iss_(command);
 	std::cout << "[Read] ";
 
 	if (!(iss >> LBA)) {
@@ -15,7 +15,16 @@ NEXT_TEST ReadCommand::process(const string& command)
 
 	string result = adapter->read(LBA);
 
-	std::cout << result << std::endl;
+	if (result == ERROR)
+	{
+		std::cout << ERROR;
+	}
+	else
+	{
+		std::cout << "LBA " << std::setfill('0') << std::setw(2)
+			<< LBA << " : " << result << std::endl;
+	}
+
 
 	return NEXT_KEEP_GOING;
 }

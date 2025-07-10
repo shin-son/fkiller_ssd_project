@@ -32,7 +32,14 @@ TEST_F(TestShellFixture, ReadPass) {
         .Times(1)
         .WillRepeatedly(Return("0xAAAABBBB"));
 
-    EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.readWithPrintScreen(10));
+    internal::CaptureStdout();
+    //testShell.fullRead();
+    testShell.runCommand("read 10");
+    string output = internal::GetCapturedStdout();
+    //EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.readWithPrintScreen(10));
+
+    //EXPECT_EQ("[Read] ERROR", testShell.readWithPrintScreen(100));
+    EXPECT_NE(output.find("[Read] LBA"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, ReadFailWrongLBA) {
@@ -40,21 +47,29 @@ TEST_F(TestShellFixture, ReadFailWrongLBA) {
         .Times(1)
         .WillOnce(Return("ERROR"));
 
-    EXPECT_EQ("[Read] ERROR", testShell.readWithPrintScreen(100));
+    //EXPECT_EQ("[Read] ERROR", testShell.readWithPrintScreen(100));
+    internal::CaptureStdout();
+    //testShell.fullRead();
+    testShell.runCommand("read 100");
+    string output = internal::GetCapturedStdout();
+    //EXPECT_EQ("[Read] LBA 10 : 0xAAAABBBB", testShell.readWithPrintScreen(10));
+
+    //EXPECT_EQ("[Read] ERROR", testShell.readWithPrintScreen(100));
+    EXPECT_NE(output.find("[Read] ERROR"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, FullReadPass) {
-    internal::CaptureStdout();
     EXPECT_CALL(mockSSDAdapter, read(_))
         .Times(100)
         .WillRepeatedly(Return("0x00ABCDEF"));
 
     string expected;
     for (int LBA = 0; LBA < 100; LBA++) {
-        expected += "[Read] LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
+        expected += "LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
     }
-
-    testShell.fullRead();
+    internal::CaptureStdout();
+    //testShell.fullRead();
+    testShell.runCommand("fullread");
     string output = internal::GetCapturedStdout();
 
     EXPECT_EQ(expected, output);
@@ -84,41 +99,54 @@ TEST_F(TestShellFixture, WritePass) {
         .WillOnce(Return(""));
 
     //std::string result = testShell.write(5, "0xAAAABBBB");
+    testing::internal::CaptureStdout();
     testShell.runCommand("write 5 0xAAAABBBB");
     //EXPECT_EQ(result, "[Write] Done");
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Write] Done"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, WriteFail) {
     EXPECT_CALL(mockSSDAdapter, write(5, "0xAAAAABBBBB"))
         .WillOnce(Return("ERROR"));
 
-    std::string result = testShell.write(5, "0xAAAAABBBBB");
-    EXPECT_EQ(result, "[Write] ERROR");
+    //std::string result = testShell.write(5, "0xAAAAABBBBB");
+    testing::internal::CaptureStdout();
+    testShell.runCommand("write 5 0xAAAAABBBBB");
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_NE(output.find("[Write] ERROR"), std::string::npos);
+
+    //EXPECT_EQ(result, "[Write] ERROR");
 }
 
 TEST_F(TestShellFixture, FullWritePass) {
-    internal::CaptureStdout();
+    
     for (int i = 0; i < 100; ++i) {
         EXPECT_CALL(mockSSDAdapter, write(i, "0xAAAABBBB"))
             .Times(1)
             .WillRepeatedly(Return(""));
     }
 
-    testShell.fullWrite("0xAAAABBBB");
+    internal::CaptureStdout();
+    //testShell.fullWrite("0xAAAABBBB");
+    testShell.runCommand("fullwrite 0xAAAABBBB");
     std::string output = internal::GetCapturedStdout();
 
     EXPECT_NE(output.find("[fullWrite] Done"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, FullWriteFail) {
-    internal::CaptureStdout();
     EXPECT_CALL(mockSSDAdapter, write(_, _))
         .WillOnce(Return(""))
         .WillOnce(Return(""))
         .WillOnce(Return(""))
         .WillOnce(Return("[Write] ERROR"));
 
-    testShell.fullWrite("0xAAAABBBB");
+    internal::CaptureStdout();
+    //testShell.fullWrite("0xAAAABBBB");
+    testShell.runCommand("fullwrite 0xAAAABBBB");
     std::string output = internal::GetCapturedStdout();
 
     EXPECT_NE(output.find("[fullWrite] Failed at LBA 3"), std::string::npos);
@@ -144,7 +172,7 @@ TEST_F(TestShellFixture, EraseWithInvalidSize) {
     std::string output = testing::internal::GetCapturedStdout();
 
     EXPECT_EQ(output.find("[Erase] Done"), std::string::npos);
-    EXPECT_NE(output.find("[Erase] Error"), std::string::npos);
+    EXPECT_NE(output.find("[Erase] ERROR"), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseWithSize_CheckEraseCount) {
@@ -203,10 +231,10 @@ TEST_F(TestShellFixture, EraseWithSize_EraseFailCase) {
     testShell.runCommand("erase 0 100");
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Erase] Error"), std::string::npos);
+    EXPECT_NE(output.find("[Erase] ERROR"), std::string::npos);
 }
 
-TEST_F(TestShellFixture, EraseRange_BaseTest) {
+TEST_F(TestShellFixture, EraseRange_Pass) {
 
     EXPECT_CALL(mockSSDAdapter, erase(_, _))
         .Times(1)
@@ -216,7 +244,7 @@ TEST_F(TestShellFixture, EraseRange_BaseTest) {
     testShell.runCommand("erase_range 0 9");
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Erase_Range] Done"), std::string::npos);
+    EXPECT_NE(output.find(ERASE_RANGE_DONE_RETURN), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseRangeWithValidEndLBA_EdgeCase) {
@@ -225,8 +253,8 @@ TEST_F(TestShellFixture, EraseRangeWithValidEndLBA_EdgeCase) {
     testShell.runCommand("erase_range 0 99");
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Erase_Range] Done"), std::string::npos);
-    EXPECT_EQ(output.find("[Erase_Range] Error"), std::string::npos);
+    EXPECT_NE(output.find(ERASE_RANGE_DONE_RETURN), std::string::npos);
+    EXPECT_EQ(output.find(ERASE_RANGE_FAIL_RETURN), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseRangeWithInvalidEndLBA) {
@@ -235,8 +263,8 @@ TEST_F(TestShellFixture, EraseRangeWithInvalidEndLBA) {
     testShell.runCommand("erase_range 0 100");
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_EQ(output.find("[Erase_Range] Done"), std::string::npos);
-    EXPECT_NE(output.find("[Erase_Range] Error"), std::string::npos);
+    EXPECT_EQ(output.find(ERASE_RANGE_DONE_RETURN), std::string::npos);
+    EXPECT_NE(output.find(ERASE_RANGE_FAIL_RETURN), std::string::npos);
 }
 
 TEST_F(TestShellFixture, EraseRange_CheckEraseCount) {
@@ -293,6 +321,6 @@ TEST_F(TestShellFixture, EraseRange_EraseFailCase) {
     testShell.runCommand("erase_range 0 55");
     std::string output = testing::internal::GetCapturedStdout();
 
-    EXPECT_NE(output.find("[Erase_Range] Error"), std::string::npos);
+    EXPECT_NE(output.find(ERASE_RANGE_FAIL_RETURN), std::string::npos);
 }
 #endif

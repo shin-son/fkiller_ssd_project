@@ -1,7 +1,7 @@
 #pragma once
 #include "ICommand.h"
 
-class WriteCommand : public ICommand
+class FullWriteCommand : public ICommand
 {
 public:
 	NEXT_TEST process(const string& command, std::istringstream& iss) override;

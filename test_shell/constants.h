@@ -2,6 +2,7 @@
 // Please define constants which are shared for several class.
 // If the constant is used only one class, it should be defined in the class.
 // shell command
+#define SSD_SIZE							100
 #define HELP_COMMAND_NAME					"help"
 #define EXIT_COMMAND_NAME					"exit"
 
@@ -10,6 +11,8 @@
 #define WRITE_COMMAND_NAME					"write"
 #define ERASE_COMMAND_NAME					"erase"
 #define ERASE_RANGE_COMMAND_NAME			"erase_range"
+#define FULL_READ_COMMAND_NAME				"fullread"
+#define FULL_WRITE_COMMAND_NAME				"fullwrite"
 
 #define TEST_SCRIPT_1_FULL_COMMAND_NAME		"1_FullWriteAndReadCompare"
 #define TEST_SCRIPT_1_SHORT_COMMAND_NAME	"1_"
@@ -21,7 +24,7 @@
 #define TEST_SCRIPT_4_SHORT_COMMAND_NAME	"4_"
 
 #define INVALID_COMMAND_MSG				"INVALID COMMAND"
-
+#define ERROR							"ERROR"
 // Write 
 #define WRITE_DONE_RETURN				"[Write] Done"
 #define WRITE_ERROR_RETURN				"[Write] ERROR"
@@ -32,8 +35,8 @@
 #define ERASE_UNIT_LBA_COUNT			 10
 
 // Erase
-#define ERASE_RANGE_DONE_RETURN		 		"[Erase_Range] Done"
-#define ERASE_RANGE_FAIL_RETURN		 		"[Erase_Range] ERROR"
+#define ERASE_RANGE_DONE_RETURN		 		"[Erase Range] Done"
+#define ERASE_RANGE_FAIL_RETURN		 		"[Erase Range] ERROR"
 
 // definition for Test Shell Runner
 #define CONVERSATION_MODE				1

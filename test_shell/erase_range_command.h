@@ -4,14 +4,11 @@
 class EraseRangeCommand : public ICommand
 {
 public:
-	NEXT_TEST process(const string& command) override
-	{
-		return NEXT_KEEP_GOING;
-	}
+	NEXT_TEST process(const string& command, std::istringstream& iss) override;
+	void printHelp() override;
 
-	void printHelp() override
-	{
-		std::cout << " ERASE RANGE - erase at LBA(Logical Block Addressing) Range \n" <<
-			"\t usage - erase_range <start LBA> <end LBA> (ex.erase_range 0 10)" << std::endl;
-	}
+private:
+	bool getEraseParameter(int& startLBA, int& endLBA, std::istringstream& iss);
+	bool isVaiidEraseRange(const int startLBA, const int endLBA);
+	bool eraseRange(int startLBA, int endLBA);
 };

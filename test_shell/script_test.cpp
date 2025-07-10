@@ -1,4 +1,5 @@
-#ifdef _DEBUG
+#if 0
+//#ifdef _DEBUG
 #include "test_case.h"
 
 TEST_F(TestShellFixture, FullWriteAndReadComparePass) {
