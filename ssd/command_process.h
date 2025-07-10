@@ -39,6 +39,9 @@ public:
                 if (isEraseCommand(cmd)) {
                     cmdProc->ssdOperator = ERASE_OPERATION;
                 }
+                if (isFlushCommand(cmd)) {
+                    cmdProc->ssdOperator = FLUSH_OPERATION;
+                }
             }
             return *this;
         }
@@ -62,6 +65,8 @@ public:
                 std::cout << "Usage: ssd.exe [w/r] [args...]\n";
                 cmdProc->result = INVALID_COMMAND;
             }
+
+            if (cmdProc->ssdOperator == FLUSH_OPERATION) return cmdProc;
 
             if (!patternChecker.isValidAddress(cmdProc->address)) {
                 cmdProc->result = INVALID_ARGUMENT;
@@ -93,6 +98,10 @@ public:
 
         bool isEraseCommand(const string& cmd) {
             return cmd == "e" || cmd == "E";
+        }
+
+        bool isFlushCommand(const string& cmd) {
+            return cmd == "f" || cmd == "F";
         }
 
         int argCount;
