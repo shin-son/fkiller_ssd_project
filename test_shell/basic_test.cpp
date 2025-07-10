@@ -56,7 +56,7 @@ TEST_F(TestShellFixture, FullReadPass) {
         .Times(100)
         .WillRepeatedly(Return("0x00ABCDEF"));
 
-    string expected;
+    string expected = "[fullRead]\n";
     for (int LBA = 0; LBA < 100; LBA++) {
         expected += "LBA " + std::to_string(LBA) + " : " + "0x00ABCDEF\n";
     }
@@ -68,18 +68,17 @@ TEST_F(TestShellFixture, FullReadPass) {
 }
 
 TEST_F(TestShellFixture, FullReadFail) {
-    internal::CaptureStdout();
     EXPECT_CALL(mockSSDAdapter, read(_))
         .Times(100)
         .WillOnce(Return("0x00ABCDEF"))
         .WillRepeatedly(Return(ERROR));
 
-    string expected = "[Read] LBA 0 : 0x00ABCDEF\n";
+    string expected = "[fullRead]\nLBA 0 : 0x00ABCDEF\n";
     for (int LBA = 1; LBA < 100; LBA++) {
-        expected += "[Read] ERROR\n";
+        expected += ("LBA " + std::to_string(LBA) + " : " + ERROR + "\n");
     }
-
-    testShell.fullRead();
+    internal::CaptureStdout();
+    testShell.runCommand("fullread");
     string output = internal::GetCapturedStdout();
 
     EXPECT_EQ(expected, output);

@@ -131,16 +131,34 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basic_test.cpp" />
-    <ClCompile Include="command_factory.cpp" />
-    <ClCompile Include="erase_command.cpp" />
-    <ClCompile Include="erase_range_command.cpp" />
-    <ClCompile Include="erase_write_aging.cpp" />
-    <ClCompile Include="full_read_command.cpp" />
-    <ClCompile Include="full_write_command.cpp" />
-    <ClCompile Include="full_write_read_compare.cpp" />
+    <ClCompile Include="command_factory.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_range_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_write_aging.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_read_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_write_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_write_read_compare.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="partial_lba_write.cpp" />
-    <ClCompile Include="read_command.cpp" />
+    <ClCompile Include="partial_lba_write.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="read_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="script_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -161,8 +179,12 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="write_command.cpp" />
-    <ClCompile Include="write_read_aging.cpp" />
+    <ClCompile Include="write_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="write_read_aging.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all_commands.h" />

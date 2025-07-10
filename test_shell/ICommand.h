@@ -25,7 +25,7 @@ protected:
 	//virtual bool execute() = 0;
 	//virtual bool wrapUp() = 0;
 
-
+	string CLASS_NAME;
 	static SSDInterface* adapter;
 	Logger& logger = Logger::getInstance();
 };
