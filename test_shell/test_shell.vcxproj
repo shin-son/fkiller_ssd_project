@@ -130,8 +130,37 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="basic_test.cpp" />
+    <ClCompile Include="command_factory.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_range_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="erase_write_aging.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_read_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_write_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="full_write_read_compare.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="main_test.cpp">
+    <ClCompile Include="partial_lba_write.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="read_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="script_test.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
@@ -151,15 +180,35 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="write_command.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="write_read_aging.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="all_commands.h" />
+    <ClInclude Include="command_factory.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="erase_command.h" />
+    <ClInclude Include="erase_range_command.h" />
+    <ClInclude Include="erase_write_aging.h" />
+    <ClInclude Include="full_read_command.h" />
+    <ClInclude Include="full_write_command.h" />
+    <ClInclude Include="full_write_read_compare.h" />
+    <ClInclude Include="ICommand.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mock_ssd_adapter.h" />
+    <ClInclude Include="partial_lba_write.h" />
+    <ClInclude Include="read_command.h" />
     <ClInclude Include="ssd_adapter.h" />
     <ClInclude Include="ssd_interface.h" />
+    <ClInclude Include="test_case.h" />
     <ClInclude Include="test_runner.h" />
     <ClInclude Include="test_shell.h" />
+    <ClInclude Include="write_command.h" />
+    <ClInclude Include="write_read_aging.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="latest.log" />
