@@ -30,6 +30,21 @@ string SSDAdapter::write(const int LBA, const string& data) {
     return result;
 }
 
+string SSDAdapter::flush() {
+    std::string command = SSD_EXECUTE_FILE_PATH + " F ";
+    LOG_PRINT(command);
+    string result;
+    try {
+        executeSystemCall(command);
+        result = readOutputFile();
+    }
+    catch (std::exception& e) {
+        std::cout << "[SSD_ADAPTER] Flush error - " << e.what() << std::endl;
+        result = ERROR_CODE;
+    }
+    return result;
+}
+
 string SSDAdapter::erase(const int LBA, const int size)
 {
     std::string command = SSD_EXECUTE_FILE_PATH + " e " + std::to_string(LBA) + " " + std::to_string(size);

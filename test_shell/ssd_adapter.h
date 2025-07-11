@@ -13,6 +13,7 @@ public:
     string read(const int LBA) override;
     string write(const int LBA, const string& data) override;
     string erase(const int LBA, const int size) override;
+    string flush() override;
 
 private:
     void executeSystemCall(const string& command);
