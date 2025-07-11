@@ -143,6 +143,8 @@
     <ClCompile Include="erase_write_aging.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="flush_command.cpp" />
+    <ClCompile Include="flush_command.h" />
     <ClCompile Include="full_read_command.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

@@ -18,6 +18,7 @@
 #define ERASE_RANGE_COMMAND_NAME			"erase_range"
 #define FULL_READ_COMMAND_NAME				"fullread"
 #define FULL_WRITE_COMMAND_NAME				"fullwrite"
+#define FLUSH_COMMAND_NAME					"flush"
 
 #define TEST_SCRIPT_1_FULL_COMMAND_NAME		"1_FullWriteAndReadCompare"
 #define TEST_SCRIPT_1_SHORT_COMMAND_NAME	"1_"
