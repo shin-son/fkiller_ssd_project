@@ -19,7 +19,7 @@ struct BufferEntry {
 
 class BufferManager {
 public:
-	BufferManager(const std::string& bufferDir = "./buffer");
+	BufferManager(const std::string& bufferDir = "..\\buffer");
 	void resetAllBuffer();
 	void addWrite(int lba, const std::string& value);
 	void addErase(int lba, int size);

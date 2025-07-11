@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 	return RUN_ALL_TESTS();
 
 #else
-	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
+	const std::string testDir = std::filesystem::current_path().string() + "\\..\\buffer";
 	SsdInitialFiles ssdInitialFiles;
 	ssdInitialFiles.initialize(testDir);
 

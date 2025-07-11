@@ -7,7 +7,7 @@ class SsdErase : public SsdLoadFile
 {
 public:
 	SsdErase()
-		: SsdLoadFile("ssd_nand.txt") {
+		: SsdLoadFile("..\\ssd_nand.txt") {
 	}
 
 	void eraseSsdNandData(int startIndex, int size);

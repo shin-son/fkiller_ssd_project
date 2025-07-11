@@ -8,7 +8,7 @@
 class SsdRead : public SsdLoadFile
 {
 public:
-	SsdRead(std::string readFileName = "ssd_nand.txt", std::string writeFileName = "ssd_output.txt")
+	SsdRead(std::string readFileName = "..\\ssd_nand.txt", std::string writeFileName = "..\\ssd_output.txt")
 		: SsdLoadFile(readFileName), ssdWriteFileName(writeFileName) {
 		ssdFileIoWrite.setFileName(writeFileName);
 	}

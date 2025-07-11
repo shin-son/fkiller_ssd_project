@@ -7,7 +7,7 @@ using std::string;
 
 class SsdReadTestFixture : public Test {
 protected:
-	SsdRead ssdRead{ "ssd_nand.txt", "ssd_output.txt" };
+	SsdRead ssdRead{ "..\\ssd_nand.txt", "..\\ssd_output.txt" };
 
 	void SetUp() override {
 		ssdRead.loadSsdNandFile();

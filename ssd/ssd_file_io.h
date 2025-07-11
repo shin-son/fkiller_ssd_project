@@ -6,7 +6,7 @@
 class SsdFileIo
 {
 public:
-	SsdFileIo(std::string fileNameParam = "ssd_nand.txt")
+	SsdFileIo(std::string fileNameParam = "..\\ssd_nand.txt")
 		: fileName(fileNameParam) {
 	}
 
