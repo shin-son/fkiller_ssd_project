@@ -3,5 +3,8 @@
 
 class SsdInitialFiles {
 public:
-    static void initialize();
+    void initialize(const std::string& bufferDirectory);
+
+private:
+    void createInitBufferFile(const std::string& bufferDirectory);
 };

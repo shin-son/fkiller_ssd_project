@@ -18,9 +18,10 @@ int main(int argc, char** argv) {
 
 #else
 	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
-	BufferManager mgr(testDir);
 	SsdInitialFiles ssdInitialFiles;
-	ssdInitialFiles.initialize();
+	ssdInitialFiles.initialize(testDir);
+
+	BufferManager mgr;
 
 	vector<string> argsVector;
 	for (int index = 0; index < argc; ++index) {

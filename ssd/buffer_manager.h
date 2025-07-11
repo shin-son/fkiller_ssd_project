@@ -54,5 +54,4 @@ private:
 	bool checkWriteIdxIsEraseIdxBoundary(int lba, int emptyIdx, const std::string& value);
 
 	std::vector<std::vector<std::string>> flushBuffer();
-	void createInitBufferFile();
 };

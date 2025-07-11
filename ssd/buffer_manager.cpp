@@ -14,10 +14,6 @@ using namespace std;
 
 BufferManager::BufferManager(const std::string& bufferDir)
 	: bufferDirectory(bufferDir) {
-	if (!std::filesystem::exists(bufferDirectory)) {
-		std::filesystem::create_directory(bufferDirectory);
-		createInitBufferFile();
-	}
 	loadAndParseBufferFiles();
 }
 
@@ -287,15 +283,4 @@ std::string BufferManager::formatWriteFileName(int idx, int lba, const std::stri
 
 std::string BufferManager::formatEraseFileName(int idx, int lba, int size) {
 	return bufferDirectory + "/" + std::to_string(idx) + "_e_" + std::to_string(lba) + "_" + std::to_string(size);
-}
-
-void BufferManager::createInitBufferFile() {
-	for (int idx = 1; idx <= BUFFER_SIZE; idx++) {
-		std::filesystem::path filePath = bufferDirectory + "/" + std::to_string(idx) + "_empty";
-		std::ofstream file(filePath);
-		if (!file.is_open()) {
-			std::cout << "failed to create files" << std::endl;
-		}
-		file.close();
-	}
 }
