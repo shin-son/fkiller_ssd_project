@@ -75,7 +75,7 @@ bool EraseCommand::eraseRange()
 		int eraseLbaCount = ERASE_UNIT_LBA_COUNT;
 		if (endLBA < changedStartLBA + ERASE_UNIT_LBA_COUNT) eraseLbaCount = getLastEraseLbaCount(changedStartLBA);
 
-		eraseResult = cmdRequester->erase(changedStartLBA, ERASE_UNIT_LBA_COUNT);
+		eraseResult = cmdRequester->erase(changedStartLBA, eraseLbaCount);
 		if ("" != eraseResult) return false;
 		changedStartLBA += ERASE_UNIT_LBA_COUNT;
 	}
