@@ -7,8 +7,8 @@
 
 void SsdInitialFiles::initialize(const std::string& bufferDirectory) {
     namespace fs = std::filesystem;
-    const std::string nandFile = "ssd_nand.txt";
-    const std::string outputFile = "ssd_output.txt";
+    const std::string nandFile = "..\\ssd_nand.txt";
+    const std::string outputFile = "..\\ssd_output.txt";
     if (!fs::exists(nandFile)) {
         std::ofstream nand(nandFile);
         for (int i = 0; i < 100; ++i) {

@@ -12,7 +12,6 @@
 *.env
 *.zip
 *.log
-*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

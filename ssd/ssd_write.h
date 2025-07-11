@@ -8,8 +8,8 @@
 class SsdWrite : public SsdLoadFile
 {
 public:
-	SsdWrite() : SsdLoadFile("ssd_nand.txt") {
-		ssdFileIoWrite.setFileName("ssd_output.txt");
+	SsdWrite() : SsdLoadFile("..\\ssd_nand.txt") {
+		ssdFileIoWrite.setFileName("..\\ssd_output.txt");
 	}
 
 	void writeSsdNandData(int index, const std::string& value);
