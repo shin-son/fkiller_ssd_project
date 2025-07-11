@@ -1,4 +1,3 @@
-//#if 0
 #ifdef _DEBUG
 #include "test_case.h"
 

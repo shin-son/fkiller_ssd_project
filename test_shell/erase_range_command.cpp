@@ -57,7 +57,7 @@ bool EraseRangeCommand::isVaiidEraseRange()
 	LOG_PRINT("called");
 	if (startLBA < 0)  return false;
 	else if (endLBA >= SSD_SIZE) return false;
-	else if (startLBA >= endLBA) return false;
+	else if (startLBA > endLBA) return false;
 
 	return true;
 }
