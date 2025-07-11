@@ -5,16 +5,8 @@
 
 using std::string;
 
-bool SsdRead::readSsdNandFile() {
-
-	if (!ssdFileIoRead.openReadFileStream()) return false;
-	ssdNandData = ssdFileIoRead.loadSsdNandData();
-	ssdFileIoRead.closeReadFileStream();
-	return true;
-}
-
 string SsdRead::getSsdNandDataAt(int index) {
-	string result = ssdNandData[index];
+	string result = getSsdNandData()[index];
 	return result;
 }
 
@@ -28,7 +20,7 @@ bool SsdRead::writeSsdNandDataToFile(const string &targetString) {
 }
 
 int SsdRead::getSsdNandDataSize() {
-	return ssdNandData.size();
+	return getSsdNandData().size();
 }
 
 bool SsdRead::isSsdOutputFileCorrect(const string& targetString) {

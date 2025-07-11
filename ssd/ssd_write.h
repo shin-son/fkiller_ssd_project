@@ -3,24 +3,19 @@
 #include <string>
 #include <vector>
 #include "ssd_file_io.h"
+#include "ssd_load_file.h"
 
-class SsdWrite
+class SsdWrite : public SsdLoadFile
 {
 public:
-	SsdWrite() {
-		ssdFileIoRead.setFileName("ssd_nand.txt");
+	SsdWrite() : SsdLoadFile("ssd_nand.txt") {
 		ssdFileIoWrite.setFileName("ssd_output.txt");
 	}
 
-	void loadSsdNandFile();
 	void writeSsdNandData(int index, const std::string& value);
-	void saveSsdNandFile();
 	void writeOutputFile(const std::string& targetString);
 
 private:
 
-	std::vector<std::string> ssdNandData;
-
-	SsdFileIo ssdFileIoRead;
 	SsdFileIo ssdFileIoWrite;
 };

@@ -1,21 +1,17 @@
 #pragma once
 #include "ssd_file_io.h"
 #include <string>
+#include "ssd_load_file.h"
 
-class SsdErase
+class SsdErase : public SsdLoadFile
 {
 public:
-	SsdErase(std::string fileName = "ssd_nand.txt") {
-		ssdFileIo.setFileName(fileName);
+	SsdErase()
+		: SsdLoadFile("ssd_nand.txt") {
 	}
 
-	void loadSsdNandFile();
 	void eraseSsdNandData(int startIndex, int size);
-	void saveSsdNandFile();
 
 private:
-	SsdFileIo ssdFileIo;
-
-	std::vector<std::string> ssdNandData;
 };
 
