@@ -99,6 +99,8 @@ void BufferManager::addErase(int lba, int size) {
 	std::string new_path = formatEraseFileName(bufferEntries[emptyIdx].index, lba, size);
 	std::filesystem::rename(old_path, new_path);
 	reloadBufferFiles();
+
+	optimizeEraseBuffer(emptyIdx);
 }
 
 int BufferManager::optimizeWriteBuffer(const int lba, const int size)
@@ -124,6 +126,13 @@ bool BufferManager::isNeedWrite(const BufferEntry& buffer, const int lba, const 
 
 void BufferManager::removeBuffer(const int index)
 {
+	if (isLastBuffer(index)) {
+		std::string newFileNameNewBuffer = std::to_string(bufferEntries[index].index) + "_empty";
+		renameWithFileName(bufferEntries[index].originalFilename, newFileNameNewBuffer);
+		bufferEntries[index].type = CommandType::EMPTY;
+		bufferEntries[index].originalFilename = newFileNameNewBuffer;
+	}
+
 	for (int innerIndex = index + 1; innerIndex < bufferEntries.size(); innerIndex++) {
 		BufferEntry& oldBuffer = bufferEntries[innerIndex - 1];
 		BufferEntry& newBuffer = bufferEntries[innerIndex];
@@ -131,6 +140,11 @@ void BufferManager::removeBuffer(const int index)
 		renameWithFileName(oldBuffer.originalFilename, newFileName);
 		updateBufferInfo(oldBuffer, newBuffer);
 	}
+}
+
+bool BufferManager::isLastBuffer(const int newBufferIndex)
+{
+	return bufferEntries[newBufferIndex].index == bufferEntries.size();
 }
 
 void BufferManager::renameWithFileName(const std::string& oldName, const std::string& newName)
@@ -146,6 +160,63 @@ void BufferManager::updateBufferInfo(BufferEntry& oldBuffer, const BufferEntry& 
 	oldBuffer.originalFilename = std::to_string(oldBuffer.index) + newBuffer.originalFilename.substr(1);
 	oldBuffer.type = newBuffer.type;
 	oldBuffer.value = newBuffer.value;
+}
+
+void BufferManager::optimizeEraseBuffer(const int emptyIdx)
+{
+	int newBufferIndex = emptyIdx;
+	for (int oldBufferIndex = emptyIdx - 1; oldBufferIndex >= 0; oldBufferIndex--) {
+		BufferEntry& newBuffer = bufferEntries[newBufferIndex];
+		BufferEntry& oldBuffer = bufferEntries[oldBufferIndex];
+
+		if (isExistOverlapErase(oldBuffer, newBuffer) == false) continue;
+		if (updateEraseRange(oldBuffer, newBuffer) == false) continue;
+
+		updateOldEraseBufferName(oldBuffer);
+
+		removeBuffer(newBufferIndex);
+
+		newBufferIndex = oldBufferIndex;
+	}
+}
+
+bool BufferManager::isExistOverlapErase(const BufferEntry& oldBuffer, const BufferEntry& newBuffer)
+{
+	int newStartIndex = newBuffer.lba;
+	int newEndIndex = newBuffer.lba + std::stoi(newBuffer.value) - 1;
+	int oldStartIndex = oldBuffer.lba;
+	int oldEndIndex = oldBuffer.lba + std::stoi(oldBuffer.value) - 1;
+	return oldBuffer.type == CommandType::ERASE
+		&& ((newStartIndex <= oldEndIndex + 1)
+			|| (newEndIndex <= oldStartIndex - 1));
+}
+
+bool BufferManager::updateEraseRange(BufferEntry& oldBuffer, const BufferEntry& newBuffer)
+{
+	int newStartIndex = newBuffer.lba;
+	int newEndIndex = newBuffer.lba + std::stoi(newBuffer.value) - 1;
+	int oldStartIndex = oldBuffer.lba;
+	int oldEndIndex = oldBuffer.lba + std::stoi(oldBuffer.value) - 1;
+
+	if (newStartIndex < oldStartIndex) {
+		oldBuffer.lba = newStartIndex;
+		int newValue = std::stoi(oldBuffer.value) + oldStartIndex - newStartIndex;
+		if (newValue > 10) return false;
+		oldBuffer.value = std::to_string(newValue);
+	}
+	if (newEndIndex > oldEndIndex) {
+		int newValue = std::stoi(oldBuffer.value) + newEndIndex - oldEndIndex;
+		if (newValue > 10) return false;
+		oldBuffer.value = std::to_string(newValue);
+	}
+	return true;
+}
+
+void BufferManager::updateOldEraseBufferName(BufferEntry& oldBuffer)
+{
+	std::string newFileName = std::to_string(oldBuffer.index) + "_e_" + std::to_string(oldBuffer.lba) + "_" + oldBuffer.value;
+	renameWithFileName(oldBuffer.originalFilename, newFileName);
+	oldBuffer.originalFilename = newFileName;
 }
 
 std::string  BufferManager::addRead(int lba) {

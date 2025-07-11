@@ -323,6 +323,277 @@ TEST(BufferManagerTest, EraseAfterWrite5) {
 
 	EXPECT_EQ(expected, files);
 }
+
+TEST(BufferManagerTest, MergeErase1) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(43, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_6",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase2) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(41, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_4",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase3) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_empty").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(41, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_4",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase4) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_w_41_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(41, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_4",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase5) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_w_41_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(43, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_6",
+											"4_w_41_0xABCDABCD",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase6) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_3").close();
+	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(43, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_6",
+											"4_w_31_0xABCDABCD",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase7) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_w_30_0xABCDABCD").close();
+	std::ofstream(testDir + "/3_e_40_6").close();
+	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(42, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_w_30_0xABCDABCD",
+											"3_e_40_6",
+											"4_w_31_0xABCDABCD",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase8) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_e_40_2").close();
+	std::ofstream(testDir + "/3_e_44_2").close();
+	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(42, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_e_40_6",
+											"3_w_31_0xABCDABCD",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase9) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_e_40_2").close();
+	std::ofstream(testDir + "/3_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/4_e_44_2").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(42, 3);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_e_40_6",
+											"3_w_31_0xABCDABCD",
+											"4_empty",
+											"5_empty" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
+TEST(BufferManagerTest, MergeErase10) {
+	const std::string testDir = "./test_buffer_write";
+	fs::remove_all(testDir);
+	fs::create_directory(testDir);
+
+	std::ofstream(testDir + "/1_w_20_0xABCDABCD").close();
+	std::ofstream(testDir + "/2_e_40_2").close();
+	std::ofstream(testDir + "/3_e_44_5").close();
+	std::ofstream(testDir + "/4_w_31_0xABCDABCD").close();
+	std::ofstream(testDir + "/5_empty").close();
+	BufferManager mgr(testDir);
+
+	mgr.addErase(49, 8);
+
+	std::vector<std::string> expected = { "1_w_20_0xABCDABCD",
+											"2_e_40_2",
+											"3_e_44_5",
+											"4_w_31_0xABCDABCD",
+											"5_e_49_8" };
+	std::vector<std::string> files;
+	for (const auto& entry : fs::directory_iterator(testDir)) {
+		files.push_back(entry.path().filename().string());
+	}
+
+	EXPECT_EQ(expected, files);
+}
+
 TEST(BufferManagerTest, WriteAfterErase) {
 	const std::string testDir = "./test_buffer_write";
 	fs::remove_all(testDir);
