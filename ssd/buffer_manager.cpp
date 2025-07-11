@@ -93,7 +93,6 @@ void BufferManager::addErase(int lba, int size) {
 	if (emptyIdx == ALL_BUFFER_USED)
 		flushAndReset();
 
-	std::cout << size << std::endl;
 	emptyIdx = optimizeWriteBuffer(lba, size);
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
@@ -198,18 +197,19 @@ bool BufferManager::updateEraseRange(BufferEntry& oldBuffer, const BufferEntry& 
 	int newEndIndex = newBuffer.lba + std::stoi(newBuffer.value) - 1;
 	int oldStartIndex = oldBuffer.lba;
 	int oldEndIndex = oldBuffer.lba + std::stoi(oldBuffer.value) - 1;
-
+	int updateLBA = oldBuffer.lba;
+	int updateValue = std::stoi(oldBuffer.value);
 	if (newStartIndex < oldStartIndex) {
-		oldBuffer.lba = newStartIndex;
-		int newValue = std::stoi(oldBuffer.value) + oldStartIndex - newStartIndex;
-		if (newValue > 10) return false;
-		oldBuffer.value = std::to_string(newValue);
+		updateLBA = newStartIndex;
+		updateValue = updateValue + oldStartIndex - newStartIndex;
+		if (updateValue > 10) return false;
 	}
 	if (newEndIndex > oldEndIndex) {
-		int newValue = std::stoi(oldBuffer.value) + newEndIndex - oldEndIndex;
-		if (newValue > 10) return false;
-		oldBuffer.value = std::to_string(newValue);
+		updateValue = updateValue + newEndIndex - oldEndIndex;
+		if (updateValue > 10) return false;
 	}
+	oldBuffer.lba = updateLBA;
+	oldBuffer.value = std::to_string(updateValue);
 	return true;
 }
 
