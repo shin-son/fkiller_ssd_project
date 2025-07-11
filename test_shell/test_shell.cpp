@@ -376,7 +376,6 @@ void TestShell::eraseWithSize(std::istringstream& iss)
 		return;
 	}
 
-	std::cout << ERASE_DONE_RETURN << std::endl;
 	return;
 }
 
