@@ -2,8 +2,8 @@
 
 void EraseRangeCommand::printHelp()
 {
-	std::cout << " ERASE - erase at LBA(Logical Block Addressing) Range \n" <<
-		"\t usage - erase <start LBA> <size> (ex.erase 0 10)" << std::endl;
+	std::cout << " ERASE RANGE - erase at LBA(Logical Block Addressing) Range \n" <<
+		"\t usage - erase <start LBA> <End LBA> (ex.erase 0 10)" << std::endl;
 }
 
 bool EraseRangeCommand::prepare(std::istringstream& iss)
