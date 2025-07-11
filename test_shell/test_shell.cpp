@@ -67,8 +67,20 @@ NEXT_TEST TestShell::processSsdTest(const std::string& command)
 void TestShell::printHelp()
 {
 	LOG_PRINT("called");
-	std::cout << "--------------------------------- HELP "
-		<< "---------------------------------" << std::endl;
+	
+	std::cout << "=========================-TEAM F KILLER "
+		<< "SSD PROJECT=======================" << std::endl;
+
+	std::cout << "-----------------------------------------\n";
+	std::cout << "              Contributors        \n";
+	std::cout << "-----------------------------------------\n";
+	std::cout << " ¢À  Shin Son           (@shin-son)\n";
+	std::cout << " ¢À  Jongwon Park         (@jwon96park)\n";
+	std::cout << " ¢À  Dongguen Lim       (@Limdongguen)\n";
+	std::cout << " ¢À  Hyungju Song       (@HyungjuSong5)\n";
+	std::cout << " ¢À  Sungmin Kim        (@Kim-Sung-Min87)\n";
+	std::cout << " ¢À  Jaewon Song        (@jw.song)\n";
+	std::cout << "-----------------------------------------\n";
 
 	for (std::string cmdType : cmdCreator.getAllCommandType())
 	{
@@ -76,8 +88,8 @@ void TestShell::printHelp()
 		cmdPtr->printHelp();
 	}
 
-	std::cout << "---------------------------------------"
-		<< "---------------------------------" << std::endl;
+	std::cout << "======================================="
+		<< "=================================" << std::endl;
 }
 
 #ifdef _DEBUG
