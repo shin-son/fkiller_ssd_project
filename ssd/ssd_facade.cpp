@@ -9,7 +9,7 @@ SsdFacade& SsdFacade::getInstance() {
 }
 
 void SsdFacade::readSsdIndex(CommandProcessor cmd) {
-	ssdRead.readSsdNandFile();
+	ssdRead.loadSsdNandFile();
 	string ret = ssdRead.getSsdNandDataAt(cmd.getAddress());
 	ssdRead.writeSsdNandDataToFile(ret);
 }

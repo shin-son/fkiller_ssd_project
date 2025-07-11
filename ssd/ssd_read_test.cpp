@@ -10,20 +10,20 @@ protected:
 	SsdRead ssdRead{ "ssd_nand.txt", "ssd_output.txt" };
 
 	void SetUp() override {
-		ssdRead.readSsdNandFile();
+		ssdRead.loadSsdNandFile();
 	}
 };
 
 TEST_F(SsdReadTestFixture, ReadFileStream) {
 
-	EXPECT_TRUE(ssdRead.readSsdNandFile());
+	EXPECT_TRUE(ssdRead.loadSsdNandFile());
 }
 
 TEST_F(SsdReadTestFixture, WrongReadFileStream) {
 
 	SsdRead ssdReadWrong("hdd_read_test.cpp");
 
-	EXPECT_FALSE(ssdReadWrong.readSsdNandFile());
+	EXPECT_FALSE(ssdReadWrong.loadSsdNandFile());
 }
 
 TEST_F(SsdReadTestFixture, WriteFileStream) {
