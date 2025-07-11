@@ -64,10 +64,10 @@ public:
             }
 
             if (cmdProc->ssdOperator == ERASE_OPERATION) {
-                if (!patternChecker.isValidSize(cmdProc->data)) {
+                if (!patternChecker.isValidSize(cmdProc->data) || !patternChecker.isOutofRange(cmdProc->address, cmdProc->data)) {
                     cmdProc->result = INVALID_ARGUMENT;
                 }
-            }            
+            }
 
             return cmdProc;
         }
