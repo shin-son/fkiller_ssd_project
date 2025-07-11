@@ -1,4 +1,5 @@
 #include "pattern_checker.h"
+#include "ssd_constants.h"
 #include <regex>
 
 bool PatternChecker::isValidAddress(const std::string& address) {
@@ -16,7 +17,7 @@ bool PatternChecker::isValidSize(const std::string& value) {
 	if (std::regex_match(value, numericPattern) == false) return false;
 	int size = std::stoi(value);
 
-	if (size < 1 || size > 10) return false;
+	if (size < ERASE_MIN || size > ERASE_MAX) return false;
 
 	return true;
 }
@@ -30,7 +31,7 @@ bool PatternChecker::isOutofRange(const std::string& address, const std::string&
 	int addressInt = std::stoi(address);
 	int size = std::stoi(value);
 
-	if (addressInt + size > 99) return false;
+	if (addressInt + size > NAND_SIZE_MAX) return false;
 
 	return true;
 }
