@@ -13,7 +13,7 @@ public:
 
 	bool loadSsdNandFile();
 	void saveSsdNandFile();
-	std::vector<std::string> getSsdNandData();
+	std::vector<std::string>& getSsdNandData();
 
 private:
 	SsdFileIo ssdFileIoRead;

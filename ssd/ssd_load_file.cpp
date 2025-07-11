@@ -17,7 +17,7 @@ void SsdLoadFile::saveSsdNandFile() {
 	ssdFileIoRead.closeWriteFileStream();
 }
 
-vector<string> SsdLoadFile::getSsdNandData()
+vector<string>& SsdLoadFile::getSsdNandData()
 {
 	return ssdNandData;
 }
