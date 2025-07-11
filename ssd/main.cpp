@@ -5,6 +5,7 @@
 #include "command_process.h"
 #include "buffer_manager.h"
 #include <iostream>
+#include "ssd_initial_files.h"
 
 #include <filesystem>
 
@@ -16,6 +17,11 @@ int main(int argc, char** argv) {
 	return RUN_ALL_TESTS();
 
 #else
+	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
+	SsdInitialFiles ssdInitialFiles;
+	ssdInitialFiles.initialize(testDir);
+
+	BufferManager mgr;
 
 	vector<string> argsVector;
 	for (int index = 0; index < argc; ++index) {
@@ -39,20 +45,20 @@ int main(int argc, char** argv) {
 
 	int type = cmdProcess->getOperator();
 
-	const std::string testDir = std::filesystem::current_path().string() + "/buffer";
-	BufferManager mgr(testDir);
 	std::string value;
 
 	switch (type) {
 	case WRITE_OPERATION:
 		{
 			mgr.addWrite(cmdProcess->getAddress(), cmdProcess->getInputValue());
+			cmdProcess->printWriteToOutput("");
 		}
 		break;
 
 	case ERASE_OPERATION:
 		{
 			mgr.addErase(cmdProcess->getAddress(), cmdProcess->getSize());
+			cmdProcess->printWriteToOutput("");
 		}
 		break;
 

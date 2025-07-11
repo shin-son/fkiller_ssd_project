@@ -32,7 +32,18 @@ string SSDAdapter::write(const int LBA, const string& data) {
 
 string SSDAdapter::erase(const int LBA, const int size)
 {
-    return "";
+    std::string command = SSD_EXECUTE_FILE_PATH + " e " + std::to_string(LBA) + " " + std::to_string(size);
+    LOG_PRINT(command);
+    string result;
+    try {
+        executeSystemCall(command);
+        result = readOutputFile();
+    }
+    catch (std::exception& e) {
+        std::cout << "[SSD_ADAPTER] Erase error - " << e.what() << std::endl;
+        result = ERROR_CODE;
+    }
+    return result;
 }
 
 string SSDAdapter::readOutputFile() {
