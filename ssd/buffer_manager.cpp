@@ -93,6 +93,7 @@ void BufferManager::addErase(int lba, int size) {
 	if (emptyIdx == ALL_BUFFER_USED)
 		flushAndReset();
 
+	std::cout << size << std::endl;
 	emptyIdx = optimizeWriteBuffer(lba, size);
 
 	std::string old_path = bufferDirectory + "/" + bufferEntries[emptyIdx].originalFilename;
@@ -187,8 +188,8 @@ bool BufferManager::isExistOverlapErase(const BufferEntry& oldBuffer, const Buff
 	int oldStartIndex = oldBuffer.lba;
 	int oldEndIndex = oldBuffer.lba + std::stoi(oldBuffer.value) - 1;
 	return oldBuffer.type == CommandType::ERASE
-		&& ((newStartIndex <= oldEndIndex + 1)
-			|| (newEndIndex <= oldStartIndex - 1));
+		&& (((newStartIndex <= oldEndIndex + 1) && (newStartIndex >= oldStartIndex))
+			|| ((newEndIndex >= oldStartIndex - 1) && (newEndIndex <= oldEndIndex)));
 }
 
 bool BufferManager::updateEraseRange(BufferEntry& oldBuffer, const BufferEntry& newBuffer)
